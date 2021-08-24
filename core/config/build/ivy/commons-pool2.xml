@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: commons-pool2.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='commons-pool2'
+            revision='${pool2.revision}'
+            organisation='org.apache.commons'
+            status='release'>
+        <license name='ASL-2.0'
+                url='http://www.apache.org/licenses/LICENSE-2.0.txt'/>
+        <description homepage='http://commons.apache.org/proper/commons-pool/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

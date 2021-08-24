@@ -1,0 +1,533 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE tools>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: tools.xml 4114 2019-08-03 15:53:43Z SFB $
+
+ This file contains informations about the tools used to develop and run
+ RVPF.
+
+ Previous and later versions of these tools may work perfectly with
+ RVPF, or not. The same can be said about the use of alternative tools.
+ -->
+
+<tools>
+
+    <!-- Owners -->
+
+    <owner key='apache'
+            title="Apache group"
+            href='http://www.apache.org/'
+    />
+
+    <owner key='apple'
+            title="Apple"
+            href='http://www.apple.com/'
+    />
+
+    <owner key='eclipse'
+            title="Eclipse.org"
+            href='http://www.eclipse.org/'
+    />
+
+    <owner key='h2'
+            title="H2 Group"
+            href='http://www.h2database.com/'
+    />
+
+    <owner key='mariadb'
+            title="MariaDB Foundation"
+            href='https://mariadb.org/'
+    />
+
+    <owner key='microsoft'
+            title="Microsoft Corporation"
+            href='http://www.microsoft.com/'
+    />
+
+    <owner key='mozilla'
+            title="Mozilla Foundation"
+            href='http://www.mozilla.org/'
+    />
+
+    <owner key='oracle'
+            title="Oracle"
+            href='http://www.oracle.com/'
+    />
+
+    <owner key='postgresql'
+            title="PostgreSQL Global Development Group"
+            href='http://www.postgresql.org/'
+    />
+
+
+    <!-- Licenses -->
+
+    <license key='apache'
+            title="Apache Software License"
+            version='2.0'
+            href='http://www.apache.org/LICENSE.txt'
+            source='open'
+    />
+
+    <license key='bsd'
+            title="BSD Style License"
+            href='http://www.opensource.org/licenses/bsd-license.php'
+            source='open'
+    />
+
+    <license key='commercial'
+            source='closed'
+    />
+
+    <license key='epl'
+            title="Eclipse Public License"
+            version='1.0'
+            href='http://www.eclipse.org/org/documents/epl-v10.html'
+            source='open'
+    />
+
+    <license key='freeware'
+            source='closed'
+    />
+
+    <license key='gpl'
+            title="GNU General Public License"
+            version='2'
+            href='http://www.gnu.org/licenses/gpl.html'
+            source='open'
+    />
+
+    <license key='lgpl'
+            title="Lesser GNU General Public License"
+            version='2.1'
+            href='http://www.gnu.org/licenses/lgpl.html'
+            source='open'
+    />
+
+    <license key='mit'
+            title="MIT License"
+            href='http://www.opensource.org/licenses/mit-license.php'
+            source='open'
+    />
+
+    <license key='mpl'
+            title="Mozilla Public License"
+            version='1.1'
+            href='http://www.mozilla.org/MPL/MPL-1.1.html'
+            source='open'
+    />
+
+    <license key='oracle'
+            title="Oracle License"
+            href='https://www.oracle.com/downloads/licenses/javase-license1.html'
+            source='open'
+    />
+
+    <license key='sleepycat'
+            title="Sleepycat License"
+            href='http://download.oracle.com/maven/com/sleepycat/je/license.txt'
+            source='open'
+    />
+
+
+    <!-- Roles -->
+
+    <role key='dbms'
+            title="Database Management System"
+    />
+
+    <role key='ide'
+            title="Integrated Developement Environment"
+    />
+
+    <role key='jdbc'
+            title="JDBC Driver"
+    />
+
+    <role key='jdk'
+            title="Java Development Kit"
+    />
+
+    <role key='jre'
+            title="Java Runtime Environment"
+    />
+
+    <role key='os'
+            title="Operating System"
+    />
+
+    <role key='script'
+            title="Script Engine"
+    />
+
+    <role key='svcs'
+            title="Source Version Control System"
+    />
+
+    <role key='unix'
+            title="UNIX environment"
+    />
+
+
+    <!-- Specifications -->
+
+    <spec key='docbook'
+            title="DocBook DTD"
+            version='4.5'
+    />
+
+    <spec key='java'
+            title="Java Platform Standard Edition"
+            version='8'
+    />
+
+    <spec key='jdbc'
+            title="JDBC Data Access API"
+            version='4.2'
+    />
+
+    <spec key='servlet'
+            title="Java API for Servlets"
+            version='2.5'
+    />
+
+
+    <!-- Tools -->
+
+    <tool key='ant'
+            title="Apache Ant"
+            version='1.10.5'
+            owner='apache'
+            license='apache'
+            href='http://ant.apache.org/'
+            use="Build Tool"
+            env='ANT_HOME'
+    />
+
+    <tool key='bdbje'
+            title="Berkeley DB Java Edition"
+            version='7.0.6'
+            owner='oracle'
+            license='sleepycat'
+            href='http://www.oracle.com/us/products/database/berkeley-db/je/'
+            role='dbms'
+    />
+
+    <tool key='checkstyle'
+            title="Checkstyle"
+            version='5.7.0'
+            license='lgpl'
+            href='http://checkstyle.sourceforge.net/'
+            use="Checks Java source code"
+    />
+
+    <tool key='cygwin'
+            title="Cygwin"
+            version='3.0.7'
+            license='gpl'
+            href='http://cygwin.com/'
+            role='unix'
+            depends='windows'
+    />
+
+    <tool key='dbcp2'
+            title="Apache Commons DBCP"
+            version='2.6.0'
+            owner='apache'
+            license='apache'
+            href='http://commons.apache.org/proper/commons-dbcp/'
+            use="Database Connections Pool"
+    />
+
+    <tool key='dbxsl'
+            title="DocBook XSL Stylesheets"
+            version='1.75.2'
+            license='mit'
+            href='http://docbook.sourceforge.net/projects/xsl/'
+            use="Processing of DocBook documents"
+    />
+
+    <tool key='derby'
+            title="Apache Derby"
+            version='10.11.1.1'
+            license='apache'
+            href='http://db.apache.org/derby/'
+            role='dbms'
+    />
+
+    <tool key='eclipse'
+            title="Eclipse"
+            version='4.8.0'
+            owner='eclipse'
+            license='epl'
+            href='http://www.eclipse.org/'
+            role='ide'
+    />
+
+    <tool key='gradle'
+            title="Gradle"
+            version='4.0'
+            license='apache'
+            href='http://gradle.org/'
+            use="Build Tool"
+            env='GRADLE_HOME'
+    />
+
+    <tool key='h2'
+            title="H2 Database Engine"
+            version='1.4.199'
+            license='epl'
+            href='http://h2database.com'
+            role='dbms'
+    />
+
+    <tool key='hsqldb'
+            title="HSQL Database Engine"
+            version='2.4.0'
+            license='bsd'
+            href='http://hsqldb.org/'
+            role='dbms'
+    />
+
+    <tool key='ivy'
+            title="Ivy"
+            version='2.4.0'
+            owner='apache'
+            license='apache'
+            href='http://ant.apache.org/ivy/'
+            use="Dependencies Resolver Tool"
+    />
+
+    <tool key='izpack'
+            title="IzPack"
+            version='4.3.4'
+            license='apache'
+            href='http://izpack.org/'
+            use="Installer builder"
+    />
+
+    <tool key='jdk8'
+            title="JDK 8"
+            version='1.8.0_201'
+            owner='oracle'
+            license='oracle'
+            href='https://www.oracle.com/downloads/licenses/javase-license1.html'
+            use="Java Platform"
+            role='jdk,jre'
+            env='JAVA_HOME'
+    />
+
+    <tool key='jetty'
+            title="Jetty"
+            version='8.2.0.v20160908'
+            owner='eclipse'
+            license='apache'
+            href='http://www.eclipse.org/jetty'
+            use='HTTP Server and Servlet Container'
+    />
+
+    <tool key='js'
+            title="Nashorn"
+            owner='oracle'
+            role='script'
+    />
+
+    <tool key='jython'
+            title="Jython"
+            version='2.7.0'
+            license='bsd'
+            href='http://www.jython.org/'
+            role='script'
+            env='JYTHON_HOME'
+    />
+
+    <tool key='linux'
+            title="Linux"
+            version='4.9.0'
+            license='gpl'
+            href='http://www.kernel.org/'
+            role='os,unix'
+    />
+
+    <tool key='log4j'
+            title="log4j"
+            version='2.8.2'
+            owner='apache'
+            license='apache'
+            href='http://logging.apache.org/log4j/2.x/'
+            use="Logging Library"
+    />
+
+    <tool key='mariadb'
+            title="MariaDB"
+            version='10.4.7'
+            owner='mariadb'
+            license='gpl'
+            href='http://mariadb.org/'
+            role='dbms'
+    />
+
+    <tool key='mariadbjc'
+            title="MariaDB Java Client"
+            version='2.4.2'
+            owner='mariadb'
+            license='lgpl'
+            href='http://mariadb.org/'
+            role='jdbc'
+    />
+
+    <tool key='pool2'
+            title="Apache Commons Pool"
+            version='2.6.0'
+            owner='apache'
+            license='apache'
+            href='http://commons.apache.org/proper/commons-pool/'
+    />
+
+    <tool key='osx'
+            title="Mac OS X"
+            variant="Intel"
+            version='10.14.5'
+            owner='apple'
+            license='commercial'
+            href='http://www.apple.com/macosx/'
+            role='os'
+    />
+
+    <tool key='pgsqlj'
+            title="PostgreSQL Native Driver"
+            variant="JDBC41"
+            version='9.3-1100'
+            owner='postgresql'
+            license='bsd'
+            href='http://jdbc.postgresql.org/'
+            role='jdbc'
+            depends='postgresql'
+    />
+
+    <tool key='postgresql'
+            title="PostgreSQL"
+            version='9.3.2'
+            owner='postgresql'
+            license='bsd'
+            href='http://www.postgresql.org/'
+            role='dbms'
+    />
+
+    <tool key='svn'
+            title="Subversion"
+            version='1.12.0'
+            license='apache'
+            href='http://subversion.apache.org/'
+            role='svcs'
+    />
+
+    <tool key='testng'
+            title="TestNG"
+            version='6.11'
+            license='apache'
+            href='http://testng.org/'
+            use="Tests framework"
+    />
+
+    <tool key='w10-32'
+            title="Microsoft Windows 10"
+            variant="Professional"
+            version='10.0'
+            owner='microsoft'
+            license='commercial'
+            href='http://www.microsoft.com/'
+            role='os'
+    />
+
+    <tool key='w10-64'
+            title="Microsoft Windows 10"
+            variant="Professional (x64)"
+            version='10.0'
+            owner='microsoft'
+            license='commercial'
+            href='http://www.microsoft.com/'
+            role='os'
+    />
+
+    <tool key='windows'
+            title="Microsoft Windows"
+            owner='microsoft'
+            license='commercial'
+            href='http://www.microsoft.com/'
+            role='os'
+            variants='wxp,w10-32,w10-64'
+    />
+
+    <tool key='wxp'
+            title="Microsoft Windows XP"
+            variant="Professional"
+            version='2002 SP3'
+            owner='microsoft'
+            license='commercial'
+            href='http://www.microsoft.com/'
+            role='os'
+    />
+
+    <tool key='xstream'
+            title="XStream"
+            version='1.4.10'
+            license='bsd'
+            href='http://x-stream.github.io/'
+            use="Object serialization to XML"
+    />
+
+
+    <!-- Configurations -->
+
+    <config key='devel' title="Development">
+        <tool key='ant'/>
+        <tool key='dbxsl'/>
+        <tool key='gradle'/>
+        <tool key='ivy'/>
+        <tool key='izpack'/>
+        <tool role='jdk' confirmed='jdk8'/>
+        <tool key='jetty'/>
+        <tool role='script' confirmed='js,jython'/>
+        <tool role='jdbc' confirmed='hsqldb,h2,derby,mariadbjc,pgsqlj'/>
+        <tool role='dbms' confirmed='hsqldb,h2,derby,mariadb,postgresql'/>
+        <tool key='ide' confirmed='eclipse'/>
+        <tool role='os' confirmed='windows,linux,osx'/>
+        <tool role='svcs'/>
+        <tool key='testng'/>
+    </config>
+
+    <config key='server' title="Server">
+        <tool role='jre' confirmed='jdk8'/>
+        <tool key='jetty'/>
+        <tool role='jdbc' confirmed='hsqldb,h2,derby,mariadbjc,pgsqlj'/>
+        <tool role='script' confirmed='js,jython'/>
+        <tool role='os' confirmed='windows,linux,osx'/>
+        <tool key='testng'/>
+    </config>
+
+</tools>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

@@ -1,0 +1,134 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-point-values.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF point values documents.
+
+ The DOCTYPE declaration is
+
+     <!DOCTYPE point-values PUBLIC
+     "-//Serge Brisson//DTD RVPF Point values//EN"
+     "http://rvpf.org/dtd/rvpf-point-values.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+        Root element.
+ -->
+
+<!--
+ A 'point-values' document fragment, which contains only the main
+ elements, is generated via XStream serialization.
+ -->
+<!ELEMENT point-values (
+          point-value
+        | versioned-value
+        | deleted-value
+        | purged-value
+        | replicated-value
+        | recalc-trigger)*>
+
+<!--
+        Main elements.
+ -->
+
+<!--
+ The 'point-value' element contains a basic point value.
+ -->
+<!ELEMENT point-value (state?, value?)>
+<!ATTLIST point-value
+    point CDATA #IMPLIED
+    uuid CDATA #IMPLIED
+    stamp CDATA #IMPLIED>
+
+<!--
+ The 'versioned-value' element contains a versioned point value.
+ -->
+<!ELEMENT versioned-value (state?, value?)>
+<!ATTLIST versioned-value
+    point CDATA #IMPLIED
+    uuid CDATA #IMPLIED
+    stamp CDATA #IMPLIED
+    version CDATA #IMPLIED>
+
+<!--
+ The 'deleted-value' element contains a deleted point value.
+ -->
+<!ELEMENT deleted-value (state?, value?)>
+<!ATTLIST deleted-value
+    point CDATA #IMPLIED
+    uuid CDATA #IMPLIED
+    stamp CDATA #IMPLIED
+    version CDATA #IMPLIED>
+
+<!--
+ The 'purged-value' element contains a purged point value.
+ -->
+<!ELEMENT purged-value (state?, value?)>
+<!ATTLIST purged-value
+    point CDATA #IMPLIED
+    uuid CDATA #IMPLIED
+    stamp CDATA #IMPLIED
+    version CDATA #IMPLIED>
+
+<!--
+ The 'replicated-value' element contains a replicated point value.
+ -->
+<!ELEMENT replicated-value (state?, value?)>
+<!ATTLIST replicated-value
+    point CDATA #IMPLIED
+    uuid CDATA #IMPLIED
+    stamp CDATA #IMPLIED
+    version CDATA #IMPLIED
+    deleted CDATA #IMPLIED>
+
+<!--
+ The 'recalc-trigger' element contains a recalc-trigger.
+ -->
+<!ELEMENT recalc-trigger (state?, value?)>
+<!ATTLIST recalc-trigger
+    point CDATA #IMPLIED
+    uuid CDATA #IMPLIED
+    stamp CDATA #IMPLIED>
+
+<!--
+        Main elements.
+ -->
+
+<!--
+ The 'state' element contains a state.
+ -->
+<!ELEMENT state (#PCDATA)>
+<!ATTLIST state
+    class CDATA #IMPLIED
+    type CDATA #IMPLIED>
+
+<!--
+ The 'value' element contains a value.
+ -->
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST value
+    class CDATA #IMPLIED
+    type CDATA #IMPLIED>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/main/classes" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="rvpf-config"/>
+	<classpathentry kind="src" path="config/service"/>
+	<classpathentry kind="src" output="build/ext/classes" path="src/ext/java"/>
+	<classpathentry kind="src" output="build/test/classes" path="src/test/java"/>
+	<classpathentry kind="src" output="tests/classes" path="tests/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-api.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xstream.jar" sourcepath="src/xstream"/>
+	<classpathentry exported="true" kind="lib" path="lib/testng.jar"/>
+	<classpathentry kind="lib" path="lib/jcommander.jar"/>
+	<classpathentry kind="lib" path="lib/javax.servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/jetty-servlet.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsr305.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbcp2.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/embed/tomcat-embed-core.jar"/>
+	<classpathentry kind="var" path="BDB_JE/je-18.3.12.jar"/>
+	<classpathentry kind="var" path="SVNKIT_HOME/lib/svnkit-javahl16-1.8.14.jar"/>
+	<classpathentry kind="lib" path="lib/javax.json.jar"/>
+	<classpathentry kind="lib" path="lib/javax.json-api.jar"/>
+	<classpathentry kind="lib" path="lib/xml-resolver.jar"/>
+	<classpathentry kind="lib" path="lib/bcpg-jdk15on.jar"/>
+	<classpathentry kind="lib" path="lib/bcprov-jdk15on.jar"/>
+	<classpathentry kind="lib" path="lib/postgresql.jar"/>
+	<classpathentry kind="lib" path="lib/commons-pool2.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

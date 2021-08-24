@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: index.html 3831 2018-11-18 14:36:19Z SFB $
+ -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Language" content="en" />
+  <meta http-equiv="Content-Type" content="text/html" />
+  <meta name="description" content="RVPF is a Java framework developed to help the integration of Process Control Data Historian Systems" />
+  <meta name="keywords" content="rvpf, java, manufacturing, process control, open source, open-source" />
+  <link rel="stylesheet" type="text/css" href="style.css" title="RVPF Stylesheet" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <title>RVPF Home Page</title>
+</head>
+
+<body>
+    <div id="header">
+        <div id="header-left">
+            <h1>RVPF</h1>
+        </div>
+        <div id="header-right">
+            <h1>Related Values Processing Framework</h1>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="main-left">
+            <h2>Documents</h2>
+            <a href="LICENSE.txt">License</a><br />
+            <a href="components/components.html">Components</a><br />
+            <a href="metadata/metadata.html">Metadata</a><br />
+            <a href="rpn-summary.html">RPN summary</a><br />
+            <a href="guides/rpn/rpn.html">RPN guide</a><br />
+            <a href="javadoc/index.html">API (Javadoc)</a><br />
+            <a href="ivy/rvpf-rvpf-core.html">Dependencies</a><br />
+            <a href="dist">Latest Build</a><br />
+            <a href="ChangeLog.txt">Changes</a><br />
+
+            <h2>
+                <a href="rvpf.asc" type="text/plain">Keys</a><br />
+            </h2>
+
+            <h2>Project</h2>
+            <a href="http://sourceforge.net/projects/rvpf/">Summary</a><br />
+            <a href="https://sourceforge.net/p/rvpf/code">Sources</a><br />
+
+            <h2>Child projects</h2>
+            <a href="jdbc/index.html">JDBC driver</a><br />
+            <a href="jnlp/index.html">JNLP support</a><br />
+            <a href="pap/index.html">PAP support</a><br />
+            <a href="valve/index.html">Valve</a><br />
+
+            <h2>Links</h2>
+            <a href="http://ant.apache.org/">Ant</a><br />
+            <a href="http://commons.apache.org/dbcp/">DBCP</a><br />
+            <a href="http://eclipse.org">Eclipse</a><br />
+            <a href="http://h2database.com/">H2</a><br />
+            <a href="http://ant.apache.org/ivy/">Ivy</a><br />
+            <a href="http://izpack.org/">IzPack</a><br />
+            <a href="http://www.eclipse.org/jetty/">Jetty</a><br />
+            <a href="http://logging.apache.org/log4j/2.x/">Log4j</a><br />
+            <a href="http://subversion.apache.org/">Subversion</a><br />
+            <a href="http://testng.org/">TestNG</a><br />
+            <a href="http://x-stream.github.io/">XStream</a><br />
+        </div>
+        <div id="main-right">
+            <div id="main-menu">
+                <a href="#overview">Overview</a>
+                <a href="#context">Context</a>
+                <a href="#features">Features</a>
+                <a href="#informations">Informations</a>
+                <a href="#license">License</a>
+                <a href="#feedback">Feedback</a>
+            </div>
+
+            <h2><a id="overview"></a>Overview</h2>
+            <p>
+                The Related Values Processing Framework is being
+                developed to help the integration of process control
+                data historian systems. This is done by providing
+                support for the conversion, computation and distribution
+                of data point values between these systems.
+            </p>
+            <p>
+                The software is written in Java. All libraries needed to
+                use this software are available under an open source
+                license.
+            </p>
+            <p>
+                The support for commercial data historian systems WILL
+                NOT be included in this project. Instead, documented
+                interfaces for the integration of such support will be
+                provided. The framework does include a data historian
+                capable enough to support all of its functions.
+            </p>
+            <p>
+                Since this is a framework for a very technical subject,
+                it is expected that its users will be integrators with
+                expert level knowledge and technical skills.
+            </p>
+
+            <h2><a id="context"></a>Context</h2>
+            <p>
+                The focus of this project is on the circulation and
+                processing of manufacturing points data. By point data,
+                we mean a reference to a point definition, a timestamp,
+                a state and a value. The point definition specifies
+                where the data comes from, where is is stored, what it
+                contains, what effect it may have on other points data,
+                etc. The timestamp indicates when the contained value
+                was generated. The state qualifies the value. The value
+                can be a count, a floating point value, a text string,
+                or anything acceptable at the point of storage.
+            </p>
+            <p>
+                The points data will usually come from some SCADA
+                (Supervisory Control And Data Acquisition) or DCS
+                (Distributed Control System) implementations. It is
+                assumed that time-critical responses have already been
+                provided by lower level systems.
+            </p>
+
+            <h2><a id="features"></a>Features</h2>
+            <ul>
+                <li>Free and open source software.</li>
+                <li>Flexible point dependencies behaviors.</li>
+                <li>Unlimited number of point dependencies levels.</li>
+                <li>Distributed processing.</li>
+                <li>Event triggered recalculations.</li>
+                <li>Update anywhere in included data historian.</li>
+                <li>Store and forward facilities.</li>
+                <li>Files include facility in configuration and metadata.</li>
+                <li>Property substitution in configuration and metadata.</li>
+                <li>Extensible vocabulary in RPN and Summary engines.</li>
+                <li>Replicator engine.</li>
+                <li>Transaction based processing to avoid event loss.</li>
+                <li>Version control (Subversion) support for metadata.</li>
+                <li>Microsecond time support.</li>
+                <li>Past (down to 12754 B.C.) to future (up to 16472 A.D.) time support.</li>
+                <li>Secure configuration of inter-process communications.</li>
+                <li>JMX support.</li>
+                <li>JNLP support in background service (subproject).</li>
+                <li>Step filter engine.</li>
+                <li>Resynchronizer engine.</li>
+                <li>Not OS dependent (requires Java 8).</li>
+                <li>Flexible extension facilities.</li>
+                <li>Multiple components in same or separate JVM.</li>
+                <li>JDBC driver for access to point values (subproject).</li>
+                <li>Facilities for interfacing external subsystems via RMI, HTTP, file directories or C API.</li>
+                <li>Extensive logging and traces.</li>
+                <li>Batch processing and internal cache for improved performance.</li>
+                <li>Reasonable defaults for a large number of configuration properties.</li>
+                <li>Shared or separate configuration files.</li>
+                <li>Metadata server.</li>
+                <li>Inter/extra-polation supplied by the data historian interface.</li>
+            </ul>
+
+            <h2><a id="informations"></a>Informations</h2>
+            <p>
+                Technical informations on this project is available thru
+                links on the left of this page.
+            </p>
+            <p>
+                Under the 'Documents' heading, the <a
+                href="components/components.html">components</a>
+                document illustrates the main components of the
+                framework; then the <a
+                href="metadata/metadata.html">metadata</a> documents the
+                information structure supporting these components.
+            </p>
+            <p>
+                The metadata is further described by comments in
+                its <a href="dtd/rvpf.dtd" type="text/plain">DTD</a>.
+            </p>
+
+            <h2><a id="license"></a>License</h2>
+            <p>
+                The RVPF project licenses its software under the <a
+                href="LICENSE.txt">GNU Lesser General Public License
+                (LGPL)</a> version 2.1.
+            </p>
+
+            <h2><a id="feedback"></a>Feedback</h2>
+            <p>
+                If you would like to contribute to the RVPF project, or
+                have questions, comments or suggestions, you can post to
+                the project's
+                <a href="http://sourceforge.net/projects/rvpf/forums">
+                    forums
+                </a>
+                or send a message to
+                <a href="https://sourceforge.net/sendmessage.php?touser=3033">
+                    Serge Brisson
+                </a>.
+            </p>
+        </div>
+    </div>
+
+    <div id="footer">
+        <p />
+    </div>
+</body>
+
+</html>
+
+<!-- End. -->

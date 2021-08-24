@@ -1,0 +1,320 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config-http.xml 3561 2017-10-25 17:56:01Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-common-config.xml'?>
+
+    <PropertyDef name='tests.messaging' type='ClassDef'
+            title="Tests messaging support"/>
+
+    <ClassDef name='TestsMessagingSupport'
+            package='org.rvpf.tests'
+            member='MessagingSupport'>
+        <description>
+            Provides messaging support for tests.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SOMTestsSupport'
+            package='org.rvpf.som'
+            member='SOMSupport'
+            notes="Default.">
+        <implements classDef='TestsMessagingSupport'/>
+    </ClassDef>
+
+    <property name='substitution.enabled'/>
+
+    <ClassLib location='file:///${tests.classes}/'>
+        <description>
+            Holds classes used for testing of customizing facilities.
+        </description>
+    </ClassLib>
+
+    <properties name='jmx'>
+        <property name='registration.enabled'
+                property='jmx.registration.enabled'/>
+        <property name='role.connect' property='tests.role'/>
+        <property name='user' property='tests.user'/>
+        <property name='password' property='tests.password'/>
+        <properties name='security' extends='tests.server.security'/>
+    </properties>
+
+    <PropertyDef name='tests.notice.timeout' type='Elapsed'/>
+    <PropertyDef name='tests.queue'/>
+    <PropertyDef name='tests.store.service' type='ClassDef'/>
+    <PropertyDef name='tests.topic'/>
+
+    <property name='tests.alerts.queue' def='tests.queue'
+            if='tests.alerts.queued'
+            value='queue/TestsAlerts'/>
+
+    <properties name='tests.processor.receptionist.queue'
+            def='som.queue'>
+        <property name='name' value='TestsReceptionist'/>
+        <property name='keep.alive' value='60.0'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+    </properties>
+
+    <property name='tests.tomcat' validated='no'
+            property='http.support.class' eq='yes'
+            value='HTTPTomcatSupport'/>
+    <properties name='tests.http.security' def='security'
+            extends='tests.server.security' unless='tests.tomcat'/>
+    <properties name='tests.http.security' def='security'
+            if='tests.tomcat'>
+        <properties name='keystore'>
+            <property name='path' value='resource:server.keystore'/>
+            <property name='password'
+                    required='tests.server.keystore.password'/>
+        </properties>
+        <properties name='truststore'>
+            <property name='path' value='resource:server.truststore'/>
+        </properties>
+    </properties>
+
+    <property name='tests.http.pages' validated='no'
+            value='../classes/org/rvpf/tests/example'/>
+    <property name='tests.command.java' validated='no'
+            value='java'/>
+
+    <properties name='traces'>
+        <property name='disabled' property='tests.traces.disabled'/>
+        <property name='compressed' property='tests.traces.compressed'/>
+    </properties>
+
+    <property name='tests.store.notices.filtered' validated='no'
+            value='yes'/>
+
+    <?include href='resource:rvpf-store-config.xml'?>
+
+    <property name='service.monitor.disabled'/>
+
+    <service name='org.rvpf:type=CStoreService'>
+        <description>Used for base tests of CStore.</description>
+        <property name='service.log.id' value='CSPR'/>
+        <property name='service.uuid'
+                value='33a48040-ec43-4eed-abb0-5e1b69d39d0e'/>
+        <property name='store.name' value='TestsCStore'/>
+        <properties name='store.server.c' extends='store.server'>
+            <property name='impl.so' value='rvpf-c-store'/>
+            <property name='log.level' value='DEBUG'/>
+            <property name='log.name' value='Proxy'/>
+            <properties name='env'>
+                <property name='rmi.registry.port'
+                        required='rmi.registry.port'/>
+                <property name='server' value='TestsStore'/>
+                <property name='user' property='tests.user'/>
+                <property name='password' property='tests.password'/>
+            </properties>
+            <property name='notifier.poll.interval'
+                    property='tests.store.notifier.poll.interval'
+                    value='1.0'/>
+        </properties>
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='c-store-proxy'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer,name=AlerterModuleTests'>
+        <description>
+            Used for base tests of the Alerter module.
+        </description>
+        <property name='service.log.id' value='ALER'/>
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='address' value='127.0.0.1'/>
+                <property name='port' value='0'/>
+                <properties name='security'
+                        extends='tests.http.security'>
+                    <property name='secure'/>
+                </properties>
+            </properties>
+            <properties name='realm' extends='security.realm'>
+                <property name='name' value='RVPF-Tests'/>
+                <properties name='security'
+                        extends='tests.server.security'/>
+            </properties>
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPAlertModule'/>
+                <property name='role' property='tests.role'/>
+                <property name='authenticator' value='Basic'/>
+                <properties name='alert'>
+                    <property name='restraint' value='0'/>
+                </properties>
+            </properties>
+            <properties name='context'>
+                <property name='path' value=''/>
+                <property name='resource' required='tests.http.pages'/>
+            </properties>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer,name=MetadataModuleTests'>
+        <description>
+            Used for base tests of the Metadata module.
+        </description>
+        <property name='service.log.id' value='META'/>
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='address' value='127.0.0.1'/>
+                <property name='port' value='0'/>
+            </properties>
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPMetadataServerModule'/>
+                <properties name='metadata' if='tests.metadata.crypted'>
+                    <properties name='security'
+                            extends='tests.server.security'>
+                        <property name='secure'/>
+                    </properties>
+                    <property name='encrypt'/>
+                    <property name='sign'/>
+                </properties>
+            </properties>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer,name=NoticeModuleTests'>
+        <description>
+            Used for base tests of the Notice module.
+        </description>
+        <property name='service.log.id' value='NOTI'/>
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='address' value='127.0.0.1'/>
+                <property name='port' value='0'/>
+                <properties name='security'
+                        extends='tests.http.security'>
+                    <property name='certified'/>
+                </properties>
+            </properties>
+            <properties name='realm' extends='security.realm'>
+                <property name='name' value='RVPF-Tests'/>
+                <properties name='security'
+                        extends='tests.server.security'/>
+            </properties>
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPNoticeModule'/>
+                <property name='role' property='tests.role'/>
+                <property name='authenticator' value='Certificate'/>
+                <properties name='som.queue'
+                        extends='tests.processor.receptionist.queue'/>
+                <property name='notifier.class'
+                        property='tests.http.notice.notifier'/>
+            </properties>
+        </properties>
+        <property name='service.uuid'
+                value='fa4cb131-27c8-794c-b6fe-d2b5b7f2a0d7'/>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer,name=QueryModuleTests'>
+        <description>
+            Used for base tests of the Query module.
+        </description>
+        <property name='service.log.id' value='QUER'/>
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='address' value='127.0.0.1'/>
+                <property name='port' value='0'/>
+            </properties>
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPQueryModule'/>
+                <properties name='store'>
+                    <property name='name' value='TestsProxyStore'/>
+                </properties>
+            </properties>
+        </properties>
+        <property name='service.uuid'
+                value='a45023d2-992f-854a-ad8c-09af1c248a44'/>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer,name=UpdateModuleTests'>
+        <description>
+            Used for base tests of the Update module.
+        </description>
+        <property name='service.log.id' value='UPDA'/>
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='address' value='127.0.0.1'/>
+                <property name='port' value='0'/>
+                <properties name='security'
+                        extends='tests.http.security'>
+                    <property name='certified'/>
+                </properties>
+            </properties>
+            <properties name='realm'>
+                <property name='name' value='RVPF-Tests'/>
+                <properties name='security'
+                        extends='tests.server.security'/>
+            </properties>
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPUpdateModule'/>
+                <properties name='store'>
+                    <property name='name' value='TestsProxyStore'/>
+                    <property name='user' property='tests.user'/>
+                    <property name='password'
+                            property='tests.password'/>
+                </properties>
+                <property name='role' property='tests.role'/>
+                <property name='authenticator' value='Certificate'/>
+            </properties>
+        </properties>
+        <property name='service.uuid'
+                value='67d5d487-29bd-b241-a228-334710eaf49a'/>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer,name=RPNModuleTests'>
+        <description>
+            Used for base tests of the RPN module.
+        </description>
+        <property name='service.log.id' value='RPNM'/>
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='address' value='127.0.0.1'/>
+                <property name='port' value='0'/>
+            </properties>
+            <properties name='context'>
+                <property name='module.class' classDef='HTTPRPNModule'/>
+            </properties>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProxyStoreService'>
+        <property name='service.log.id' value='PXST'/>
+        <property name='store.name' value='TestsProxyStore'/>
+        <properties name='store.server.proxy' extends='store.server'>
+            <properties name='stores'>
+                <property name='name' value='TestsStore'/>
+                <property name='name' value='TestsProxyStore'/>
+            </properties>
+            <properties name='updates.listener' overrides='yes'
+                    if='tests.store.updates.listener.enabled'>
+                <properties name='som.queue' extends='tests.queue'/>
+            </properties>
+            <property name='updates.listener.user'
+                    property='tests.user'/>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+    </service>
+
+    <?include href='resource:rvpf-som-config.xml'?>
+
+</config>
+
+<!-- End. -->

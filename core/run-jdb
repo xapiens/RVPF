@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# $Id: run-jdb 1778 2013-04-24 12:37:27Z SFB $
+
+shopt -s extglob
+RUN_DIR=${0%%*([^/])}
+[ -z "$RUN_DIR" ] || cd $RUN_DIR
+
+RUN_FILE="$1"
+shift
+
+eport DEBUG_OPTS=-ea
+export JAVA=jdb
+exec bin/$RUN_FILE.sh $@
+
+# End.

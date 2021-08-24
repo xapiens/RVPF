@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: h2.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='h2'
+            revision='${h2.revision}'
+            organisation='com.h2database'
+            status='release'>
+        <license name='MPL-2.0 or EPL-1.0'
+                url='http://h2database.com/html/license.html'/>
+        <description homepage='http://www.h2database.com'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

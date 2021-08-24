@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-bad.xml 3612 2018-03-12 18:24:32Z SFB $
+ -->
+
+<metadata lang='en' title="Tests metadata" domain='tests'>
+
+    <bad/>
+
+</metadata>
+
+<!-- End. -->

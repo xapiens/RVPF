@@ -1,0 +1,46 @@
+S: Components
+
+Q: What is the Clock service?
+
+A:
+The Clock service is responsible for the generation of
+values at specific times, making sure that there is no holes according
+the the schedule (usually specified by a 'Crontab' parameter). These
+values are often used as time triggers for computations.
+
+The most significant part of a clock event is, of course, its time
+stamp. Because some historian do not have a high resolution for time, the
+fractional part of the time is used as value. Since the schedule does
+not include time with a fractional part (fraction of second), that
+value is always 0 for a Clock event.
+
+S: Directories
+
+Q: What is the "traces" directory?
+
+A:
+The "traces" directory holds informations that
+can be seen as an 'audit log'. While the log files are meant for monitoring and
+debugging, trace files are meant for verifications. Major component
+services, like Processors, Stores, even Clocks, maintain traces files.
+Each of these components gets a directory named whith a base 36
+version of the component UUID (this is done because some OS have
+configurations where the length of a file name is limited to 31
+characters). You can confirm this by looking into the contained UUID
+file. You will also find in that directory a file with the generic
+entiry name (like 'Store') which contains the specific configured JMX
+object name. Most importantly, you will find, in these directories,
+subdirectories naming input and output events of the associated
+service; for a Store, you should see at least an 'updated'
+subdirectory. These subdirectories contain the trace files themselves,
+named after the day of the occurence of the events (the time of the
+event, not the timestamp of the value).
+
+Each trace file contains one line for each event with the following fields:
+
+ 1 - the time of the event
+ 2 - the name or UUID of the point
+ 3 - the timestamp/version of the value
+ 4 - the state of the value within '[ ]' (only when present)
+ 5 - a value within quotes
+

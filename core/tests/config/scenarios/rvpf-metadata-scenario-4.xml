@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-scenario-4.xml 1962 2013-10-27 14:59:15Z SFB $
+ -->
+
+<metadata lang='en' title="Scenario 4 metadata">
+
+    <?log message="Scenario 4"?>
+
+    <Point name='TESTS.HOUR:CLOCK'
+            store='TestsStore' content='Clock' sync='Hour'
+            uuid='c2928d54-863e-d542-a6e2-c904d4c52d3f'>
+        <param name='Tag' value='RVPF-11'/>
+    </Point>
+
+    <Point name='TESTS.ENTRY:NUMERIC'
+            store='TestsStore' content='Numeric'
+            uuid='c260c57e-4020-9a47-9b4e-f4871d002dbc'>
+        <param name='Tag' value='RVPF-1'/>
+    </Point>
+
+    <Point name='TESTS.SUM:NUMERIC'
+            store='TestsStore' content='Numeric'
+            transform='Sum' processor='TestsProcessor'
+            uuid='bee52b09-c540-f940-ae66-9cf3ba805d4f'>
+        <param name='Tag' value='RVPF-2'/>
+        <input point='TESTS.HOUR:CLOCK'>
+            <param name='RunningInterval'/>
+        </input>
+        <input point='TESTS.ENTRY:NUMERIC'/>
+    </Point>
+
+    <Point name='TESTS.BEGIN:TEXT'
+            store='TestsStore' content='Text'
+            uuid='cac0b254-8c03-2241-a8c2-9ac74aca8d0c'>
+        <param name='Tag' value='RVPF-19'/>
+    </Point>
+
+    <Point name='TESTS.END:TEXT'
+            store='TestsStore' content='Text'
+            transform='Copy' processor='TestsProcessor'
+            uuid='424f9140-068b-e048-935c-7d728def4aca'>
+        <param name='Tag' value='RVPF-20'/>
+        <input point='TESTS.BEGIN:TEXT'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

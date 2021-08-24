@@ -1,0 +1,212 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-query-values.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF query module 'requests' and
+ 'responses' documents for point values.
+
+ The DOCTYPE declarations are
+
+     <!DOCTYPE requests PUBLIC
+	 "-//Serge Brisson//DTD RVPF Query//EN"
+	 "http://rvpf.org/dtd/rvpf-query.dtd">
+
+ and
+
+     <!DOCTYPE responses PUBLIC
+	 "-//Serge Brisson//DTD RVPF Query//EN"
+	 "http://rvpf.org/dtd/rvpf-query.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+		Entities.
+-->
+
+<!--
+ The BOOL.t entity specifies the values recognized by boolean
+ attributes. Note that although the DTD is case sensitive, the Java code
+ is not. These same values will also be recognized for properties and
+ params which expect boolean values.
+ -->
+<!ENTITY % BOOL.t '
+	 (on | yes | y | true | t | 1
+	| off | no | n | false | f | 0) #IMPLIED'>
+
+<!--
+		Root elements.
+ -->
+
+<!--
+ A 'requests' document is sent by a Query client.
+ -->
+<!ELEMENT requests (request*)>
+<!ATTLIST requests
+	version CDATA %VERSION;>
+
+<!--
+ A 'responses' document is sent by the Query server.
+ -->
+<!ELEMENT responses (response*)>
+<!ATTLIST responses
+	version CDATA %VERSION;
+	stamp CDATA #REQUIRED>
+
+<!--
+		Main elements.
+ -->
+
+<!--
+ The 'request' element holds a request.
+
+ The 'sync' element provides synchronization specification.
+
+ The 'point' attribute must contain a reference to the point definition.
+ It may refer to a 'Point' by its 'name' or by its 'uuid'.
+
+ The 'notBefore', 'after', 'at', 'before' and 'notAfter' attributes must
+ be supplied with either a org.rvpf.base.DateTime 'raw' value (the
+ number of 100 nanoseconds since 1858-11-17 00:00) or the ISO 8601
+ format (delimiters must not be omitted).
+
+ The integer 'rows' attribute specifies the total number of values
+ requested. A negative value means no limit. The default is 1 if 'after'
+ or 'before' is not specified, unlimited otherwise.
+
+ The integer 'limit' attribute specifies the maximum number of values
+ expected in a single response. The default is service dependent.
+
+ The boolean 'nulls' attribute specifies if null values are requested.
+ The default includes null values in the response.
+
+ The boolean 'reverse' attribute requests the values in reverse
+ chronological order. The default is forward unless 'before' is
+ specified without 'after'.
+
+ The boolean 'interpolated' attribute specifies if values should be
+ interpolated. The default provides only actual values in the response.
+
+ The boolean 'interpolated' attribute specifies if values should be
+ interpolated and extrapolated. The default is 'no'.
+
+ The boolean 'normalized' attribute specifies that values should be
+ normalized. The default is 'no'.
+
+ The elapsed time 'timeLimit' attribute specifies a time limit for the
+ use of a value for interpolation or extrapolation.
+ -->
+<!ELEMENT request (sync?)>
+<!ATTLIST request
+	id ID #IMPLIED
+	point CDATA #REQUIRED
+	notBefore CDATA #IMPLIED
+	after CDATA #IMPLIED
+	at CDATA #IMPLIED
+	before CDATA #IMPLIED
+	notAfter CDATA #IMPLIED
+	rows CDATA #IMPLIED
+	limit CDATA #IMPLIED
+	nulls %BOOL.t;
+	reverse %BOOL.t;
+	interpolated %BOOL.t;
+	extrapolated %BOOL.t;
+	normalized %BOOL.t;
+	timeLimit CDATA #IMPLIED>
+
+<!--
+ The 'response' element holds a response.
+
+ The 'request' attribute contains the id supplied in the request.
+
+ The 'point' attribute contains the point definition reference supplied
+ in the request.
+ -->
+<!ELEMENT response ((value*, mark?) | count | message)>
+<!ATTLIST response
+	request CDATA #IMPLIED
+	point CDATA #REQUIRED>
+
+<!--
+		Child elements.
+ -->
+
+<!--
+ The 'count' element returns the number of values satisfying the
+ request.
+ -->
+<!ELEMENT count EMPTY>
+<!ATTLIST count
+	value CDATA #REQUIRED>
+
+<!--
+ The 'mark' element reflects the first value which would "overflow" the
+ request's limit. It allows the client to create a new request to get
+ further values.
+ -->
+<!ELEMENT mark EMPTY>
+<!ATTLIST mark
+	stamp CDATA #REQUIRED>
+
+<!--
+ The 'message' element contains a message from the Notices server.
+
+ The 'exception' attribute names the class of the Exception holding the
+ message.
+ -->
+<!ELEMENT message (#PCDATA)>
+<!ATTLIST message
+	exception CDATA #REQUIRED>
+
+<!--
+ The 'sync' element holds synchronization specification.
+
+ The 'type' attribute identifies the synchronization logic.
+
+ The specification is supplied by the element's text.
+ -->
+<!ELEMENT sync (#PCDATA)>
+<!ATTLIST sync
+	type (crontab | elapsed | stamps) #REQUIRED>
+
+<!--
+ The 'value' element holds the actual point value.
+
+ The 'stamp' attribute is supplied in the ISO 8601 format.
+
+ The 'state' attribute holds the point state.
+
+ The 'synthesized' attribute tags a synthesized value either as
+ 'interpolated', 'extrapolated' or nothing.
+
+ The data is supplied either by the 'value' attribute or by the
+ element's text. The absence of the 'value' attribute and an empty text
+ should be interpreted as a 'null' value.
+ -->
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST value
+	stamp CDATA #REQUIRED
+	state CDATA #IMPLIED
+	value CDATA #IMPLIED
+	synthesized CDATA #IMPLIED>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

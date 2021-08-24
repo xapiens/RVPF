@@ -1,0 +1,1279 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-config-store-shared.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Shared Store configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper Store operations.
+    </description>
+
+    <notes>
+        This file is available as a resource in 'rvpf-store.jar'.
+    </notes>
+
+    <property name='config.store' validated='no'>
+        <description>
+            Indicates to configuration files that this file has been
+            included.
+        </description>
+    </property>
+
+    <!-- Database Properties. -->
+
+    <PropertiesDef name='database.server'>
+        <description>
+            Database server configuration properties for an embedded
+            database server running as an RVPF service.
+        </description>
+        <PropertyDef name='data.dir'>
+            <description>
+                Specifies the path to the data directory.
+
+                Defaults to 'database'.
+            </description>
+            <notes>
+                If the path is not absolute, it is made relative to the
+                service data directory ('service.data.dir').
+            </notes>
+        </PropertyDef>
+
+        <PropertiesDef name='support.properties' validated='no'>
+            <description>
+                Provides properties to the database support module.
+
+                The definition of these properties is specific to each
+                module.
+            </description>
+        </PropertiesDef>
+
+        <PropertyDef name='support.class' type='ClassDef'>
+            <description>
+                Specifies the database support module class.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <!-- Store Properties. -->
+
+    <PropertyDef name='store.client.queries.batch.limit'
+            type='Integer'>
+        <description>
+            Limits the size of a batch of queries.
+
+            Defaults to 100.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='store.client.response.limit'
+            type='Integer'>
+        <description>
+            Limits the maximum number of point values that may be
+            grouped in a single response.
+
+            Defaults to 100.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='store.name'>
+        <description>
+            This property is provided to a store, usually in its
+            'service' element, to identify in the metadata the 'Store'
+            entity that it is instantiating. Its value defaults to
+            'Store'.
+        </description>
+    </PropertyDef>
+
+    <PropertiesDef name='store.server'>
+        <description>
+            Store configuration properties. Usually extended to add
+            store specific configuration.
+        </description>
+        <PropertiesDef name='archiver'>
+            <description>
+                The store archiver is used to limit the number of values
+                kept in the store.
+
+                Point params configure the action of the archiver.
+            </description>
+            <notes>
+                The TheStoreMemoryBackEnd uses a just-in-time archiver
+                which is invoked each time a point value is added. The
+                other stores use a scheduled archiver.
+            </notes>
+            <notes>
+                If this properties group is absent, an archiver will not
+                be enabled for the store.
+            </notes>
+            <PropertiesDef name='attic'>
+                <description>
+                    The store server attic holds values purged by the
+                    archiver.
+                </description>
+
+                <PropertyDef name='compressed' type='Boolean'>
+                    <description>
+                        Requests compression of the queue transaction
+                        files.
+
+                        Defaults to false.
+                    </description>
+                    <notes>
+                        This property is ignored if the 'queue'
+                        properties group is specified.
+                    </notes>
+                </PropertyDef>
+
+                <PropertyDef name='directory'>
+                    <description>
+                        The directory for the queue. It can be specified
+                        as a relative or absolute path.
+
+                        Defaults to the name of the queue (relative to
+                        the root directory).
+                    </description>
+                    <notes>
+                        This property is ignored if the 'queue'
+                        properties group is specified.
+                    </notes>
+                </PropertyDef>
+
+                <PropertyDef name='disabled' type='Boolean'>
+                    <description>
+                        Disables the generation of attic files. The
+                        store will then be purging values instead of
+                        archiving them.
+
+                        Defaults to false.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='implementation.class'
+                        type='ClassDef'>
+                    <description>
+                        May be used to specify an alternative to the SOM
+                        implementation.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='name'>
+                    <description>
+                        Name of the backup queue.
+
+                        Defaults to 'backup'.
+                    </description>
+                    <notes>
+                        This property is ignored if the 'queue'
+                        properties group is specified.
+                    </notes>
+                </PropertyDef>
+
+                <PropertiesDef name='queue' extends='som.queue'>
+                    <description>
+                        The specification of the store's archiver's
+                        queue.
+                    </description>
+                    <notes>
+                        This properties group is used to send the
+                        archived values to a specific queue.
+                    </notes>
+                </PropertiesDef>
+            </PropertiesDef>
+
+            <PropertyDef name='schedule'>
+                <description>
+                    Specifies the archiver schedule in the format of an
+                    extended crontab entry.
+
+                    Defaults to '0 0 * * *' (each day at midnight).
+                </description>
+                <notes>
+                    An empty value will cause a single archive pass at
+                    each start of the store.
+                </notes>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertyDef name='backend.limit' type='Integer'>
+            <description>
+                Specifies the maximum number of point values that may be
+                requested from the backend. Zero means no limit.
+
+                Defaults to the value of 'store.server.response.limit'.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='data.dir'>
+            <description>
+                Specifies the path to the data directory.
+
+                Defaults to 'store'.
+            </description>
+            <notes>
+                If the path is not absolute, it is made relative to the
+                service data directory ('service.data.dir').
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='notices.filtered' type='Boolean'>
+            <description>
+                When enabled, the store will send notices only for
+                points acting as trigger for an other value. Otherwise,
+                it will send notices updates on any known point.
+
+                Defaults to disabled.
+            </description>
+            <notes>
+                This behavior may be fine tuned for a point by using
+                it's 'Notify' parameter.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='notifier.class' type='ClassDef'>
+            <description>
+                May be used to specify an alternative to the SOM
+                Notifier.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='notifier.som.queue' extends='som.queue'>
+            <description>
+                The specification of the store's notifier's queue.
+            </description>
+        </PropertiesDef>
+
+        <PropertyDef name='polator.class' type='ClassDef'>
+            <description>
+                May be used to specify an alternative to the linear
+                inter/extra-polator.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='pull.disabled' type='Boolean'>
+            <description>
+                Disables pull requests.
+            </description>
+            <notes>
+                This will avoid the creation of the database objects
+                needed to support pull requests.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='pull.sleep' type='Elapsed'>
+            <description>
+                Specifies the sleep time between pull retries.
+
+                Defaults to 60.0 (seconds).
+            </description>
+            <notes>
+                Ignored by store when it does not need to sleep on
+                pulls.
+            </notes>
+        </PropertyDef>
+
+        <PropertiesDef name='replicator'>
+            <description>
+                A store replicator replicates point values.
+
+                Two replication modes are available: cloning or value
+                propagation.
+
+                Cloning replicates point values between store partners,
+                keeping the same point identification. Because each
+                point specifies its store, the points must be in
+                different domains.
+
+                Value propagation replicates point values between point
+                partners, each point having its own identification. The
+                points must be in the same domain.
+            </description>
+            <notes>
+                If this properties group is absent, a replicator will
+                not be enabled for the store.
+            </notes>
+            <PropertiesDef name='partner' multiple='yes'>
+                <description>
+                    Each partner in the group must be described by an
+                    instance of this properties group.
+                </description>
+                <notes>
+                    It is essential to avoid having an anonymous partner
+                    whose queue will eventually target the originating
+                    store.
+                </notes>
+
+                <PropertyDef name='store.name'>
+                    <description>
+                        The store name of the partner.
+
+                        Defaults to anonymous.
+                    </description>
+                    <notes>
+                        A named partner must be specified for each store
+                        having a point as the target of a 'replicate'
+                        element of a point managed by the replicator.
+                    </notes>
+                </PropertyDef>
+
+                <PropertiesDef name='queue' extends='som.queue'>
+                    <description>
+                        The specification of the queue for propagating
+                        updates for this partner.
+                    </description>
+                </PropertiesDef>
+            </PropertiesDef>
+
+            <PropertyDef name='replicate.converts' type='Boolean'>
+                <description>
+                    When true, the 'convert' attribute of the
+                    'replicate' elements defaults to true.
+
+                    Defaults to false.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='replicated.defaults' type='Boolean'>
+                <description>
+                    When true, the 'Replicated' parameter defaults to
+                    true for all points in this store.
+
+                    Defaults to false.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertyDef name='replicator.class' type='ClassDef'>
+            <description>
+                This property may be used to specify an alternative to
+                the SOM replicator.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='response.limit' type='Integer'>
+            <description>
+                Specifies the maximum number of point values that may be
+                grouped in a single response.
+
+                Defaults to 1000.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.delete' multiple='yes' hidden='yes'>
+            <description>
+                A role allowed to submit deletes to the server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.impersonate' hidden='yes'
+                multiple='yes'>
+            <description>
+                A role allowed to impersonate an other user.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.info' hidden='yes' multiple='yes'>
+            <description>
+                A role allowed to obtain points informations from
+                server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.listen' multiple='yes' hidden='yes'>
+            <description>
+                A role allowed to listen to notices from the server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.purge' multiple='yes' hidden='yes'>
+            <description>
+                A role allowed to submit purges to the server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.query' multiple='yes' hidden='yes'>
+            <description>
+                A role allowed to submit queries to the server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.update' multiple='yes' hidden='yes'>
+            <description>
+                A role allowed to submit updates to the server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='states' multiple='yes'>
+            <description>
+                Reference to a state group.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='updates.listener' multiple='yes'>
+            <description>
+                An updates listener allows the store to receive updates
+                by other means than a direct RMI call.
+            </description>
+            <PropertyDef name='listener.class' type='ClassDef'>
+                <description>
+                    This property may be used to specify a queued
+                    updates listener.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='batch.limit' type='Integer'>
+                <description>
+                    Specifies to batch the updates by this number. A
+                    value less than 1 disables batching.
+
+                    Defaults to 1000.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='som.queue' extends='som.queue'>
+                <description>
+                    The specification of the store's updates listener
+                    queue.
+                </description>
+            </PropertiesDef>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='store.server.states'>
+        <description>
+            The definition of a state group.
+        </description>
+        <PropertyDef name='name'>
+            <description>
+                The name of the state group.
+            </description>
+            <notes>
+                If an other group definition already exists with the
+                same name, the states of this definition is appended to
+                those of the other group.
+            </notes>
+        </PropertyDef>
+        <PropertyDef name='state' multiple='yes'
+                description="A state of the state group."/>
+    </PropertiesDef>
+
+    <!-- Store.CStore Properties. -->
+
+    <PropertiesDef name='store.server.c' extends='store.server'>
+        <description>
+            Properties specific to the CStore.
+        </description>
+        <PropertyDef name='charset'>
+            <description>
+                Names the Charset used by the implementation.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='env' validated='no'>
+            <description>
+                Environment informations.
+            </description>
+        </PropertiesDef>
+
+        <PropertyDef name='log.level'>
+            <description>
+                The log level for the store instance.
+
+                Must be a value recognized by Log4j.
+
+                Defaults to Log4j inherited level, but may be explicitly
+                overriden in log4j2.xml.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='log.name'>
+            <description>
+                The log name for the store instance.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='connection.retry.delay' type='Elapsed'>
+            <description>
+                The elapsed time before retrying to connect.
+
+                Defaults to 60.0 (seconds).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='impl.so'>
+            <description>
+                Names the shareable object for the implementation.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='notifier.poll.interval' type='Elapsed'>
+            <description>
+                Specifies the elapsed time between notices poll.
+
+                Defaults to 60.0 (secondse).
+            </description>
+            <notes>
+                Applies only when the implementation does not supports
+                threads.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='notify.deletes' type='Boolean'>
+            <description>
+                Enables the generation of notices for deleted values.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='notify.updates' type='Boolean'>
+            <description>
+                Enables the generation of notices for updated values.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <!-- Store.TheStore Properties. -->
+
+    <PropertiesDef name='store.server.the' extends='store.server'>
+        <description>
+            Properties specific to TheStore.
+        </description>
+        <PropertyDef name='backend.class' type='ClassDef'>
+            <description>
+                This property may be used to specify an alternative to
+                the SQL back-end.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='backup'>
+            <description>
+                Holds configuration properties for the backup of the
+                memory back-end point values.
+
+                The values are saved when the store closes and are
+                restored when it opens.
+            </description>
+
+            <PropertyDef name='compressed' type='Boolean'>
+                <description>
+                    Requests compression of the queue transaction files.
+
+                    Defaults to false.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='directory'>
+                <description>
+                    The directory for the private queue. It can be
+                    specified as a relative or absolute path.
+
+                    Defaults to the name of the queue (relative to the
+                    root directory).
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='disabled' type='Boolean'>
+                <description>
+                    Disables the generation of backup files. The
+                    store will always start empty.
+
+                    Defaults to false.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='name'>
+                <description>
+                    Name of the backup queue.
+
+                    Defaults to 'backup'.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='schedule'>
+                <description>
+                    Specifies a backup schedule in the format of an
+                    extended crontab entry.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertyDef name='bdb.dir'
+                description="The BDB-JE environment directory."/>
+
+        <PropertyDef name='drop.deleted' type='Boolean'>
+            <description>
+                Specifies that deleted values are dropped.
+
+                Defaults to save deleted values.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='responder.keep' type='Elapsed'>
+            <description>
+                The elapsed time to keep extra responders alive.
+
+                Defaults to 300.0 (seconds).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='snapshot' type='Boolean'>
+            <description>
+                Indicates that this is a snapshot store.
+
+                Defaults to full store.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='sql.catalog'
+                description="The name of the database catalog."/>
+
+        <PropertyDef name='sql.column.point'
+                description="The name of the Point column."/>
+
+        <PropertyDef name='sql.column.stamp'
+                description="The name of the Stamp column."/>
+
+        <PropertyDef name='sql.column.state'
+                description="The name of the State column."/>
+
+        <PropertyDef name='sql.column.value'
+                description="The name of the Value column."/>
+
+        <PropertyDef name='sql.column.version'
+                description="The name of the Version column."/>
+
+        <PropertiesDef name='sql.connection'>
+            <description>
+                This properties group is used by TheStore to configure
+                its JDBC connection to a database.
+            </description>
+            <PropertyDef name='dialect.class' type='ClassDef'>
+                <description>
+                    TheStore uses this property to identify the
+                    appropriate class to use for the database specific
+                    SQL dialect.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='driver.class' type='ClassDef'>
+                <description>
+                    The JDBC driver class.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='url'>
+                <description>
+                    The URL for connection to the database.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='user' hidden='yes'>
+                <description>
+                    The user for connection to the database.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='password' hidden='yes'>
+                <description>
+                    The password for connection to the database.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='pool.class' type='ClassDef'>
+                <description>
+                    Specifies an alternative to the DBCP Database
+                    connection pooling services.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='shared' type='Boolean'>
+                <description>
+                    Indicates that a single connection will be shared.
+
+                    Defaults to disabled.
+                </description>
+                <notes>
+                    This is useful only for some JDBC drivers having
+                    problems with multiple connections to the same
+                    database.
+                </notes>
+            </PropertyDef>
+            <PropertyDef name='statements' type='Integer'>
+                <description>
+                    Specifies the maximum number of prepared select
+                    statements to keep.
+
+                    Defaults to 10.
+                </description>
+            </PropertyDef>
+            <PropertiesDef name='properties' validated='no'>
+                <description>
+                    Custom properties.
+                </description>
+            </PropertiesDef>
+        </PropertiesDef>
+
+        <PropertyDef name='sql.create' type='Boolean'>
+            <description>
+                The database table will be created if necessary.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='sql.schema'
+                description="The name of the database schema."/>
+
+        <PropertyDef name='sql.table'
+                description="The name of the database table.">
+                <notes>
+                    The value of this property is used if the specific
+                    table property ('sql.table.archive' or
+                    'sql.table.snapshot') is not specified.
+                </notes>
+        </PropertyDef>
+
+        <PropertyDef name='sql.table.archive'
+                description="The name of the archive table."/>
+
+        <PropertyDef name='sql.table.snapshot'
+                description="The name of the snapshot table."/>
+    </PropertiesDef>
+
+    <!-- Store.ProxyStore Properties. -->
+
+    <PropertiesDef name='store.server.proxy' extends='store.server'>
+        <PropertyDef name='binding'>
+            <description>
+                RMI service name.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='stores'>
+            <description>
+                The enumeration of proxied stores.
+            </description>
+            <PropertyDef name='all' type='Boolean'
+                    description="Asks for all 'Store' entities."/>
+            <PropertyDef name='name' multiple='yes'
+                    description="Name of a 'Store' entity."/>
+        </PropertiesDef>
+
+        <PropertyDef name='updates.listener.user' hidden='yes'>
+            <description>
+                The user to impersonate when updating from the queue.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <!-- Store.SinkStore Properties. -->
+
+    <PropertiesDef name='store.server.sink' extends='store.server'>
+        <PropertyDef name='module.class' type='ClassDef'>
+            <description>
+                Specifies a class implementing the sink module
+                interface.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='pipe'>
+            <PropertyDef name='charset'>
+                <description>
+                    Specifies the java Charset to use instead of the
+                    local default for communication with the external
+                    program.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='arg' multiple='yes'>
+                <description>
+                    An argument for the process created with the
+                    'pipe.program' property.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='command'>
+                <description>
+                    The operating system command used to activate the
+                    process that will receive the point values.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='dir'>
+                <description>
+                    Specifies the working directory into which the
+                    external program should execute.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='hold' type='Elapsed'>
+                <description>
+                    The elapsed time during which an idle external
+                    program will be held. A negative value means no
+                    limit, zero means immediate termination after use.
+
+                    Defaults to no limit.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='kill.delay' type='Elapsed'>
+                <description>
+                    The delay before killing a process after closing its
+                    input.
+
+                    Defaults to 60.0 (seconds).
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='name'>
+                <description>
+                    An identifying name for the pipe program.
+
+                    Defaults to 'PipeSink'.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='processor'>
+                <description>
+                    Specifies the name of the processor in the metadata
+                    for sink stores acting as a processor.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='program'>
+                <description>
+                    The path to the program file for the process that
+                    will receive the point values.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='set' multiple='yes'>
+                <description>
+                    Sets an environment variable. A value must begin
+                    with the name of the variable, optionally followed
+                    by an '=' character and the assigned text. When only
+                    the variable name is present, it will be removed
+                    from the environment.
+                </description>
+                <notes>
+                    The '=' may be prepended by a '+' character to
+                    perform an append instead of a replace. When the
+                    variable name is 'PATH' or 'CLASSPATH', the system
+                    'path.separator' property will be used to separate
+                    appended texts.
+                </notes>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertiesDef name='script'>
+            <PropertyDef name='engine.name'>
+                <description>
+                    The sink script engine name.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='file.start'>
+                <description>
+                    The sink script start file.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='text.delete'>
+                <description>
+                    The sink script delete text.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='text.start'>
+                <description>
+                    The sink script start text.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='text.stop'>
+                <description>
+                    The sink script stop text.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='text.update'>
+                <description>
+                    The sink script update text.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <property name='bdbje.home' env='BDBJE_HOME' validated='no'
+            unless='bdbje.home'/>
+    <property name='bdbje.lib.url' if='bdbje.home' validated='no'
+            value='file:///${bdbje.home}/lib'/>
+
+    <property name='derby.home' env='DERBY_HOME' validated='no'
+            unless='derby.home'/>
+    <property name='derby.lib.url' if='derby.home' validated='no'
+            value='file:///${derby.home}/lib'/>
+
+    <!-- Class libraries. -->
+
+    <ClassLib name='Commons-Pool'>
+        <location unless='jnlp'>${lib.url}/commons-pool2.jar</location>
+    </ClassLib>
+
+    <ClassLib name='Log4j-JCL'>
+        <location unless='jnlp'>${lib.url}/log4j-jcl.jar</location>
+    </ClassLib>
+
+    <ClassLib name='Commons-Logging'>
+        <location unless='jnlp'>${lib.url}/commons-logging.jar</location>
+        <classLib classLib='Log4j-JCL'/>
+    </ClassLib>
+
+    <ClassLib name='Commons-DBCP'>
+        <location unless='jnlp'>${lib.url}/commons-dbcp2.jar</location>
+        <classLib classLib='Commons-Pool'/>
+        <classLib classLib='Commons-Logging'/>
+        <classLib classLib='Ext'/>
+    </ClassLib>
+
+    <ClassLib name='TheStore'>
+        <classLib classLib='Commons-DBCP'/>
+    </ClassLib>
+
+    <ClassLib name='BDB-JE'>
+        <location unless='jnlp'>${bdbje.lib.url}/je-*.jar</location>
+        <classLib classLib='Ext'/>
+    </ClassLib>
+    <ClassLib name='Derby' if='derby.home'>
+        <location unless='jnlp'>${derby.lib.url}/derby.jar</location>
+    </ClassLib>
+    <ClassLib name='DerbyClient' if='derby.home'>
+        <location unless='jnlp'>${derby.lib.url}/derbyclient.jar</location>
+    </ClassLib>
+    <ClassLib name='H2'>
+        <location unless='jnlp'>${lib.url}/h2.jar</location>
+    </ClassLib>
+    <ClassLib name='HSQL'>
+        <location unless='jnlp'>${lib.url}/hsqldb.jar</location>
+    </ClassLib>
+    <ClassLib name='MariaDB'>
+        <location unless='jnlp'>
+            ${lib.url}/mariadb-java-client.jar
+        </location>
+    </ClassLib>
+    <ClassLib name='PostgreSQL'>
+        <location unless='jnlp'>${lib.url}/postgresql.jar</location>
+    </ClassLib>
+
+    <ClassLib name='DerbyNet' if='derby.home'>
+        <location unless='jnlp'>${derby.lib.url}/derbynet.jar</location>
+        <classLib classLib='Derby'/>
+        <classLib classLib='DerbyClient'/>
+    </ClassLib>
+
+    <!-- Database server classes. -->
+
+    <ClassDef name='DatabaseServerSupport'
+            package='org.rvpf.store.database.support'
+            member='ServerSupport'>
+        <description>
+            Describes database server support modules.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='DerbySupport' if='derby.home'
+            package='org.rvpf.store.database.support'
+            classLib='DerbyNet'>
+        <implements classDef='DatabaseServerSupport'/>
+    </ClassDef>
+
+    <ClassDef name='H2Support'
+            package='org.rvpf.store.database.support'
+            classLib='H2'>
+        <implements classDef='DatabaseServerSupport'/>
+    </ClassDef>
+
+    <ClassDef name='HSQLSupport'
+            package='org.rvpf.store.database.support'
+            classLib='HSQL'>
+        <implements classDef='DatabaseServerSupport'/>
+    </ClassDef>
+
+    <!-- Container services classes. -->
+
+    <ClassDef name='CStoreService'
+            package='org.rvpf.store.server.c'
+            member='CStoreServiceActivator'>
+        <implements classDef='Service'/>
+        <description>
+            Implements a store using a driver written in the C language
+            to the API of a data historian.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='DatabaseService'
+            package='org.rvpf.store.database'
+            member='DatabaseServiceActivator'>
+        <implements classDef='Service'/>
+        <description>
+            Hosts an embedded database server.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='TheStoreService'
+            package='org.rvpf.store.server.the'
+            member='TheStoreServiceActivator'
+            classLib='TheStore'>
+        <implements classDef='Service'/>
+        <description>
+            Implements a store using a database.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='ProxyStoreService'
+            package='org.rvpf.store.server.proxy'
+            member='ProxyStoreServiceActivator'>
+        <implements classDef='Service'/>
+        <description>
+            Acts as a proxy for other store implementations.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SinkService'
+            package='org.rvpf.store.server.sink'
+            member='SinkServiceActivator'>
+        <implements classDef='Service'/>
+        <description>
+            Respond negatively to any query but is expected to process
+            updates. The processing is done by a contained module.
+        </description>
+    </ClassDef>
+
+    <!-- TheStore back-end classes. -->
+
+    <ClassDef name='TheStoreBackEnd'
+            package='org.rvpf.store.server.the'
+            member='BackEnd'>
+        <description>
+            Defines the BackEnd API.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='TheStoreBDBBackEnd'
+            package='org.rvpf.store.server.the.bdb'
+            member='BDBBackEnd' classLib='BDB-JE'>
+        <implements classDef='TheStoreBackEnd'/>
+    </ClassDef>
+
+    <ClassDef name='TheStoreMemoryBackEnd'
+            package='org.rvpf.store.server.the.memory'
+            member='MemoryBackEnd'>
+        <implements classDef='TheStoreBackEnd'/>
+    </ClassDef>
+
+    <ClassDef name='TheStoreSQLBackEnd'
+            package='org.rvpf.store.server.the.sql'
+            member='SQLBackEnd'>
+        <implements classDef='TheStoreBackEnd'/>
+    </ClassDef>
+
+    <!-- TheStore dialect classes. -->
+
+    <ClassDef name='TheStoreSQLDialect'
+            package='org.rvpf.store.server.the.sql.dialect'
+            member='DialectSupport' classLib='TheStore'>
+        <description>
+            Describes database dialect support modules.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='TheStoreDerbyDialect' if='derby.home'
+            package='org.rvpf.store.server.the.sql.dialect'
+            member='DerbyDialect' classLib='Derby'>
+        <implements classDef='TheStoreSQLDialect'/>
+    </ClassDef>
+
+    <ClassDef name='TheStoreH2Dialect'
+            package='org.rvpf.store.server.the.sql.dialect'
+            member='H2Dialect' classLib='H2'>
+        <implements classDef='TheStoreSQLDialect'/>
+    </ClassDef>
+
+    <ClassDef name='TheStoreHSQLDialect'
+            package='org.rvpf.store.server.the.sql.dialect'
+            member='HSQLDialect' classLib='HSQL'>
+        <implements classDef='TheStoreSQLDialect'/>
+    </ClassDef>
+
+    <ClassDef name='TheStoreMariaDBDialect'
+            package='org.rvpf.store.server.the.sql.dialect'
+            member='MariaDBDialect' classLib='MariaDB'>
+        <implements classDef='TheStoreSQLDialect'/>
+    </ClassDef>
+
+    <ClassDef name='TheStorePostgreSQLDialect'
+            package='org.rvpf.store.server.the.sql.dialect'
+            member='PostgreSQLDialect' classLib='PostgreSQL'>
+        <implements classDef='TheStoreSQLDialect'/>
+    </ClassDef>
+
+    <!-- TheStore replicator classes. -->
+
+    <ClassDef name='TheStoreReplicator'
+            package='org.rvpf.store.server.the'
+            member='Replicator'>
+        <description>
+            Defines the Replicator API.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='TheStoreSOMReplicator'
+            package='org.rvpf.store.server.som'
+            member='SOMReplicator'>
+        <implements classDef='TheStoreReplicator'/>
+    </ClassDef>
+
+    <!-- Notifier classes. -->
+
+    <ClassDef name='Notifier'
+            package='org.rvpf.store.server'>
+        <description>
+            Defines the Notifier API.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='NullNotifier'
+            package='org.rvpf.store.server'>
+        <implements classDef='Notifier'/>
+        <description>
+            Does nothing. Used to disable push notification.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SOMNotifier'
+            package='org.rvpf.store.server.som'>
+        <implements classDef='Notifier'/>
+        <description>
+            Notifies to a SOM queue.
+        </description>
+    </ClassDef>
+
+    <!-- Polator classes. -->
+
+    <ClassDef name='Polator'
+            package='org.rvpf.store.server.polator'>
+        <description>
+            Used to perform interpolation and extrapolation for a store
+            server.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='LevelPolator'
+            package='org.rvpf.store.server.polator'>
+        <implements classDef='Polator'/>
+        <description>
+            Level inter/extra-polator.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='LinearPolator'
+            package='org.rvpf.store.server.polator'>
+        <implements classDef='Polator'/>
+        <description>
+            Linear inter/extra-polator.
+        </description>
+    </ClassDef>
+
+    <!-- Sink classes. -->
+
+    <ClassDef name='SinkModule'
+            package='org.rvpf.store.server.sink'>
+        <description>
+            Defines the sink module API.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='NullSinkModule'
+            package='org.rvpf.store.server.sink'
+            member='NullSink'>
+        <implements classDef='SinkModule'/>
+        <description>
+            Drops the update values. Although the effect of using a
+            SinkStore with this module seems equivalent to using the
+            NullStore, there is one important difference aside the
+            additional communication overhead: the SinkStore container
+            can generate notices for the update values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='PipeSinkModule'
+            package='org.rvpf.store.server.sink'
+            member='PipeSink'>
+        <implements classDef='SinkModule'/>
+        <description>
+            Supplies the update values to an external process. The
+            communication with this process is made thru the standard
+            input, output and error streams.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='ScriptSinkModule'
+            package='org.rvpf.store.server.sink'
+            member='ScriptSink'>
+        <implements classDef='SinkModule'/>
+        <description>
+            Supplies the update values to a script process.
+        </description>
+    </ClassDef>
+
+    <!-- Store attic classes. -->
+
+    <ClassDef name='StoreAttic'
+            package='org.rvpf.store.server.archiver'
+            member='Archiver$Attic'>
+        <description>
+            Defines the attic API.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='StoreSOMAttic'
+            package='org.rvpf.store.server.som'
+            member='SOMAttic'>
+        <implements classDef='StoreAttic'/>
+    </ClassDef>
+
+    <!-- Updates listener classes. -->
+
+    <ClassDef name='StoreUpdatesListener'
+            package='org.rvpf.store.server'
+            member='UpdatesListener'>
+        <description>
+            Defines the Store updates listener API.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SOMUpdatesListener'
+            package='org.rvpf.store.server.som'>
+        <implements classDef='StoreUpdatesListener'/>
+    </ClassDef>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

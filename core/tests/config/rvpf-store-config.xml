@@ -1,0 +1,202 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-store-config.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <property name='substitution.enabled'/>
+
+    <properties name='tests.store.notifier.queue' def='som.queue'>
+        <property name='name' value='TestsNotifier'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+    </properties>
+    <properties name='tests.store.replicate.queue' def='som.queue'
+            if='tests.store.replicator.enabled'>
+        <property name='name' value='TestsReplicate'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+        <property name='backup'/>
+    </properties>
+    <properties name='tests.store.replicated.queue' def='som.queue'
+            if='tests.store.replicator.enabled'>
+        <property name='name' value='TestsReplicated'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+    </properties>
+    <properties name='tests.store.updater.queue' def='som.queue'>
+        <property name='name' value='TestsStore'/>
+        <property name='backup'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+    </properties>
+
+    <property name='store.name' value='TestsStore'/>
+
+    <properties name='store.server.states'>
+        <property name='state' value='Set'/>
+        <property name='state' value='Resynced'/>
+        <property name='state' value='Done'/>
+    </properties>
+
+    <properties name= 'store.server.states.on'
+            def='store.server.states'>
+        <property name='name' value='On'/>
+        <property name='state' value='Off'/>
+        <property name='state' value='On'/>
+    </properties>
+
+    <properties name= 'store.server.states.traffic'
+            def='store.server.states'>
+        <property name='name' value='Traffic'/>
+        <property name='state' value='Green'/>
+        <property name='state' value='Yellow'/>
+        <property name='state' value='Red'/>
+    </properties>
+
+    <property name='store.the.sql.dialect' unless='store.the.sql.dialect'
+            validated='no' value='H2'/>
+    <property name='store.the.sql.dialect.derby' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='Derby'/>
+    <property name='store.the.sql.dialect.h2' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='H2'/>
+    <property name='store.the.sql.dialect.hsql' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='HSQL'/>
+    <property name='store.the.sql.dialect.mariadb' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='MariaDB'/>
+    <property name='store.the.sql.dialect.pgsql' validated='no'
+            property='store.the.sql.dialect' eq='yes'
+            value='PostgreSQL'/>
+
+    <properties name='store.server'>
+        <properties name='archiver' if='tests.archive.time'>
+            <property name='schedule'/>
+            <properties name='attic'>
+                <property name='implementation.class'
+                    classDef='StoreSOMAttic'/>
+                <property name='name' value='TestsAttic'/>
+            </properties>
+        </properties>
+        <property name='notifier.class' if='tests.notifier.null'
+                classDef='NullNotifier'/>
+        <properties name='notifier.som.queue'
+                extends='tests.store.notifier.queue'>
+            <property name='server'/>
+        </properties>
+        <property name='notices.filtered'
+                property='tests.store.notices.filtered'/>
+        <property name='polator.class' classDef='LinearPolator'/>
+        <property name='role.update' property='tests.role'/>
+        <properties name='updates.listener'
+                if='tests.store.updates.listener.enabled'>
+            <properties name='som.queue'
+                    extends='tests.store.updater.queue'/>
+        </properties>
+        <property name='states'>
+            <value value='store.server.states'/>
+            <value value='store.server.states.on'/>
+            <value value='store.server.states.traffic'/>
+        </property>
+    </properties>
+
+    <properties name='store.server.the' extends='store.server'>
+        <properties name='sql.connection'>
+            <properties if='store.the.sql.dialect.derby'>
+                <property name='dialect.class'
+                        classDef='TheStoreDerbyDialect'/>
+            </properties>
+            <properties if='store.the.sql.dialect.h2'>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'/>
+            </properties>
+            <properties if='store.the.sql.dialect.hsql'>
+                <property name='dialect.class'
+                        classDef='TheStoreHSQLDialect'/>
+            </properties>
+            <properties if='store.the.sql.dialect.mariadb'>
+                <property name='dialect.class'
+                        classDef='TheStoreMariaDBDialect'/>
+                <property name='password'
+                        property='store.the.sql.mariadb.password'/>
+                <properties name='properties'
+                        if='store.the.sql.dialect.mariadb'>
+                    <property name='logger' value='Jdk14Logger'/>
+                </properties>
+                <property name='url' property='store.the.sql.mariadb.url'/>
+            </properties>
+            <properties if='store.the.sql.dialect.pgsql'>
+                <property name='dialect.class'
+                        classDef='TheStorePostgreSQLDialect'/>
+                <property name='password'
+                        property='store.the.sql.pgsql.password'/>
+                <property name='url' property='store.the.sql.pgsql.url'/>
+            </properties>
+            <property name='driver.class'
+                    property='store.the.sql.driver'/>
+            <property name='statements'
+                    property='store.the.sql.statements'/>
+            <property name='shared'/>
+        </properties>
+        <property name='sql.create'/>
+        <property name='sql.table.archive' value='TestsArchive'/>
+        <property name='sql.table.snapshot' value='TestsSnapshot'/>
+        <property name='backend.class' if='store.the.backend'
+                classDef='${store.the.backend}'/>
+        <properties name='backup' if='store.the.backend'>
+            <property name='name' value='TestsBackup'/>
+        </properties>
+        <property name='pull.disabled' if='tests.store.server.the.load'
+            property='tests.store.server.the.load.pull.disabled'/>
+        <property name='drop.deleted'
+            property='tests.store.server.the.drop.deleted'/>
+    </properties>
+
+    <property name='store.client.response.limit' value='3'/>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <alias name='the-store'/>
+        <property name='service.log.id' value='THST'/>
+
+        <properties name='store.server.the' extends='store.server.the'>
+            <properties name='replicator'
+                    if='tests.store.replicator.enabled'>
+                <properties name='partner'>
+                    <properties name='queue'
+                            extends='tests.store.replicated.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <properties name='partner'>
+                    <property name='store.name' value='TestsReplicate'/>
+                    <properties name='queue'
+                            extends='tests.store.replicate.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <properties name='partner'>
+                    <property name='store.name' required='store.name'/>
+                    <properties name='queue'
+                            extends='tests.store.updater.queue'/>
+                </properties>
+                <property name='replicated.defaults'/>
+            </properties>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='the-store'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->

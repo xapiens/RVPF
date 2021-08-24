@@ -1,0 +1,18 @@
+org.xendra:type=XendrianService
+org.xendra:type=XendrianService
+
+
+<ContainerServiceActivator>
+	|
+	|----<ServiceActivator>
+			|---<ContainerServiceImpl>
+			|
+			|---<ServiceActivatorBase>
+			run()
+		create()
+		  |--getVersion().ServiceVersion()
+		  |--acceptMainArg()
+		export()
+		start(false)
+			|
+			|--start()

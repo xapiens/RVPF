@@ -1,0 +1,167 @@
+#!/bin/bash
+
+# $Id: wrap 3519 2017-07-10 21:51:27Z SFB $
+
+# NOTE (Cygwin): DO NOT install a wrapped service from a SUBST drive.
+
+function usage
+{
+    if [ "$OSTYPE" = "cygwin" ]; then
+        if [ -z "$SSH_CONNECTION" ]; then
+            echo "Usage: ${0##*/} [run|install|remove|start|stop|automatic|manual] <target>"
+        else
+            echo "Usage: ${0##*/} install|remove|start|stop|automatic|manual <target>"
+        fi
+    else
+        echo "Usage: ${0##*/} [run|start|stop|restart|status] <target>"
+    fi
+
+    exit 1
+}
+
+if [ -n "$2" ]; then
+    RVPF_ACTION=$1
+    shift
+elif [ -n "$1" ]; then
+    [ "$1" = "help" ] && usage
+    RVPF_ACTION=
+else
+    usage
+fi
+export RVPF_ACTION
+export RVPF_TARGET=$1
+
+if [ -z "$RVPF_CORE_BIN" ]; then
+    pushd . > /dev/null
+    cd $(dirname "$0")
+    [ -d 'bin' ] && cd bin
+    . setup/rvpf-env.sh
+    popd > /dev/null
+fi
+
+if [ "$OSTYPE" = "cygwin" -a -n "$RVPF_ACTION" ]; then
+    export RVPF_BIN="$(cygpath -ma $RVPF_BIN)"
+    export RVPF_CONFIG="$(cygpath -ma $RVPF_CONFIG)"
+    export RVPF_LIB="$(cygpath -ma $RVPF_LIB)"
+    export RVPF_RUN="$(cygpath -ma $RVPF_RUN)"
+    export RVPF_CORE_LIB="$(cygpath -m $RVPF_CORE_LIB)"
+
+    [ -z "$RVPF_ACTION" ] && exec $RVPF_CORE_BIN/../wrap.cmd $RVPF_TARGET
+
+    case "$RVPF_ACTION" in
+        run)
+            [ -z "$SSH_CONNECTION" ] || usage
+            ;;
+        install | remove | start | stop | automatic | manual)
+            ;;
+        *)
+            usage
+    esac
+
+    exec $RVPF_CORE_BIN/../wrap.cmd $RVPF_ACTION $RVPF_TARGET
+else
+    if [ ! -e $RVPF_CONFIG/wrap/$RVPF_TARGET.sh ]; then
+        echo "Target '$RVPF_TARGET' is unknown."
+        exit 1
+    fi
+    [ -z "$RVPF_ACTION" ] && export RVPF_ACTION=run
+
+    DISPLAY_NAME="RVPF '$RVPF_TARGET' service"
+    WRAP_CMD="$RVPF_CORE_BIN/wrap.sh $RVPF_TARGET"
+
+    mkdir -p "$RVPF_RUN"
+    export RVPF_PID_FILE="$RVPF_RUN/$RVPF_TARGET.pid"
+    if [ -f $RVPF_PID_FILE ]; then
+        if [ -r $RVPF_PID_FILE ]; then
+            pid=$(cat $RVPF_PID_FILE)
+            if [ -n "$pid" ]; then
+                pid_test=$(ps -p $pid -o args | tail -n +2 | grep $RVPF_TARGET)
+                if [ -z "$pid_test" ]; then
+                    rm -f $RVPF_PID_FILE
+                    echo "Removed stale pid file: $RVPF_PID_FILE"
+                    pid=""
+                fi
+            fi
+        else
+            echo "Cannot read $RVPF_PID_FILE."
+            exit 1
+        fi
+    fi
+
+    function do-start
+    {
+        echo "Starting $DISPLAY_NAME..."
+        if [ -n "$pid" ]; then
+            echo "$DISPLAY_NAME is already running."
+            exit 1
+        fi
+        mkdir -p "$RVPF_LOG"
+        LOG_FILE="$RVPF_LOG/$RVPF_TARGET.log"
+        $WRAP_CMD >/dev/null 2>>$LOG_FILE &
+        echo "$!" >$RVPF_PID_FILE
+    }
+
+    function do-stop
+    {
+        echo "Stopping $DISPLAY_NAME..."
+        if [ -z "$pid" ]; then
+            echo "$DISPLAY_NAME was not running."
+            exit 1
+        fi
+        kill $pid
+        if [ $? -ne 0 ]; then
+            echo "Unable to stop $DISPLAY_NAME."
+            exit 1
+        fi
+        loops=0
+        while [ -n "$(ps -p $pid | tail -n +2)" ]; do
+            if [ "$loops" -lt "5" ]; then
+                loops=$(expr $loops + 1)
+            else
+                echo "Waiting for $DISPLAY_NAME to exit..."
+                loops=0
+            fi
+            sleep 1
+        done
+        rm -f $PIDFILE
+        pid=""
+        echo "Stopped $DISPLAY_NAME."
+    }
+
+    case "$RVPF_ACTION" in
+        run)
+            echo "Running $DISPLAY_NAME..."
+            if [ -n "$pid" ]; then
+                echo "$DISPLAY_NAME is already running."
+                exit 1
+            fi
+            echo "$$" >$RVPF_PID_FILE
+            $WRAP_CMD &
+            trap "kill $!; wait $!" EXIT
+            wait $!
+            ;;
+        start)
+            do-start
+            ;;
+        status)
+            if [ -z "$pid" ]; then
+                echo "$DISPLAY_NAME is not running."
+                exit 1
+            else
+                echo "$DISPLAY_NAME is running ($pid)."
+                exit 0
+            fi
+            ;;
+        stop)
+            do-stop
+            ;;
+        restart)
+            do-stop
+            do-start
+            ;;
+        *)
+            usage
+    esac
+fi
+
+# End.

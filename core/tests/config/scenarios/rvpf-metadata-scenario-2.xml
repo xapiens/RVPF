@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-scenario-2.xml 1962 2013-10-27 14:59:15Z SFB $
+ -->
+
+<metadata lang='en' title="Scenario 2 metadata">
+
+    <?log message="Scenario 2"?>
+
+    <Transform name='Integrator-total' engine='RPN'>
+        <description>
+            Computes the total cumulative value from an integrator step.
+        </description>
+        <param name='Program' value='$1 0.0 default $2! +'/>
+        <param name='FailReturnsNull'/>
+        <arg ident='Self'/>
+        <arg ident='Step'/>
+    </Transform>
+
+    <Sync name='Shift' classDef='ElapsedSync'>
+        <param name='Elapsed' value="08:00"/>
+        <param name='TimeZone' value="GMT"/>
+    </Sync>
+
+    <Sync name='Day:13' classDef='CrontabSync'>
+        <param name='Crontab' value='0 13 * * *'/>
+        <param name='TimeZone' value="GMT"/>
+    </Sync>
+
+    <Sync name='Half-hour' classDef='ElapsedSync'>
+        <param name='Elapsed' value="00:30"/>
+        <param name='TimeZone' value="GMT"/>
+    </Sync>
+
+    <Point name='TESTS.SHIFT:CLOCK'
+            store='TestsStore' content='Clock' sync='Shift'
+            uuid='d8139f50-5d37-4af0-aaa4-1ec0fe37ce05'>
+        <param name='Tag' value='RVPF-12'/>
+    </Point>
+
+    <Point name='TESTS.INTEGRATOR:COUNT'
+            store='TestsStore' content='Count'
+            uuid='8dcb1efc-885d-4349-a143-b1c9619fbae7'>
+        <param name='Tag' value='RVPF-13'/>
+    </Point>
+
+    <Point name='TESTS.START-STOP'
+            store='TestsStore' content='StartStop'
+            uuid='f869cb06-5984-47f1-a112-291fca8db008'>
+        <param name='Tag' value='RVPF-14'/>
+    </Point>
+
+    <Point name='TESTS.HALF-HOUR:CLOCK'
+            store='NullStore' content='Clock' sync='Half-hour'
+            uuid='28c09bbb-bb3d-49bd-b11d-ff934dae6d56'/>
+
+    <Point name='TESTS.THIRTEEN-HOUR:CLOCK'
+            store='NullStore' content='Clock' sync='Day:13'
+            uuid='3640d207-7432-4ad5-9c27-d0828ad2476e'/>
+
+    <Point name='TESTS.VALUE:NUMERIC'
+            store='TestsStore' content='SI' sync='Half-hour'
+            uuid='ba2b19b7-ae0c-4211-9eea-e3e55753c8e1'>
+        <param name='Tag' value='RVPF-1'/>
+        <param name='Unit' value='g'/>
+        <param name='Resynchronized'/>
+    </Point>
+
+    <Point name='TESTS.AVERAGE:NUMERIC'
+            store='TestsStore' content='SI' sync='Day:13'
+            transform='Average' processor='TestsProcessor'
+            uuid='ff0dc871-a696-4994-b3f8-ee6814b863f7'>
+        <param name='Tag' value='RVPF-2'/>
+        <param name='Unit' value='g'/>
+        <input point='TESTS.SHIFT:CLOCK'/>
+        <input point='TESTS.VALUE:NUMERIC'/>
+    </Point>
+
+    <Point name='TESTS.STDEV:NUMERIC'
+            store='TestsStore' content='Numeric'
+            transform='STDEV' processor='TestsProcessor'
+            uuid='97e393ba-9b83-4b1a-a7d2-6102b1a4e7d8'>
+        <param name='Tag' value='RVPF-3'/>
+        <input point='TESTS.SHIFT:CLOCK'/>
+        <input point='TESTS.VALUE:NUMERIC'/>
+    </Point>
+
+    <Point name='TESTS.INTEGRATOR-STEP:COUNT'
+            store='TestsStore' content='Count'
+            transform='Integrator-step' processor='TestsProcessor'
+            uuid='11705f6a-0be1-49ee-9b91-82014ecfb43a'>
+        <param name='Tag' value='RVPF-4'/>
+        <param name='Param' value='1000'/>
+        <input point='TESTS.INTEGRATOR:COUNT'/>
+        <input point='TESTS.INTEGRATOR:COUNT'/>
+    </Point>
+
+    <Point name='TESTS.INTEGRATOR-TOTAL:NUMERIC'
+            store='TestsStore' content='Numeric'
+            transform='Integrator-total' processor='TestsProcessor'
+            uuid='7e2e0bb3-7686-4bfa-9d56-454dcad4fbce'>
+        <param name='Tag' value='RVPF-5'/>
+        <input point='.'/>
+        <input point='TESTS.INTEGRATOR-STEP:COUNT'/>
+    </Point>
+
+    <Point name='TESTS.SNAP-SUM:KG'
+            store='TestsStore' content='SI'
+            transform='Sum' processor='TestsProcessor'
+            uuid='17d75d89-20c5-40d5-b93e-08ab4ca8ad80'>
+        <param name='Tag' value='RVPF-6'/>
+        <param name='Unit' value='kg'/>
+        <input point='TESTS.START-STOP'/>
+        <input point='TESTS.VALUE:NUMERIC'/>
+    </Point>
+
+    <Point name='TESTS.HOUR-VALUE:G'
+            store='TestsStore' content='SI' sync='Half-hour'
+            transform='Copy' processor='TestsProcessor'
+            uuid='52c6d4be-b307-479a-b3c3-fdd56b27a760'>
+        <param name='Tag' value='RVPF-7'/>
+        <param name='Unit' value='g'/>
+        <input point='TESTS.VALUE:NUMERIC' behavior='Retriggers'>
+            <param name='SinceSyncPosition' value='-2'/>
+        </input>
+        <input point='TESTS.SHIFT:CLOCK' control='true'/>
+    </Point>
+
+    <Point name='TESTS.SHIFT-VALUE:G'
+            store='TestsStore' content='SI' sync='Shift'
+            transform='Copy' processor='TestsProcessor'
+            uuid='3773efab-ce9a-4c4b-8869-b0d4f382fa10'>
+        <param name='Tag' value='RVPF-8'/>
+        <param name='Unit' value='g'/>
+        <input point='TESTS.VALUE:NUMERIC' behavior='Retriggers'>
+            <param name='SinceResultSyncPosition' value='-1'/>
+        </input>
+        <input point='TESTS.SHIFT:CLOCK' control='true'/>
+    </Point>
+
+    <Point name='TESTS.RESYNCED:G'
+            store='TestsStore' content='SI' sync='Shift'
+            transform='Resync' processor='TestsProcessor'
+            uuid='dae11431-e978-4e8d-8648-48c61e6edaaa'>
+        <param name='Tag' value='RVPF-9'/>
+        <param name='Unit' value='g'/>
+        <input point='TESTS.VALUE:NUMERIC'/>
+        <input point='TESTS.SHIFT:CLOCK'/>
+    </Point>
+
+    <Point name='TESTS.SHIFT-SUM:NUMERIC'
+            store='TestsStore' content='Numeric'
+            transform='Integrator-summary' processor='TestsProcessor'
+            uuid='e7c72529-de7d-4f8d-9555-c4db1b783485'>
+        <param name='Tag' value='RVPF-10'/>
+        <param name='Param' value='1000'/>
+        <input point='TESTS.SHIFT:CLOCK'/>
+        <input point='TESTS.INTEGRATOR:COUNT'/>
+    </Point>
+
+    <Point name='TESTS.BEGIN:TEXT'
+            store='TestsStore' content='Text'
+            uuid='dd12771f-6b39-4a16-89e6-cf2a31fcfced'>
+        <param name='Tag' value='RVPF-19'/>
+    </Point>
+
+    <Point name='TESTS.END:TEXT'
+            store='TestsStore' content='Text'
+            transform='Copy' processor='TestsProcessor'
+            uuid='a708b0cf-20f3-4545-999d-2a76bf5438ea'>
+        <param name='Tag' value='RVPF-20'/>
+        <input point='TESTS.BEGIN:TEXT'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

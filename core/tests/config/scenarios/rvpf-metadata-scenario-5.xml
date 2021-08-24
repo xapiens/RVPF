@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-scenario-5.xml 1962 2013-10-27 14:59:15Z SFB $
+ -->
+
+<metadata lang='en' title="Scenario 5 metadata">
+
+    <?log message="Scenario 5"?>
+
+    <Point name='TESTS.DATA:NUMERIC'
+            store='TestsStore' content='Numeric'
+            uuid='6554ca33-1635-4246-b54a-c399f0f52514'>
+        <param name='Tag' value='RVPF-1'/>
+    </Point>
+
+    <Point name='TESTS.SNAPSHOT:NUMERIC'
+            store='TestsStore' content='Numeric'
+            transform='Copy' processor='TestsProcessor'
+            uuid='809a1f19-7647-4c54-9665-cfc4410a2c04'>
+        <param name='Tag' value='RVPF-2'/>
+        <input point='TESTS.DATA:NUMERIC' sync='Minute'>
+            <behavior behavior='Interpolated'/>
+            <behavior behavior='Extrapolated'/>
+        </input>
+        <input point='TESTS.TRIGGER:LOGICAL' control='true'/>
+    </Point>
+
+    <Point name='TESTS.TRIGGER:LOGICAL'
+            store='TestsStore' content='Logical'
+            uuid='11afa4ad-279f-4ff0-b1aa-5ba9d7561169'>
+        <param name='Tag' value='RVPF-15'/>
+    </Point>
+
+    <Point name='TESTS.BEGIN:TEXT'
+            store='TestsStore' content='Text'
+            uuid='3f777c1c-6a58-4b5f-b6a6-0198df049f9e'>
+        <param name='Tag' value='RVPF-19'/>
+    </Point>
+
+    <Point name='TESTS.END:TEXT'
+            store='TestsStore' content='Text'
+            transform='Copy' processor='TestsProcessor'
+            uuid='9d6e6861-c079-446d-a46d-e52d2425d88b'>
+        <param name='Tag' value='RVPF-20'/>
+        <input point='TESTS.BEGIN:TEXT'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

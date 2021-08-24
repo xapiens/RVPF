@@ -1,0 +1,53 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivysettings>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: ivysettings.xml 3444 2017-05-24 11:28:50Z SFB $
+ -->
+
+<ivysettings>
+
+    <properties file='${ivy.settings.dir}/ivy.properties'/>
+
+    <settings defaultResolver='default' validate='false'/>
+
+    <resolvers>
+
+        <dual name='default'>
+            <filesystem name='ivys' checkmodified='yes' descriptor='required'>
+                <ivy pattern='${config.build.ivy.location}/[module].xml'/>
+            </filesystem>
+
+            <chain name='ibiblio-rvpf' returnFirst='true'>
+                <ibiblio name='ibiblio-maven2' m2compatible='true'
+                        root='http://repo1.maven.org/maven2/'
+                        pattern='[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'/>
+
+                <url name='rvpf-lib'>
+                    <artifact pattern='http://rvpf.org/lib/[organisation]/[artifact]-[revision].[ext]'/>
+                </url>
+            </chain>
+        </dual>
+
+        <dual name='oracle'>
+            <resolver ref='ivys'/>
+
+            <ibiblio name='oracle-maven' m2compatible='true'
+                    root='http://download.oracle.com/maven/'
+                    pattern='[organisation]/[artifact]/[revision]/[artifact]-[revision].[ext]'/>
+        </dual>
+
+    </resolvers>
+
+    <modules>
+
+        <module organisation='com.sleepycat' resolver='oracle'/>
+
+    </modules>
+
+</ivysettings>
+
+<!-- End. -->

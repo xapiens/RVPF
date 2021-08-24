@@ -1,0 +1,210 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-get-metadata.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF Metadata server 'get-metadata'
+ documents.
+
+ The DOCTYPE declaration is
+
+     <!DOCTYPE get-metadata PUBLIC
+	 "-//Serge Brisson//DTD RVPF Get Metadata//EN"
+	 "http://rvpf.org/dtd/rvpf-get-metadata.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+                Entities.
+ -->
+
+<!--
+ Attributes used for multiple selections.
+
+ The 'wild' attribute filters names using 'wild' characters.
+
+ The 'rexexp' attribute filters names using a regular expression.
+
+ The 'group' attribute restricts the selection to entities owned by that
+ group or one of its children.
+ -->
+<!ENTITY % ENTITIES.a '
+	wild CDATA #IMPLIED
+	regexp CDATA #IMPLIED
+	group CDATA #IMPLIED'>
+
+<!--
+		Root element.
+ -->
+
+<!--
+ A 'get-metadata' document is sent by a client of the Metadata server.
+
+ The 'domain' attribute asks for the metadata of a specific application
+ domain.
+
+ The 'after' attribute asks that the metadata be sent only if it has
+ been modified after the specified time stamp.
+ -->
+<!ELEMENT get-metadata (
+          attributes
+	| contents
+	| engines
+	| groups
+	| inputs
+	| origins
+	| points
+	| properties
+	| results
+	| stores
+	| syncs
+	| texts
+	| transforms
+	| syncs)*>
+<!ATTLIST get-metadata
+	version CDATA %VERSION;
+	domain CDATA #IMPLIED
+	after CDATA #IMPLIED>
+
+<!--
+		Main elements.
+ -->
+
+<!--
+ The 'attributes' element requests attributes informations.
+ -->
+<!ELEMENT attributes EMPTY>
+<!ATTLIST attributes
+        usage CDATA #IMPLIED>
+
+<!--
+ The 'contents' element selects Content entities.
+ -->
+<!ELEMENT contents (content)*>
+<!ATTLIST contents
+	%ENTITIES.a;>
+<!ELEMENT content EMPTY>
+<!ATTLIST content
+	content CDATA #REQUIRED>
+
+<!--
+ The 'engines' element selects Engine entities.
+ -->
+<!ELEMENT engines (engine)*>
+<!ATTLIST engines
+	%ENTITIES.a;>
+<!ELEMENT engine EMPTY>
+<!ATTLIST engine
+	engine CDATA #REQUIRED>
+
+<!--
+ The 'groups' element selects Group entities.
+ -->
+<!ELEMENT groups (group)*>
+<!ATTLIST groups
+	%ENTITIES.a;>
+<!ELEMENT group EMPTY>
+<!ATTLIST group
+	group CDATA #REQUIRED>
+
+<!--
+ The 'inputs' element selects Point input relations.
+ -->
+<!ELEMENT inputs (point)*>
+<!ATTLIST inputs
+	%ENTITIES.a;>
+
+<!--
+ The 'origins' element selects Origin entities.
+ -->
+<!ELEMENT origins (origin)*>
+<!ATTLIST origins
+	%ENTITIES.a;>
+<!ELEMENT origin EMPTY>
+<!ATTLIST origin
+	origin CDATA #REQUIRED>
+
+<!--
+ The 'points' element selects Point entities.
+ -->
+<!ELEMENT points (point)*>
+<!ATTLIST points
+	%ENTITIES.a;>
+<!ELEMENT point EMPTY>
+<!ATTLIST point
+	point CDATA #REQUIRED>
+
+<!--
+ The 'properties' element requests properties.
+ -->
+<!ELEMENT properties EMPTY>
+
+<!--
+ The 'replicates' element requests point replicates.
+ -->
+<!ELEMENT replicates EMPTY>
+
+<!--
+ The 'results' element selects Point result relations.
+ -->
+<!ELEMENT results (point)*>
+<!ATTLIST results
+	%ENTITIES.a;>
+
+<!--
+ The 'stores' element selects Store entities.
+ -->
+<!ELEMENT stores (store)*>
+<!ATTLIST stores
+	%ENTITIES.a;>
+<!ELEMENT store EMPTY>
+<!ATTLIST store
+	store CDATA #REQUIRED>
+
+<!--
+ The 'syncs' element selects Sync entities.
+ -->
+<!ELEMENT syncs (sync)*>
+<!ATTLIST syncs
+	%ENTITIES.a;>
+<!ELEMENT sync EMPTY>
+<!ATTLIST sync
+	sync CDATA #REQUIRED>
+
+<!--
+ The 'texts' element requests text informations.
+ -->
+<!ELEMENT texts EMPTY>
+<!ATTLIST texts
+        lang CDATA #IMPLIED>
+
+<!--
+ The 'transforms' element selects Transform entities.
+ -->
+<!ELEMENT transforms (transform)*>
+<!ATTLIST transforms
+	%ENTITIES.a;>
+<!ELEMENT transform EMPTY>
+<!ATTLIST transform
+	transform CDATA #REQUIRED>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

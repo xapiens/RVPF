@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- $Id: log4j2.xml 2484 2014-12-29 18:13:06Z SFB $ -->
+
+<Configuration strict='true' name='RVPF_Build'
+        packages="org.rvpf.base.logger.log4j">
+
+    <Appenders>
+
+        <Appender type='Console' name='Console'>
+            <Filter type='ThresholdFilter' level='INFO'/>
+            <Layout type='PatternLayout'>
+                <Pattern>%d %-5p [%c{1}] %m%n</Pattern>
+            </Layout>
+        </Appender>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Root level='INFO'>
+            <AppenderRef ref='Console'/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
+
+<!-- End. -->

@@ -1,0 +1,2269 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-metadata-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<metadata lang='en' title="Shared metadata">
+
+    <description>
+        This file holds the basic metadata which is needed for
+        proper RVPF operations.
+    </description>
+
+    <notes>
+        It is recommended to include this file at the top of the master
+        'rvpf-metadata.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+
+        This file is available as a resource in 'rvpf-service.jar'.
+    </notes>
+
+    <!-- Definition of interfaces. -->
+
+    <ClassDef name='Behavior'
+            package='org.rvpf.metadata.processor'>
+        <description>
+            Allow a point to specify request for stored values retrieval
+            and select dependent values to be computed.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='Content'
+            package='org.rvpf.base'>
+        <description>
+            Specifies the storage representations.  A processor will use
+            a content instance to normalize input values and denormalize
+            result values.  This allows operations between values to
+            ignore the choice of storage representation of the points
+            involved in the computation.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='Engine'
+            package='org.rvpf.metadata.processor'>
+        <description>
+            Generates Transform programs to compute a result given the
+            appropriate inputs.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='Polator'
+            package='org.rvpf.store.server.polator'>
+        <description>
+            Performs interpolation and extrapolation for a store server.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='Store'
+            package='org.rvpf.base.store'>
+        <description>
+            Refers to the mechanism used for access to the point values
+            storage system (historian).
+        </description>
+    </ClassDef>
+
+    <ClassDef name='Sync'
+            package='org.rvpf.base.sync'>
+        <description>
+            Specifies the time base for synchronization.
+        </description>
+    </ClassDef>
+
+    <!-- Definition of Behavior classes. -->
+
+    <ClassDef name='AlwaysTriggersBehavior'
+            package='org.rvpf.processor.behavior'
+            member='AlwaysTriggers'>
+        <description>
+            An Input with this Behavior will always trigger the
+            computation of the Result.
+
+            It also retriggers the computation of subsequent dependents
+            up to the next appearance of itself.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='ControlsBehavior'
+            package='org.rvpf.processor.engine.control'>
+        <description>
+            An Input with this Behavior will always trigger the
+            computation of the Result.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='ExtrapolatedBehavior'
+            package='org.rvpf.processor.behavior'
+            member='Extrapolated'>
+        <description>
+            An Input with this Behavior is extrapolated.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='InterpolatedBehavior'
+            package='org.rvpf.processor.behavior'
+            member='Interpolated'>
+        <description>
+            An Input with this Behavior is interpolated.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='NeverTriggersBehavior'
+            package='org.rvpf.processor.behavior'
+            member='NeverTriggers'>
+        <description>
+            An Input with this Behavior will never trigger the
+            computation of the Result.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='ReplicatedBehavior'
+            package='org.rvpf.processor.engine.replicator'>
+        <description>
+            An Input with this Behavior is replicated.  Such an
+            Input must be the one supplied to the Replicator Engine.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='RequiredBehavior'
+            package='org.rvpf.processor.behavior'
+            member='Required'>
+        <description>
+            An Input with this Behavior requires a value to allow the
+            computation of the Result.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='ResynchronizedBehavior'
+            package='org.rvpf.processor.engine.replicator'>
+        <description>
+            This Behavior is required for the first Input to a
+            Resynchronizer Engine Transform.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='RetriggersBehavior'
+            package='org.rvpf.processor.behavior'
+            member='Retriggers'>
+        <description>
+            An Input with this Behavior will only trigger the
+            computation of the Result when this Result already has a
+            value.
+        </description>
+        <notes>
+            An interesting special case is that a point value is allowed
+            to retrigger the computation of the next value of its own
+            point. This may be used for cascade updates of cumulative
+            values.
+        </notes>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='StepFilteredBehavior'
+            package='org.rvpf.processor.engine.filter'>
+        <description>
+            This Behavior is required for the first Input to a
+            StepFilter Engine Transform.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='SummarizedBehavior'
+            package='org.rvpf.processor.engine.rpn.selector.summarizer'>
+        <description>
+            An Input with this Behavior will only trigger the
+            computation of the Result when it has already been
+            summarized.
+        </description>
+        <notes>
+            The Summarizer Transform will always assign this behavior to
+            the last input.
+        </notes>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='SummarizesBehavior'
+            package='org.rvpf.processor.engine.rpn.selector.summarizer'>
+        <description>
+            An Input with this Behavior will only trigger the
+            computation of the Result if this is not its first value.
+            This avoids the problem of having no beginning for the first
+            interval.
+
+            If the first input point content is 'StartStop', it will
+            trigger on the transition from true to false.
+        </description>
+        <notes>
+            The Summarizer Transform will always assign this behavior to
+            the first input.
+        </notes>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='SynchronizedBehavior'
+            package='org.rvpf.processor.behavior'
+            member='Synchronized'>
+        <description>
+            An Input with this Behavior will always trigger the
+            computation of the Result.
+
+            It will also refuse to be used in the computation of a
+            Result for an other time.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='TriggersNewBehavior'
+            package='org.rvpf.processor.behavior'
+            member='TriggersNew'>
+        <description>
+            An Input with this Behavior will only trigger the
+            computation of the Result when this Result does not already
+            have a value.
+        </description>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <!-- Definition of Content classes. -->
+
+    <ClassDef name='BigDecimalContent'
+            package='org.rvpf.content'>
+        <description>
+            This content converter supports Java BigDecimal values with
+            a scale from the 'Scale' param and allows a multiplier from
+            the 'Multiplier' param. This multiplier is used as a divisor
+            during denormalization.
+        </description>
+        <implements classDef='Content'/>
+    </ClassDef>
+
+    <ClassDef name='BigIntegerContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java BigInteger values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='BigRationalContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports BigRational values made of
+            the ratio of two Java BigInteger values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='BooleanContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java Boolean values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='ByteContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java Byte values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='ClockContent'
+            package='org.rvpf.clock'>
+        <implements classDef='Content'/>
+        <description>
+            This class helps the manipulation of point values
+            representing a ClockEvent.
+         </description>
+    </ClassDef>
+
+    <ClassDef name='ComplexContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Complex values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='DictContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Dict(ionary) values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='DoubleContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java Double values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='FloatContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java Float values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='IntegerContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java Integer values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='LongContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java Long values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='RationalContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Rational values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='ShortContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java Short values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SIContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports SI values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='StartStopContent'
+            package='org.rvpf.processor.engine.rpn.selector'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports start/stop values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='StateContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports State values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='StringContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Java String values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='TupleContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports Tuple values.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='UnitValueContent'
+            package='org.rvpf.content'>
+        <implements classDef='DoubleContent'/>
+        <description>
+            This content converter extends the DoubleContent content
+            converter by specifying a multiplier for normalization whose
+            value comes from the 'Multiplier' param. This multiplier is
+            used as a divisor during denormalization.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='TemperatureContent'
+            package='org.rvpf.content'>
+        <implements classDef='UnitValueContent'/>
+        <description>
+            This content converter extends the UnitValueContent content
+            converter by specifying a constant whose value comes from
+            the 'Constant' param. This constant is added during
+            normalization and subtracted during denormalization.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='UnspecifiedContent'
+            package='org.rvpf.content'>
+        <implements classDef='Content'/>
+        <description>
+            This content converter supports unspecified values.
+        </description>
+    </ClassDef>
+
+    <!-- Definition of Engine classes. -->
+
+    <ClassDef name='CloneEngine'
+            package='org.rvpf.processor.engine'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='ControlEngine'
+            package='org.rvpf.processor.engine.control'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='LocalExecutorEngine'
+            package='org.rvpf.processor.engine.executor'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='NullEngine'
+            package='org.rvpf.processor.engine'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='RemoteExecutorEngine'
+            package='org.rvpf.processor.engine.executor.remote'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='ReplicatorEngine'
+            package='org.rvpf.processor.engine.replicator'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='ResynchronizerEngine'
+            package='org.rvpf.processor.engine.replicator'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='RPNEngine'
+            package='org.rvpf.processor.engine.rpn'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='StepFilterEngine'
+            package='org.rvpf.processor.engine.filter'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <ClassDef name='SummarizerEngine'
+            package='org.rvpf.processor.engine.rpn.selector.summarizer'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <!-- Definition of Engine executors. -->
+
+    <ClassDef name='EngineExecutor'
+            package='org.rvpf.processor.engine.executor'>
+        <description>
+            The 'EngineExecutor' interface defines the protocol of a
+            processor engine executable by an other engine.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='PipeEngineExecutor'
+            package='org.rvpf.processor.engine.executor'
+            member='PipeExecutor'>
+        <implements classDef='EngineExecutor'/>
+    </ClassDef>
+
+    <ClassDef name='ScriptEngineExecutor'
+            package='org.rvpf.processor.engine.executor'
+            member='ScriptExecutor'>
+        <implements classDef='EngineExecutor'/>
+    </ClassDef>
+
+    <!-- Definition of Polator classes. -->
+
+    <ClassDef name='LevelPolator'
+            package='org.rvpf.store.server.polator'>
+        <implements classDef='Polator'/>
+        <description>
+            Level inter/extra-polator.
+
+            When a value is not present at the specified time, this
+            polator returns the preceeding value.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='LinearPolator'
+            package='org.rvpf.store.server.polator'>
+        <implements classDef='Polator'/>
+        <description>
+            Linear inter/extra-polator.
+
+            When a value is not present at the specified time, this
+            polator performs a linear approximation based on preceeding
+            and following values.
+        </description>
+    </ClassDef>
+
+    <!-- Definition of Store classes. -->
+
+    <ClassDef name='NullStore'
+            package='org.rvpf.store.client'>
+        <implements classDef='Store'/>
+    </ClassDef>
+
+    <ClassDef name='RMIStore'
+            package='org.rvpf.store.client'>
+        <implements classDef='Store'/>
+    </ClassDef>
+
+    <ClassDef name='RMISinkStore'
+            package='org.rvpf.store.client'
+            member='RMISink'>
+        <implements classDef='Store'/>
+    </ClassDef>
+
+    <ClassDef name='SOMSinkStore'
+            package='org.rvpf.store.client'
+            member='SOMSink'>
+        <implements classDef='Store'/>
+    </ClassDef>
+
+    <!-- Definition of RPN modules. -->
+
+    <ClassDef name='RPNOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='Operations'>
+        <description>
+            The 'Operations' subclasses implement groups of RPN
+            operations.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='RPNBigDecimalOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='BigDecimalOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNBigIntegerOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='BigIntegerOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNBigRationalOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='BigRationalOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNBooleanOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='BooleanOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNComplexOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='ComplexOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNContainerOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='ContainerOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNCompoundOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='CompoundOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNDateTimeOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='DateTimeOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNDoubleOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='DoubleOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNLongOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='LongOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNRationalOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='RationalOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNStackOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='StackOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <ClassDef name='RPNStringOperations'
+            package='org.rvpf.processor.engine.rpn.operation'
+            member='StringOperations'>
+        <implements classDef='RPNOperations'/>
+    </ClassDef>
+
+    <!-- Definition of Sync classes. -->
+
+    <ClassDef name='CrontabSync' package='org.rvpf.base.sync'>
+        <implements classDef='Sync'/>
+    </ClassDef>
+
+    <ClassDef name='ElapsedSync' package='org.rvpf.base.sync'>
+        <implements classDef='Sync'/>
+    </ClassDef>
+
+    <ClassDef name='NullSync' package='org.rvpf.base.sync'>
+        <implements classDef='Sync'/>
+    </ClassDef>
+
+    <ClassDef name='StampsSync' package='org.rvpf.base.sync'>
+        <implements classDef='Sync'/>
+    </ClassDef>
+
+    <!-- Definition of value filter classes. -->
+
+    <ClassDef name='ValueFilter'
+            package='org.rvpf.metadata.entity.filter'
+            member='ValueFilterFactory'/>
+
+    <ClassDef name='DeadbandFilter'
+            package='org.rvpf.metadata.entity.filter'
+            member='DeadbandFilterFactory'>
+        <implements classDef='ValueFilter'/>
+    </ClassDef>
+
+    <ClassDef name='InterpolatorFilter'
+            package='org.rvpf.metadata.entity.filter'
+            member='InterpolatorFilterFactory'>
+        <implements classDef='ValueFilter'/>
+    </ClassDef>
+
+    <ClassDef name='LinearFilter'
+            package='org.rvpf.metadata.entity.filter'
+            member='LinearFilterFactory'>
+        <implements classDef='ValueFilter'/>
+    </ClassDef>
+
+    <ClassDef name='StepFilter'
+            package='org.rvpf.metadata.entity.filter'
+            member='StepFilterFactory'>
+        <implements classDef='ValueFilter'/>
+    </ClassDef>
+
+    <!-- Definition of arg parameters. -->
+
+    <ParamDef name='AfterResultSyncPosition'
+            type='Integer' holder='arg'>
+        <description>
+            Specifies with a negative integer the maximum position in
+            time after which an input value should be selected, going
+            back in the synchronized history of the result point values.
+        </description>
+        <notes>
+            This parameter should be used instead of
+            'SinceResultSyncPosition' when consistency with
+            'ReverseInterval' summaries is desired.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='CaptureLimit' type='Integer' holder='arg'>
+        <description>
+            For the CapturesBehavior: the capture limit after the
+            trigger.
+
+            For the CapturedBehavior: the capture limit before the
+            trigger.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CaptureTime' type='Elapsed' holder='arg'>
+        <description>
+            For the CapturesBehavior: the elapsed time of capture after
+            the trigger.
+
+            For the CapturedBehavior: the elapsed time of capture before
+            the trigger.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CeilingGap' type='Float' holder='arg'>
+        <description>
+            Used by the StepFilter to specify the size of the offset
+            relative to the next Step which can be filtered.
+
+            Defaults to -1.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CeilingRatio' type='Float' holder='arg'>
+        <description>
+            Used by the StepFilter to specify the ratio of the offset
+            relative to the next Step which can be filtered.
+
+            Defaults to 0.5.
+        </description>
+        <notes>
+            When a 'CeilingGap' is specified, the 'CeilingRatio' is
+            ignored.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='DeadbandGap' type='Float' holder='arg'>
+        <description>
+            Used by the DeadbandFilter to specify the size of the
+            deadband around the previous value which will be filtered.
+
+            Defaults to -1.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='DeadbandRatio' type='Float' holder='arg'>
+        <description>
+            Used by the DeadbandFilter to specify the ratio of the
+            offset relative to the previous value which will be
+            filtered.
+
+            Defaults to -1.0 (none).
+        </description>
+        <notes>
+            When a 'DeadbandGap' is specified, the 'DeadbandRatio' is
+            ignored.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='FetchPreviousEndValue' type='Boolean' holder='arg'>
+        <description>
+            Used by the Summarized Behavior as an indicator that the end
+            value from the previous interval should be fetched and
+            included as the first value.
+
+            Defaults to false.
+        </description>
+        <notes>
+            This indicator is used to compute values by difference
+            (integrators).
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='FetchPreviousValue' type='Boolean' holder='arg'>
+        <description>
+            Used by the Summarized Behavior as an indicator that the
+            last value before the current interval should be fetched and
+            included as the first value.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FilterStampTrimUnit' type='Elapsed' holder='arg'>
+        <description>
+            Specifies a stamp trim unit for filtering.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FilterTimeLimit' type='Elapsed' holder='arg'>
+        <description>
+            Specifies a time limit for filtering.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FloorGap' type='Float' holder='arg'>
+        <description>
+            Used by the StepFilter to specify the size of the offset
+            relative to the previous Step which can be filtered.
+
+            Defaults to -1.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FloorRatio' type='Float' holder='arg'>
+        <description>
+            Used by the StepFiltered Behavior to specify the ratio of
+            the offset relative to the previous Step which can be
+            filtered.
+
+            Defaults to 0.5.
+        </description>
+        <notes>
+            When a 'FloorGap' is specified, the 'FloorRatio' is ignored.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='IncludeNulls' type='Boolean' holder='arg'>
+        <description>
+            Used by the Summarized Behavior as an indicator that null
+            values should be included.
+
+            The default is to exclude them.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='PolatorTimeLimit' type='Elapsed' holder='arg'>
+        <description>
+            Specifies a time limit for interpolation or extrapolation.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Steps' type='Integer' holder='arg'>
+        <description>
+            Specifies the number of steps in an interval.
+
+            Defaults to 1.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ResultPosition' holder='arg'>
+        <description>
+            Used by the Summarizes Behavior to generate a stamp for the
+            result.
+
+            If specified, its value must be one of 'beginning',
+            'middle', 'end' or 'next' (the default).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ReverseInterval' type='Boolean' holder='arg'>
+        <description>
+            Reverses the interval: "open to closed" vs "closed to open".
+        </description>
+    </ParamDef>
+
+    <ParamDef name='RunningInterval' type='Boolean' holder='arg'>
+        <description>
+            Triggers running interval results.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='SelectSyncPosition' type='Integer' holder='arg'>
+        <description>
+            Specifies with a negative integer which value should be
+            selected, going back in the synchronized history of the
+            input point values.
+
+            Defaults to 0 (current).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='SelectPreviousValue' type='Boolean' holder='arg'>
+        <description>
+            Recognized as a request to select the previous value of the
+            corresponding point.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='SinceResultSyncPosition'
+            type='Integer' holder='arg'>
+        <description>
+            Specifies with a zero or negative integer the maximum
+            position in time at which an input value should be selected,
+            going back in the synchronized history of the result point
+            values.
+        </description>
+        <notes>
+            A zero value asks for the value of input at the result
+            stamp.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='SinceSyncPosition' type='Integer' holder='arg'>
+        <description>
+            Specifies with zero or a negative integer the maximum
+            position at which a value should be selected, going back in
+            the synchronized history of the input point values.
+        </description>
+        <notes>
+            A zero value asks for the value of the most recent input
+            position relative to the result stamp.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='StepSize' type='Float' holder='arg'>
+        <description>
+            Used by the StepFiltered Behavior to specify the value step
+            size.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <!-- Definition of Content parameters. -->
+
+    <ParamDef name='Abbrev' holder='Content'>
+        <description>
+            Specifies the abbreviation associated with the Content.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Constant' type='Float' holder='Content'>
+        <description>
+            Specifies a number used to offset the Content during
+            normalization / denormalization.
+
+            Defaults to 0.0.
+        </description>
+        <notes>Used for Temperature contents.</notes>
+    </ParamDef>
+
+    <ParamDef name='Content' type='ClassDef' holder='Content'>
+        <description>
+            Specifies the first level Content for a container Content
+            (DictContent or TupleContent).
+
+            Defaults to 'UnspecifiedContent'.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Ident' holder='Content'>
+        <description>
+            Specifies the external identification associated with the
+            Content.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Multiplier' type='Float' holder='Content'>
+        <description>
+            Specifies a conversion factor.
+
+            Defaults to 1.0.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Scale' type='Integer' holder='Content'>
+        <description>
+            Specifies the scale of BigDecimal values.
+        </description>
+        <notes>
+            When this parameter is not supplied in the content
+            definition, it will have to be present for every point
+            having this content.
+        </notes>
+    </ParamDef>
+
+    <!-- Definition of Engine parameters. -->
+
+    <ParamDef name='Arg' multiple='yes' holder='Engine'>
+        <description>
+            An argument for the process created with the 'Program'
+            param.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Binding' holder='Engine'>
+        <description>
+            Specifies the RMI URI for the server binding.
+        </description>
+        <notes>
+            Used by clients to locate the server.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Charset' holder='Engine'>
+        <description>
+            Used by a Pipe Engine to specify the character set for the
+            program execution.
+
+            Defaults to 'UTF-8'.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Command' holder='Engine'>
+        <description>
+            The operating system command used to activate the process.
+        </description>
+        <notes>
+            The 'Program' and 'Arg' params may be used instead.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='DefaultBehavior' type='ClassDef' holder='Engine'>
+        <description>
+            Specifies the default behavior.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Directory' holder='Engine'>
+        <description>
+            The working directory for the command execution.
+
+            Defaults to the current working directory.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='EngineExecutor' type='ClassDef' holder='Engine'>
+        <description>
+            Specifies an EngineExecutor implementation.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='KeepProcess' type='Elapsed' holder='Engine'>
+        <description>
+            The elapsed time to keep the Pipe Engine process
+            active between invocations.
+
+            An empty value means no limit. The default is zero: the
+            process is not kept active.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='KillDelay' type='Elapsed' holder='Engine'>
+        <description>
+            The delay before killing a process after closing its input.
+
+            Defaults to 60.0 (seconds).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='LoopLimit' type='Integer' holder='Engine'>
+        <description>
+            Used by the RPN Engine to limit the number of iterations for
+            each loop operation.
+
+            Defaults to 999.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Macro' multiple='yes' holder='Engine'>
+        <description>
+            Defines a RPN macro instruction.
+        </description>
+        <notes>
+            Multiple values will each define a macro instruction.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Module' type='ClassDef'
+            multiple='yes' holder='Engine'>
+        <description>
+            Specifies extension modules for the Engine.
+        </description>
+        <notes>
+            This is supported by the RPN Engine and its subclasses.
+
+            The values should be the fully specified name of classes
+            which extend the 'Operations' abstract class.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Name' holder='Engine'>
+        <description>
+            Specifies the name for the RMI server.
+        </description>
+        <notes>
+            Needed when the registered name differs from the entity
+            name.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Password' holder='Engine' hidden='yes'>
+        <description>
+            Specifies the password for authentication to a server.
+        </description>
+        <notes>
+            For security reason, the value of this parameter should be
+            supplied by a 'property' attribute referencing a locally
+            defined property.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Program' holder='Engine'>
+        <description>
+            The path to the program file.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ScriptEngineName' holder='Engine'>
+        <description>
+            The name of the script engine.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Security' holder='Engine'>
+        <description>
+            Specifies the name of a group of security configuration
+            properties for access to a server.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Set' multiple='yes' holder='Engine'>
+        <description>
+            Sets an environment variable. A value must begin with the
+            name of the variable, optionally followed by an '='
+            character and the assigned text. When only the variable name
+            is present, it will be removed from the environment.
+        </description>
+        <notes>
+            The '=' may be prepended by a '+' character to perform an
+            append instead of a replace. When the variable name is
+            'PATH' or 'CLASSPATH', the system 'path.separator' property
+            will be used to separate appended texts.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='StartFile' holder='Engine'>
+        <description>
+            The script file used to start the engine.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='StartText' holder='Engine'>
+        <description>
+            The script text used to start the engine.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='StopText' holder='Engine'>
+        <description>
+            The script text used to stop the engine.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='TimeLimit' type='Elapsed' holder='Engine'>
+        <description>
+            Specifies a time limit to produce a result.
+
+            Defaults to none.
+        </description>
+        <notes>
+            This is supported by the Pipe Engine.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='User' holder='Engine' hidden='yes'>
+        <description>
+            Specifies the user for identification to a server.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Word' multiple='yes' holder='Engine'>
+        <description>
+            Defines an additional RPN word.
+        </description>
+        <notes>
+            Multiple values will each define a word.
+        </notes>
+    </ParamDef>
+
+    <!-- Definition of input parameters. -->
+
+    <ParamDef name='AfterResultSyncPosition'
+            type='Integer' holder='input'>
+        <description>
+            Specifies with a negative integer the maximum position in
+            time after which an input value should be selected, going
+            back in the synchronized history of the result point values.
+        </description>
+        <notes>
+            This parameter should be used instead of
+            'SinceResultSyncPosition' when consistency with
+            'ReverseInterval' summaries is desired.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='CaptureLimit' type='Integer' holder='input'>
+        <description>
+            For the CapturesBehavior: the capture limit after the
+            trigger.
+
+            For the CapturedBehavior: the capture limit before the
+            trigger.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CaptureTime' type='Elapsed' holder='input'>
+        <description>
+            For the CapturesBehavior: the elapsed time of capture after
+            the trigger.
+
+            For the CapturedBehavior: the elapsed time of capture before
+            the trigger.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CeilingGap' type='Float' holder='input'>
+        <description>
+            Used by the StepFiltered Behavior to specify the size of
+            the offset relative to the next step which can be filtered.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CeilingRatio' type='Float' holder='input'>
+        <description>
+            Used by the StepFiltered Behavior to specify the ratio of
+            the offset relative to the next step which can be filtered.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='DeadbandGap' type='Float' holder='input'>
+        <description>
+            Used by the StepFiltered Behavior to specify the size of the
+            deadband around the previous value which will be filtered.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='DeadbandRatio' type='Float' holder='input'>
+        <description>
+            Used by the StepFiltered Behavior to specify the ratio of
+            the offset relative to the previous value which will be
+            filtered.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FetchPreviousEndValue'
+            type='Boolean' holder='input'>
+        <description>
+            Used by the Summarized Behavior as an indicator that the end
+            value from the previous interval should be fetched and
+            included as the first value.
+
+            Defaults to false.
+        </description>
+        <notes>
+            This indicator is used to compute values by difference
+            (integrators).
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='FetchPreviousValue' type='Boolean' holder='input'>
+        <description>
+            Used by the Summarized Behavior as an indicator that the
+            last value before the current interval should be fetched and
+            included as the first value.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FilterStampTrimUnit' type='Elapsed' holder='input'>
+        <description>
+            Specifies a stamp trim unit for filtering.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FilterTimeLimit' type='Elapsed' holder='input'>
+        <description>
+            Specifies a time limit for filtering.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FloorGap' type='Float' holder='input'>
+        <description>
+            Used by the StepFiltered Behavior to specify the size of
+            the offset relative to the previous step which can be
+            filtered.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FloorRatio' type='Float' holder='input'>
+        <description>
+            Used by the StepFiltered Behavior to specify the ratio of
+            the offset relative to the previous step which can be
+            filtered.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='IncludeNulls' type='Boolean' holder='input'>
+        <description>
+            Used by the Summarized Behavior as an indicator that null
+            values should be included.
+
+            The default is to exclude them.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='PolatorTimeLimit' type='Elapsed' holder='input'>
+        <description>
+            Specifies a time limit for interpolation or extrapolation.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Steps' type='Integer' holder='input'>
+        <description>
+            Specifies the number of steps in an interval.
+
+            Defaults to 1.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ResultPosition' holder='input'>
+        <description>
+            Used by the Summarizes Behavior to generate a stamp for the
+            result.
+
+            If specified, its value must be one of 'beginning',
+            'middle', 'end' or 'next' (the default).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ReverseInterval' type='Boolean' holder='input'>
+        <description>
+            Reverses the interval: "open to closed" vs "closed to open".
+        </description>
+    </ParamDef>
+
+    <ParamDef name='RunningInterval' type='Boolean' holder='input'>
+        <description>
+            Triggers running interval results.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='SelectSyncPosition' type='Integer' holder='input'>
+        <description>
+            Specifies with a negative integer which value should be
+            selected, going back in the synchronized history of the
+            input point values.
+
+            Defaults to 0 (current).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='SelectPreviousValue' type='Boolean' holder='input'>
+        <description>
+            Recognized by the Synchronized Behavior as a request to
+            select the previous value of the corresponding point.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='SinceResultSyncPosition'
+            type='Integer' holder='input'>
+        <description>
+            Specifies with a zero or negative integer the maximum
+            position in time at which an input value should be selected,
+            going back in the synchronized history of the result point
+            values.
+        </description>
+        <notes>
+            A zero value asks for the value of input at the result
+            stamp.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='SinceSyncPosition' type='Integer' holder='input'>
+        <description>
+            Specifies with zero or a negative integer the maximum
+            position at which a value should be selected, going back in
+            the synchronized history of the input point values.
+        </description>
+        <notes>
+            A zero value asks for the value of the most recent input
+            position relative to the result stamp.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='StepSize' type='Float' holder='input'>
+        <description>
+            Used by the StepFiltered Behavior to specify the value step
+            size.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <!-- Definition of point parameters. -->
+
+    <ParamDef name='ArchiveTime' type='Elapsed' holder='Point'>
+        <description>
+            Specifies a time limit for keeping values in the store. An
+            archiver property determines if the time computation is
+            based on the point value stamp or its version.
+
+            If the 'Attic' is not disabled, each point value removed
+            from the store will be put in a XML format file.
+
+            Defaults to none.
+        </description>
+        <notes>
+            This param conflicts with the 'LifeTime' param.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='CaptureLimit' type='Integer' holder='Point'>
+        <description>
+            For the CapturesBehavior: the capture limit after the
+            trigger.
+
+            For the CapturedBehavior: the capture limit before the
+            trigger.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CaptureTime' type='Elapsed' holder='Point'>
+        <description>
+            For the CapturesBehavior: the elapsed time of capture after
+            the trigger.
+
+            For the CapturedBehavior: the elapsed time of capture before
+            the trigger.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Confirm' type='Boolean' holder='Point'>
+        <description>
+            Asks that Notices be confirmed by a request to the Store.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CeilingGap' type='Float' holder='Point'>
+        <description>
+            Specifies the size of the offset relative to the next step
+            which can be filtered.
+
+            Defaults to -1.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CeilingRatio' type='Float' holder='Point'>
+        <description>
+            Specifies the ratio of the offset relative to the next step
+            which can be filtered.
+
+            Defaults to 0.5.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='DeadbandGap' type='Float' holder='Point'>
+        <description>
+            Specifies the size of the deadband around the previous value
+            which will be filtered.
+
+            Defaults to -1.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='DeadbandRatio' type='Float' holder='Point'>
+        <description>
+            Specifies the ratio of the offset relative to the previous
+            value which will be filtered.
+
+            Defaults to -1.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FailReturnsNull' type='Boolean' holder='Point'>
+        <description>
+            Used by the some engines as an indicator that the failure to
+            produce a result should return a null value.
+
+            The default is to cancel the value generation.
+        </description>
+        <notes>
+            This overrides the corresponding Transform param.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Filter' type='ClassDef' holder='Point'>
+        <description>
+            Specifies the class definition of the values filter.
+
+            Defaults to 'StepValueFilter'.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FilterStampTrimUnit' type='Elapsed' holder='Point'>
+        <description>
+            Specifies a stamp trim unit for filtering.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FilterTimeLimit' type='Elapsed' holder='Point'>
+        <description>
+            Specifies a time limit for filtering.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FloorGap' type='Float' holder='Point'>
+        <description>
+            Specifies the size of the offset relative to the previous
+            step which can be filtered.
+
+            Defaults to -1.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FloorRatio' type='Float' holder='Point'>
+        <description>
+            Specifies the ratio of the offset relative to the previous
+            step which can be filtered.
+
+            Defaults to 0.5.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='KeepAtLeast' type='Integer' holder='Point'>
+        <description>
+            Specifies that the archiver keep at least this number of
+            values for the point before the current period.
+
+            Defaults to 1.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='KeepAtMost' type='Integer' holder='Point'>
+        <description>
+            Specifies that the archiver keep at most this number of
+            values for the point.
+
+            This parameter is effective even when no time parameter is
+            active.
+
+            A negative value means no limits.
+
+            Defaults to -1.
+        </description>
+        <notes>
+            When positive, the value of this param should never be less
+            that the value of the 'KeepAtLeast' param.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='LifeTime' type='Elapsed' holder='Point'>
+        <description>
+            Specifies a time limit for keeping values in the store. An
+            archiver property determines if the time computation is
+            based on the point value stamp or its version.
+
+            Defaults to none.
+        </description>
+        <notes>
+            This param conflicts with the 'ArchiveTime' param.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Notify' type='Boolean' holder='Point'>
+        <description>
+            Specifies to the Store if a Notice should be sent when a
+            value of this point is updated. This indicator is effective
+            only when the 'store.notices.filtered' property is on. The
+            default, when filtering, is to send notices only for values
+            which may trigger a computation on a Processor.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='NullRemoves' type='Boolean' holder='Point'>
+        <description>
+            Specifies if a null value should cause a removal from the
+            store.
+
+            Defaults to the value specified for the Store.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Param' multiple='yes' holder='Point'>
+        <description>
+            Supplies values for the RPN Engine Transform programs, using
+            the '@n' notation, where 'n' will be an integer number
+            identifying the 'Param' position, starting at 1.
+
+            It may also be used by a Pipe Engine Transform.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Polator' type='ClassDef' holder='Point'>
+        <description>
+            Specifies the class definition of the inter/extra-polator.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='PolatorTimeLimit' type='Elapsed' holder='Point'>
+        <description>
+            Specifies a time limit for interpolation or extrapolation.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='RecalcLatest' type='Integer' holder='Point'>
+        <description>
+            Limits recalculations to the specified number of values (-1
+            or nothing means no limit, 0 means no recalc, 1 means recalc
+            latest only, etc.).
+
+            Defaults to -1.
+        </description>
+        <notes>
+            This overrides the corresponding Transform param.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Replicated' type='Boolean' holder='Point'>
+        <description>
+            The point should be replicated by the store replicator.
+
+            Defaults to the value of the 'replicated.defaults' in the
+            'replicator' store properties.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='RespectVersion' type='Boolean' holder='Point'>
+        <description>
+            Requests that the archiver respect the point values version.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Resynchronized' type='Boolean' holder='Point'>
+        <description>
+            Informs the Processors that this point is resynchronized and
+            that 'out of sync' logging is not needeed.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Scale' type='Integer' holder='Point'>
+        <description>
+            Specifies the scale of BigDecimal values.
+        </description>
+        <notes>
+            When this parameter must be supplied for BigDecimal content
+            if it has not been specified in the content definition.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='StepSize' type='Float' holder='Point'>
+        <description>
+            Specifies the value step size.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='States' holder='Point'>
+        <description>
+            Specifies the name of a state group for the point.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Tag' holder='Point'>
+        <description>
+            Specifies a Store specific identification for the point.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Unit' holder='Point'>
+        <description>
+            Used by the SI Content as the abbreviation of a base or
+            derived unit, including an optional prefix.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Volatile' type='Boolean' holder='Point'>
+        <description>
+            Marks this point as volatile to avoid caches.
+        </description>
+    </ParamDef>
+
+    <!-- Definition of Store parameters. -->
+
+    <ParamDef name='ArchiveTime' type='Elapsed' holder='Store'>
+        <description>
+            Specifies a time limit for keeping point values in the
+            store. An archiver property determines if the time
+            computation is based on the point value stamp or its
+            version.
+
+            This can be overriden by each point.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Binding' holder='Store'>
+        <description>
+            Specifies the RMI URI for the server binding.
+        </description>
+        <notes>
+            Used by clients to locate the server.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='BindPoints' type='Boolean' holder='Store'>
+        <description>
+            Requests the dynamic binding of the points to their UUID.
+            This would be needed to access points in a store which is
+            not in the same metadata domain.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Confirm' type='Boolean' holder='Store'>
+        <description>
+            Asks that notices be confirmed by a request to this store.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ConfirmRetries' type='Integer' holder='Store'>
+        <description>
+            Maximum number of confirm retries.
+
+            Defaults to 0, except when 'ConfirmRetryDelay' is specified
+            where it defaults to 1.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ConfirmRetryDelay' type='Elapsed' holder='Store'>
+        <description>
+            Confirm retry delay.
+
+            Defaults to 15.0 (seconds) when 'ConfirmRetries' is
+            specified, otherwise none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='LifeTime' type='Elapsed' holder='Store'>
+        <description>
+            Specifies a time limit for keeping point values in the
+            store. An archiver property determines if the time
+            computation is based on the point value stamp or its
+            version.
+
+            This can be overriden by each point.
+
+            Defaults to none.
+        </description>
+        <notes>
+            This param conflicts with the 'ArchiveTime' param.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Name' holder='Store'>
+        <description>
+            Specifies the server name for the RMI binding.
+        </description>
+        <notes>
+            Needed when the registered name differs from the entity
+            name.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='NullRemoves' type='Boolean' holder='Store'>
+        <description>
+            Specifies if a null value should cause a removal from the
+            store.
+
+            Defaults to false.
+        </description>
+        <notes>
+            This may be overriden by the corresponding point parameter.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Password' holder='Store' hidden='yes'>
+        <description>
+            Specifies the password for authentication to the store.
+        </description>
+        <notes>
+            For security reason, the value of this parameter should be
+            supplied by a 'property' attribute referencing a locally
+            defined property.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Registry' holder='Store'>
+        <description>
+            Specifies the URI for the RMI registry.
+        </description>
+        <notes>
+            Allows bindings to share a registry specification.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='RespectVersion' type='Boolean' holder='Store'>
+        <description>
+            Requests that the archiver respect the point values version.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='User' holder='Store' hidden='yes'>
+        <description>
+            Specifies the user for identification to the store.
+        </description>
+    </ParamDef>
+
+    <!-- Definition of Sync parameters. -->
+
+    <ParamDef name='Crontab' holder='Sync'>
+        <description>
+            Specifies a schedule in the format of an extended crontab
+            entry.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Elapsed' holder='Sync'>
+        <description>
+            Specifies the elapsed time.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Offset' holder='Sync'>
+        <description>
+            Specifies an offset to the elapsed time.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Stamp' multiple='yes' holder='Sync'>
+        <description>
+            Supplies a stamp.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='TimeZone' holder='Sync'>
+        <description>
+            Specifies the time zone.
+        </description>
+    </ParamDef>
+
+    <!-- Definition of Transform parameters. -->
+
+    <ParamDef name='Action' holder='Transform'>
+        <description>
+            Used by the Control Engine to identify the action requested.
+
+            'UpdateDocument' requests a refresh of the metadata
+            workspace from its repository. The revision is the value, if
+            present and greater than 0, otherwise the latest.
+
+            'UpdateCutoffControl' specifies a minimum stamp value to
+            send an update from a generated result.
+
+            'UpdateFilterControl' indicates if identical updates for the
+            same point should be filtered.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ApplyText' holder='Transform'>
+        <description>
+            The script text used to apply the transform.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CeilingInterval' type='Elapsed' holder='Transform'>
+        <description>
+            Used by the Resynchronizer Engine Transform to specify the
+            time interval relative to the next Sync interval which can
+            be trimmed to resynchronize the result.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='CeilingRatio' type='Float' holder='Transform'>
+        <description>
+            Used by the Resynchronizer Engine Transform to specify the
+            ratio of the offset relative to the next Sync interval which
+            can be trimmed to resynchronize the result.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FailReturnsNull' type='Boolean' holder='Transform'>
+        <description>
+            Used by the some engines as an indicator that the failure to
+            produce a result should return a null value.
+
+            The default is to cancel the value generation.
+        </description>
+        <notes>
+            This may be overriden by the corresponding point parameter.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='FinalProgram' holder='Transform'>
+        <description>
+            Used by the Selector Engines as the final program to execute
+            in the Transform.
+
+            The value left on the stack finalizes the result.
+        </description>
+        <notes>
+            The step number is 1 more than the total number of steps.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='FloorInterval' type='Elapsed' holder='Transform'>
+        <description>
+            Used by the Resynchronizer Engine Transform to specify the
+            time interval relative to the previous Sync interval which
+            can be trimmed to resynchronize the result.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='FloorRatio' type='Float' holder='Transform'>
+        <description>
+            Used by the Resynchronizer Engine Transform to specify the
+            ratio of the offset relative to the previous Sync interval
+            which can be trimmed to resynchronize the result.
+
+            Defaults to 0.0 (none).
+        </description>
+    </ParamDef>
+
+    <ParamDef name='InitialProgram' holder='Transform'>
+        <description>
+            Used by the Selector Engines as the initial program to
+            execute in the Transform.
+
+            The value left on the stack initializes the result.
+        </description>
+        <notes>
+            The step number is 0.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Macro' multiple='yes' holder='Transform'>
+        <description>
+            Defines a RPN macro instruction.
+        </description>
+        <notes>
+            Multiple values will each define a macro instruction.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='NullRemoves' type='Boolean' holder='Transform'>
+        <description>
+            Specifies if null results should cause a removal from the
+            store unless prevented by the point definition.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Param' multiple='yes' holder='Transform'>
+        <description>
+            Specifies values which will be made available to the Pipe
+            Engine Transform process.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='Program' holder='Transform'>
+        <description>
+            RPN instructions to compute the result from its inputs.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='RecalcLatest' type='Integer' holder='Transform'>
+        <description>
+            Limits recalculations to the specified number of values (-1
+            or nothing means no limit, 0 means no recalc, 1 means recalc
+            latest only, etc.).
+
+            Defaults to -1.
+        </description>
+        <notes>
+            This may be overriden by the corresponding point parameter.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='StartFile' holder='Transform'>
+        <description>
+            The script file used to start the transform.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='StartText' holder='Transform'>
+        <description>
+            The script text used to start the transform.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='StepProgram' holder='Transform'>
+        <description>
+            Used by the Selecto Engines as a program for each step of
+            the summarized value.
+
+            The value left on the stack updates the result.
+        </description>
+        <notes>
+            The step number is from 1 to the total number of steps.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='StopText' holder='Transform'>
+        <description>
+            The script text used to stop the transform.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='TimeLimit' type='Elapsed' holder='Transform'>
+        <description>
+            Specifies a time limit to produce a result.
+
+            Defaults to none.
+        </description>
+        <notes>
+            This is supported by the Pipe Engine.
+        </notes>
+    </ParamDef>
+
+    <ParamDef name='Word' multiple='yes' holder='Transform'>
+        <description>
+            Defines an additional RPN word.
+        </description>
+        <notes>
+            Multiple values will each define a word.
+        </notes>
+    </ParamDef>
+
+    <!-- Content definitions. -->
+
+    <Content name='Count' classDef='LongContent'/>
+    <Content name='BigDecimal' classDef='BigDecimalContent'/>
+    <Content name='BigInteger' classDef='BigIntegerContent'/>
+    <Content name='BigRational' classDef='BigRationalContent'/>
+    <Content name='Boolean' classDef='BooleanContent'/>
+    <Content name='Byte' classDef='ByteContent'/>
+    <Content name='CountDict' classDef='DictContent'>
+        <param name='Content' classDef='LongContent'/>
+    </Content>
+    <Content name='CountTuple' classDef='TupleContent'>
+        <param name='Content' classDef='LongContent'/>
+    </Content>
+    <Content name='Clock' classDef='ClockContent'/>
+    <Content name='Complex' classDef='ComplexContent'/>
+    <Content name='Dict' classDef='DictContent'/>
+    <Content name='Double' classDef='DoubleContent'/>
+    <Content name='Float' classDef='FloatContent'/>
+    <Content name='Integer' classDef='IntegerContent'/>
+    <Content name='Logical' classDef='BooleanContent'/>
+    <Content name='LogicalDict' classDef='DictContent'>
+        <param name='Content' classDef='BooleanContent'/>
+    </Content>
+    <Content name='LogicalTuple' classDef='TupleContent'>
+        <param name='Content' classDef='BooleanContent'/>
+    </Content>
+    <Content name='Long' classDef='LongContent'/>
+    <Content name='Mask' classDef='LongContent'/>
+    <Content name='Numeric' classDef='DoubleContent'/>
+    <Content name='NumericDict' classDef='DictContent'>
+        <param name='Content' classDef='DoubleContent'/>
+    </Content>
+    <Content name='NumericTuple' classDef='TupleContent'>
+        <param name='Content' classDef='DoubleContent'/>
+    </Content>
+    <Content name='Rational' classDef='RationalContent'/>
+    <Content name='Short' classDef='ShortContent'/>
+    <Content name='SI' classDef='SIContent'/>
+    <Content name='StartStop' classDef='StartStopContent'/>
+    <Content name='State' classDef='StateContent'/>
+    <Content name='String' classDef='StringContent'/>
+    <Content name='Temperature' classDef='TemperatureContent'/>
+    <Content name='Text' classDef='StringContent'/>
+    <Content name='Tuple' classDef='TupleContent'/>
+    <Content name='Unspecified' classDef='UnspecifiedContent'/>
+
+    <!-- Behavior definitions. -->
+
+    <Behavior name='AlwaysTriggers' classDef='AlwaysTriggersBehavior'>
+        <description>
+            Always triggers the computation of a result with the same
+            stamp as the notice. It also retriggers the computation of
+            subsequent dependents up to the next appearance of itself.
+        </description>
+    </Behavior>
+    <Behavior name='Extrapolated' classDef='ExtrapolatedBehavior'>
+        <description>
+            The value of the input should be interpolated or
+            extrapolated when needed.
+        </description>
+    </Behavior>
+    <Behavior name='Interpolated' classDef='InterpolatedBehavior'>
+        <description>
+            The value of the input should be interpolated when needed.
+        </description>
+    </Behavior>
+    <Behavior name='Controls' classDef='ControlsBehavior'>
+        <description>
+            Always triggers the computation of a result with the same
+            stamp as the notice.
+
+            It is always associated with the only input of a control
+            transform.
+        </description>
+    </Behavior>
+    <Behavior name='NeverTriggers' classDef='NeverTriggersBehavior'>
+        <description>
+            Never triggers the computation of a result.
+        </description>
+    </Behavior>
+    <Behavior name='Replicated' classDef='ReplicatedBehavior'/>
+    <Behavior name='Required' classDef='RequiredBehavior'/>
+    <Behavior name='Resynchronized' classDef='ResynchronizedBehavior'/>
+    <Behavior name='Retriggers' classDef='RetriggersBehavior'/>
+    <Behavior name='StepFiltered' classDef='StepFilteredBehavior'/>
+    <Behavior name='Summarized' classDef='SummarizedBehavior'/>
+    <Behavior name='Summarizes' classDef='SummarizesBehavior'/>
+    <Behavior name='Synchronized' classDef='SynchronizedBehavior'/>
+    <Behavior name='TriggersNew' classDef='TriggersNewBehavior'/>
+
+    <!-- Engine definitions. -->
+
+    <Engine name='Clone' classDef='CloneEngine'/>
+    <Engine name='Control' classDef='ControlEngine'/>
+    <Engine name='Null' classDef='NullEngine'/>
+    <Engine name='Replicator' classDef='ReplicatorEngine'/>
+    <Engine name='Resynchronizer' classDef='ResynchronizerEngine'/>
+    <Engine name='RPN' classDef='RPNEngine'>
+        <param name='Module'>
+            <value classDef='RPNStackOperations'/>
+            <value classDef='RPNDateTimeOperations'/>
+            <value classDef='RPNDoubleOperations'/>
+            <value classDef='RPNLongOperations'/>
+            <value classDef='RPNBooleanOperations'/>
+            <value classDef='RPNStringOperations'/>
+            <value classDef='RPNCompoundOperations'/>
+            <value classDef='RPNContainerOperations'/>
+        </param>
+    </Engine>
+    <Engine name='StepFilter' classDef='StepFilterEngine'/>
+    <Engine name='Summarizer' clone='RPN' classDef='SummarizerEngine'/>
+
+    <!-- Origin definitions. -->
+
+    <Origin name='Unspecified'/>
+
+    <!-- Store definitions. -->
+
+    <Store name='NullStore' title="Null Store" classDef='NullStore'/>
+    <Store name='Unspecified' classDef='NullStore'/>
+
+    <!-- Transform definitions. -->
+
+    <Transform name='Clone' engine='Clone'>
+        <arg/>
+    </Transform>
+    <Transform name='Null' engine='Null'/>
+    <Transform name='Replicate' engine='Replicator'>
+        <arg/>
+    </Transform>
+    <Transform name='StepFiltered' engine='StepFilter'>
+        <arg behavior='StepFiltered'/>
+    </Transform>
+    <Transform name='Unspecified' engine='Null'/>
+    <Transform name='UpdateCutoffControl' engine='Control'>
+        <param name='Action' value='UpdateCutoffControl'/>
+        <arg/>
+    </Transform>
+    <Transform name='UpdateDocument' engine='Control'>
+        <param name='Action' value='UpdateDocument'/>
+        <arg/>
+    </Transform>
+    <Transform name='UpdateFilterControl' engine='Control'>
+        <param name='Action' value='UpdateFilterControl'/>
+        <arg/>
+    </Transform>
+
+</metadata>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

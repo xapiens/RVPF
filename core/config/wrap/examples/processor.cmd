@@ -1,0 +1,24 @@
+REM $Id: processor.cmd 3191 2016-09-27 14:42:51Z SFB $
+
+CALL "%RVPF_CONFIG%/wrap/common"
+
+SET MAIN_CLASS=org.rvpf.processor.ProcessorServiceActivator
+
+SET CLASS_PATH=%CLASS_PATH%;%RVPF_CORE_SHARE_JAVA%/rvpf-processor.jar
+
+SET JVM_OPTIONS=%JVM_OPTIONS%;-Drvpf.log.prefix=processor
+SET JVM_OPTIONS=%JVM_OPTIONS%;-Drvpf.log.size=5MB
+SET JVM_OPTIONS=%JVM_OPTIONS%;-Drvpf.log.backups=9
+SET JVM_OPTIONS=%JVM_OPTIONS%;-Drvpf.log.id=Proc
+
+SET INITIAL_MEMORY=16
+SET MAXIMUM_MEMORY=256
+
+SET LOG_PREFIX=processor
+
+SET SERVICE_NAME=RVPFProcessor
+SET SERVICE_DISPLAY_NAME=RVPF Processor
+SET SERVICE_DESCRIPTION=RVPF Processor Service
+SET SERVICE_DEPENDS_ON=TCPIP
+
+REM End.

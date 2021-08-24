@@ -1,0 +1,78 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-events.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF 'events' documents.
+
+ The DOCTYPE declaration is
+
+     <!DOCTYPE events PUBLIC
+	 "-//Serge Brisson//DTD RVPF Events//EN"
+	 "http://rvpf.org/dtd/rvpf-events.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+		Root element.
+ -->
+
+<!--
+ A 'events' document is sent by an Alert server.
+ -->
+<!ELEMENT events (service)*>
+<!ATTLIST events
+	version CDATA %VERSION;
+	stamp CDATA #REQUIRED>
+
+<!--
+		Main element.
+ -->
+
+<!--
+ The 'event' element holds information from an Event.
+
+ The 'name' attribute contains the name of the event.
+
+ The 'stamp' attribute contains the time stamp of the Event in ISO 8601
+ format.
+
+ The 'service' attribute contains the name of the service generating the
+ event.
+
+ The 'uuid' attribute contains the UUID of the source of the event.
+
+ The 'entity' attribute contains the name of the entity associated with
+ the service.
+
+ The 'info' attribute holds additional informations.
+ -->
+<!ELEMENT event EMPTY>
+<!ATTLIST event
+	name CDATA #REQUIRED
+	stamp CDATA #REQUIRED
+	service CDATA #REQUIRED
+	uuid CDATA #REQUIRED
+	entity CDATA #IMPLIED
+	info CDATA #IMPLIED>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

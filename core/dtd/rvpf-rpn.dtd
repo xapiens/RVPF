@@ -1,0 +1,131 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-rpn.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF HTTP RPN executor 'request' and
+ 'response'  documents.
+
+ The DOCTYPE declarations are
+
+     <!DOCTYPE request PUBLIC
+	 "-//Serge Brisson//DTD RVPF RPN//EN"
+	 "http://rvpf.org/dtd/rvpf-rpn.dtd">
+
+ and
+
+     <!DOCTYPE response PUBLIC
+	 "-//Serge Brisson//DTD RVPF RPN//EN"
+	 "http://rvpf.org/dtd/rvpf-rpn.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+		Root elements.
+ -->
+
+<!--
+ An 'request' document is sent by a RPN executor client.
+ -->
+<!ELEMENT request (word*, macro*, program, param*, result, input*)>
+<!ATTLIST request
+	version CDATA %VERSION;>
+
+<!--
+ A 'response' document is sent by the RPN executor.
+ -->
+<!ELEMENT response (message+ | value?)>
+<!ATTLIST response
+	version CDATA %VERSION;
+	stamp CDATA #REQUIRED>
+
+<!--
+		Main elements.
+ -->
+
+<!--
+ The 'input' element holds an input value.
+
+ The 'content' attribute must refer to a 'Content' element in the
+ Metadata. The 'unit' attribute is an alternative to 'content' and must
+ supply a SI unit abbreviation.
+
+ The data may be supplied either by the 'value' attribute or by the
+ element's text. The absence of the 'value' attribute and an empty text
+ will be interpreted as a 'null' value. To provide an empty value
+ instead of 'null', an empty 'value' attribute must be supplied.
+ -->
+<!ELEMENT input (#PCDATA)>
+<!ATTLIST input
+	content CDATA #IMPLIED
+	unit CDATA #IMPLIED
+	value CDATA #IMPLIED>
+
+<!--
+ The 'message' element contains a message from the RPN executor.
+ -->
+<!ELEMENT message (#PCDATA)>
+
+<!--
+ A 'macro' element contains the definition of a RPN macro instruction.
+-->
+<!ELEMENT macro (#PCDATA)>
+
+<!--
+ A 'param' element holds the value of a program parameter.
+
+ The data may be supplied either by the 'value' attribute or by the
+ element's text. The absence of the 'value' attribute and an empty text
+ will be interpreted as an empty value.
+-->
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param
+	value CDATA #IMPLIED>
+
+<!--
+ The 'program' element contains the RPN program to execute.
+ -->
+<!ELEMENT program (#PCDATA)>
+
+<!--
+ The 'result' element specifies the request result.
+
+ The 'content' attribute must refer to a 'Content' element in the
+ Metadata. The 'unit' attribute is an alternative to 'content' and must
+ supply a SI unit abbreviation.
+ -->
+<!ELEMENT result EMPTY>
+<!ATTLIST result
+	content CDATA #IMPLIED
+	unit CDATA #IMPLIED>
+
+<!--
+ The 'value' element contains the value produced by the RPN executor.
+ -->
+<!ELEMENT value (#PCDATA)>
+
+<!--
+ A 'word' element contains the definition of a RPN word.
+-->
+<!ELEMENT word (#PCDATA)>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

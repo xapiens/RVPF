@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-contents-si.xml 2048 2013-12-16 20:21:15Z SFB $
+ -->
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<metadata lang='en' title="SI Content definitions">
+
+    <notes>
+        This file is kept only for reference.
+
+        Instead of having to define individual Content definitions for each
+        needed SI prefix, it is usually simpler to use the 'SI' Content
+        definition with the appropriate SI abbreviation as the 'Unit' param
+        for each Point.
+    </notes>
+
+    <!-- Base units. -->
+
+    <Content name='AMPERE' classDef='UnitValueContent'>
+        <title>SI base unit of electric current</title>
+        <description>
+            The ampere is that constant current which, if maintained in two
+            straight parallel conductors of infinite length, of negligible
+            circular cross-section, and placed 1 meter apart in vacuum, would
+            produce between these conductors a force equal to 2 x 10E-7 newton
+            per meter of length.
+        </description>
+        <title lang='fr'>Unité de base du SI pour le courant électrique</title>
+        <description lang='fr'>
+            L'ampère est l'intensité d'un courant constant qui, maintenu dans
+            deux conducteurs parallèles, rectilignes, de longueur infinie, de
+            section circulaire négligeable et placés à une distance de 1 mètre
+            l'un de l'autre dans le vide, produirait entre ces conducteurs une
+            force égale à 2 × 10E–7 newton par mètre de longueur.
+        </description>
+        <param name='Ident' value='ampere'/>
+        <param name='Abbrev' value='A'/>
+    </Content>
+
+    <Content name='CANDELA' classDef='UnitValueContent'>
+        <title>SI base unit of luminous intensity</title>
+        <description>
+            The candela is the luminous intensity, in a given direction, of a
+            source that emits monochromatic radiation of frequency 540 x 10E+12
+            hertz and that has a radiant intensity in that direction of 1/683
+            watt per steradian.
+        </description>
+        <title lang='fr'>Unité de base du SI pour l'intensité lumineuse</title>
+        <description lang='fr'>
+            La candela est l'intensité lumineuse, dans une direction donnée,
+            d'une source qui émet un rayonnement monochromatique de fréquence
+            540 x 10E+12 hertz et dont l'intensité énergétique dans cette
+            direction est 1/683 watt par stéradian.
+        </description>
+        <param name='Ident' value='candela'/>
+        <param name='Abbrev' value='cd'/>
+    </Content>
+
+    <Content name='KELVIN' classDef='TemperatureContent'>
+        <title>SI base unit of thermodynamic temperature</title>
+        <description>
+            The kelvin, unit of thermodynamic temperature, is the fraction
+            1/273.16 of the thermodynamic temperature of the triple point of
+            water.
+        </description>
+        <title lang='fr'>
+            Unité de base du SI pour la température thermodynamique
+        </title>
+        <description lang='fr'>
+            Le kelvin, unité de température thermodynamique, est la fraction
+            1/273,16 de la température thermodynamique du point triple de l'eau.
+        </description>
+        <param name='Ident' value='Kelvin'/>
+        <param name='Abbrev' value='K'/>
+    </Content>
+
+    <Content name='KILOGRAM' classDef='UnitValueContent'>
+        <title>SI base unit of mass</title>
+        <description>
+            The kilogram is the unit of mass; it is equal to the mass of the
+            international prototype of the kilogram.
+        </description>
+        <title lang='fr'>Unité de base du SI pour la masse</title>
+        <description lang='fr'>
+            Le kilogramme est l'unité de masse; il est égal à la masse du
+            prototype international du kilogramme.
+        </description>
+        <param name='Ident' value='kilogram'/>
+        <param name='Abbrev' value='kg'/>
+    </Content>
+
+    <Content name='METER' classDef='UnitValueContent'>
+        <title>SI base unit of length</title>
+        <description>
+            The meter is the length of the path travelled by light in vacuum
+            during a time interval of 1/299 792 458 of a second.
+        </description>
+        <title lang='fr'>Unité de base du SI pour la longueur</title>
+        <description lang='fr'>
+             Le mètre est la longueur du trajet parcouru dans le vide par la
+             lumière pendant une durée de 1/299 792 458 de seconde.
+        </description>
+        <param name='Ident' value='meter'/>
+        <param name='Abbrev' value='m'/>
+    </Content>
+
+    <Content name='MOLE' classDef='UnitValueContent'>
+        <title>SI base unit of amount of substance</title>
+        <description>
+            The mole is the amount of substance of a system which contains as
+            many elementary entities as there are atoms in 0.012 kilogram of
+            carbon 12.
+        </description>
+        <notes>
+            When the mole is used, the elementary entities must be specified and
+            may be atoms, molecules, ions, electrons, other particles, or
+            specified groups of such particles.
+        </notes>
+        <title lang='fr'>Unité de base du SI pour la quantité de matière</title>
+        <description lang='fr'>
+            La mole est la quantité de matière d'un système contenant autant
+            d'entités élémentaires qu'il y a d'atomes dans 0,012 kilogramme de
+            carbone 12.
+        </description>
+        <notes lang='fr'>
+            Lorsqu'on emploie la mole, les entités élémentaires doivent être
+            spécifiées et peuvent être des atomes, des molécules, des ions, des
+            électrons, d'autres particules ou des groupements spécifiés de
+            telles particules.
+        </notes>
+        <param name='Ident' value='mole'/>
+        <param name='Abbrev' value='mol'/>
+    </Content>
+
+    <Content name='SECOND' classDef='UnitValueContent'>
+        <title>SI base unit of time</title>
+        <description>
+            The second is the duration of 9 192 631 770 periods of the radiation
+            corresponding to the transition between the two hyperfine levels of
+            the ground state of the cesium 133 atom.
+        </description>
+        <title lang='fr'>Unité de base du SI pour le temps</title>
+        <description lang='fr'>
+            La seconde est la durée de 9 192 631 770 périodes de la radiation
+            correspondant à la transition entre les deux niveaux hyperfins de
+            l'état fondamental de l'atome de césium 133.
+        </description>
+        <param name='Ident' value='second'/>
+        <param name='Abbrev' value='sec'/>
+    </Content>
+
+    <!-- Derived units. -->
+
+    <Content name='BECKEREL' classDef='UnitValueContent'>
+        <param name='Ident' value='beckerel'/>
+        <param name='Abbrev' value='Bq'/>
+    </Content>
+
+    <Content name='BIT' classDef='UnitValueContent'>
+        <param name='Ident' value='bit'/>
+        <param name='Abbrev' value='bit'/>
+    </Content>
+
+    <Content name='COULOMB' classDef='UnitValueContent'>
+        <param name='Ident' value='coulomb'/>
+        <param name='Abbrev' value='C'/>
+    </Content>
+
+    <Content name='FARAD' classDef='UnitValueContent'>
+        <param name='Ident' value='farad'/>
+        <param name='Abbrev' value='F'/>
+    </Content>
+
+    <Content name='GRAM' classDef='UnitValueContent'>
+        <param name='Ident' value='gram'/>
+        <param name='Abbrev' value='g'/>
+        <param name='Multiplier' value='1e-3'/>
+    </Content>
+
+    <Content name='GRAY' classDef='UnitValueContent'>
+        <param name='Ident' value='gray'/>
+        <param name='Abbrev' value='Gy'/>
+    </Content>
+
+    <Content name='HENRY' classDef='UnitValueContent'>
+        <param name='Ident' value='henry'/>
+        <param name='Abbrev' value='H'/>
+    </Content>
+
+    <Content name='HERTZ' classDef='UnitValueContent'>
+        <param name='Ident' value='hertz'/>
+        <param name='Abbrev' value='Hz'/>
+    </Content>
+
+    <Content name='JOULE' classDef='UnitValueContent'>
+        <param name='Ident' value='joule'/>
+        <param name='Abbrev' value='J'/>
+    </Content>
+
+    <Content name='KATAL' classDef='UnitValueContent'>
+        <param name='Ident' value='katal'/>
+        <param name='Abbrev' value='kat'/>
+    </Content>
+
+    <Content name='LUMEN' classDef='UnitValueContent'>
+        <param name='Ident' value='lumen'/>
+        <param name='Abbrev' value='lm'/>
+    </Content>
+
+    <Content name='LUX' classDef='UnitValueContent'>
+        <param name='Ident' value='lux'/>
+        <param name='Abbrev' value='lx'/>
+    </Content>
+
+    <Content name='NEWTON' classDef='UnitValueContent'>
+        <param name='Ident' value='newton'/>
+        <param name='Abbrev' value='N'/>
+    </Content>
+
+    <Content name='OHM' classDef='UnitValueContent'>
+        <param name='Ident' value='ohm'/>
+        <param name='Abbrev' value='O'>
+            <notes>
+                The standard abbreviation is the greek capital letter Omega.
+                However, since that symbol is not part of the 'ISO-8859-1'
+                encoding, it is replaced here by the ASCII capital letter 'O'.
+            </notes>
+        </param>
+    </Content>
+
+    <Content name='PASCAL' classDef='UnitValueContent'>
+        <param name='Ident' value='pascal'/>
+        <param name='Abbrev' value='Pa'/>
+    </Content>
+
+    <Content name='RADIAN' classDef='UnitValueContent'>
+        <param name='Ident' value='radian'/>
+        <param name='Abbrev' value='rad'/>
+    </Content>
+
+    <Content name='SIEMENS' classDef='UnitValueContent'>
+        <param name='Ident' value='siemens'/>
+        <param name='Abbrev' value='S'/>
+    </Content>
+
+    <Content name='SIEVERT' classDef='UnitValueContent'>
+        <param name='Ident' value='sievert'/>
+        <param name='Abbrev' value='Sv'/>
+    </Content>
+
+    <Content name='STERADIAN' classDef='UnitValueContent'>
+        <param name='Ident' value='steradian'/>
+        <param name='Abbrev' value='sr'/>
+    </Content>
+
+    <Content name='TESLA' classDef='UnitValueContent'>
+        <param name='Ident' value='tesla'/>
+        <param name='Abbrev' value='T'/>
+    </Content>
+
+    <Content name='VOLT' classDef='UnitValueContent'>
+        <param name='Ident' value='volt'/>
+        <param name='Abbrev' value='V'/>
+    </Content>
+
+    <Content name='WATT' classDef='UnitValueContent'>
+        <param name='Ident' value='watt'/>
+        <param name='Abbrev' value='W'/>
+    </Content>
+
+    <Content name='WEBER' classDef='UnitValueContent'>
+        <param name='Ident' value='weber'/>
+        <param name='Abbrev' value='Wb'/>
+    </Content>
+
+</metadata>
+
+<!-- End. -->

@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id$ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='xml-resolver'
+            revision='${resolver.revision}'
+            organisation='xml-resolver'
+            status='release'>
+        <license name='ASL-2.0'
+                url='http://www.apache.org/licenses/LICENSE-2.0.txt'/>
+        <description homepage='http://xerces.apache.org/xml-commons/components/resolver/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

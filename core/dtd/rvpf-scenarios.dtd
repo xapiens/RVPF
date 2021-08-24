@@ -1,0 +1,221 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-scenarios.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF 'scenarios' and 'scenario' documents.
+
+ The DOCTYPE declarations are
+
+     <!DOCTYPE scenarios PUBLIC
+         "-//Serge Brisson//DTD RVPF Scenarios//EN"
+         "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+
+ and
+
+     <!DOCTYPE scenario PUBLIC
+         "-//Serge Brisson//DTD RVPF Scenarios//EN"
+         "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+                Root elements.
+ -->
+
+<!--
+ -->
+
+<!ELEMENT scenarios (scenario*)>
+<!ATTLIST scenarios
+        version CDATA %VERSION;>
+
+<!--
+ The 'scenario' element represents a single scenario.  Each scenario is
+ run in a controlled environments: the Store and Processor services are
+ restarted and the points values are purged.
+
+ The 'title' of the scenario is written to the log.  The 'time' is used
+ as an initial default time.  This time may be overriden on subsequent
+ commands.
+
+ A 'note' is only informative.
+
+ A 'time' attribute in this and other elements may contain a date part
+ (YYYY-MM-DD) and / or a time part (HH:MM:SS).  When both are present,
+ they are separated by a whitespace.  The second may include a
+ fractional part down to the millisecond. When only the date is
+ supplied, the time is set to midnight.  When only the time is supplied,
+ the date is set to the current default value from the scene, scenario,
+ or the system.
+
+ The 'from' attribute contains the location (absolute or relative) of
+ the actual scenario definition.
+  -->
+<!ELEMENT scenario ((casting, scene*)?)>
+<!ATTLIST scenario
+        title CDATA #IMPLIED
+        note CDATA #IMPLIED
+        time CDATA #IMPLIED
+        from CDATA #IMPLIED>
+
+<!--
+                Main elements.
+ -->
+
+<!--
+ The 'casting' element contains the assignments of roles in the scenario
+ to the actors selected by the 'director'.  This 'director' is a
+ property which is set before reading the metadata, where it should
+ usually condition which definitions are seen by using the 'if' and
+ 'unless' attributes.
+ -->
+<!ELEMENT casting (cast*)>
+<!ATTLIST casting
+        note CDATA #IMPLIED
+        director CDATA #REQUIRED>
+
+<!--
+ A 'scene' groups a number of events within a scenario.  Its 'title' is
+ logged and its 'time' may set a new default value.  At the end of a
+ scene, any held message is committed.
+ -->
+<!ELEMENT scene (set | entry | action | exit | repeat | silence | break)*>
+<!ATTLIST scene
+        title CDATA #REQUIRED
+        note CDATA #IMPLIED
+        time CDATA #IMPLIED>
+
+<!--
+                Child elements.
+ -->
+
+<!--
+ An 'action' describes a value produced by the Processor.  The 'role'
+ refers to the Point associated to the value.  The 'time' is the
+ timestamp of the value. The 'state' is the state of the value.  The
+ 'text' is the value.
+
+ The 'line' attribute identifies the event in the log.
+
+ A messaging transaction commit is done on the first 'action' or 'exit'
+ after 'entry' elements.
+
+ After being recognized, the value is forwarded to the Processor.
+ -->
+<!ELEMENT action EMPTY>
+<!ATTLIST action
+        note CDATA #IMPLIED
+        line CDATA #IMPLIED
+        role CDATA #REQUIRED
+        time CDATA #REQUIRED
+        state CDATA #IMPLIED
+        text CDATA #IMPLIED>
+
+<!--
+ A 'break' element does nothing.
+
+ This may be used to set a breakpoint for debugging.
+ -->
+<!ELEMENT break EMPTY>
+<!ATTLIST break
+        note CDATA #IMPLIED
+        line CDATA #IMPLIED>
+
+<!--
+ The 'cast' element attributes a 'role' to an 'actor'.
+
+ If the actor's name is not supplied, it is assumed to be the role's
+ name.
+ -->
+<!ELEMENT cast EMPTY>
+<!ATTLIST cast
+        note CDATA #IMPLIED
+        role CDATA #REQUIRED
+        actor CDATA #IMPLIED>
+
+<!--
+ An 'entry' represents a new value sent to the Store.  See 'action' for
+ the meaning of the attributes.
+
+ After being recognized, the value is forwarded to the Processor.
+ -->
+<!ELEMENT entry EMPTY>
+<!ATTLIST entry
+        note CDATA #IMPLIED
+        line CDATA #IMPLIED
+        role CDATA #REQUIRED
+        time CDATA #REQUIRED
+        state CDATA #IMPLIED
+        text CDATA #IMPLIED>
+
+<!--
+ An 'exit' represents the same kind of event as the 'action', except
+ that the value is NOT forwarded to the Processor.
+ -->
+<!ELEMENT exit EMPTY>
+<!ATTLIST exit
+        note CDATA #IMPLIED
+        line CDATA #IMPLIED
+        role CDATA #REQUIRED
+        time CDATA #REQUIRED
+        state CDATA #IMPLIED
+        text CDATA #IMPLIED>
+
+<!--
+ A 'repeat' asks to repeat an action.
+
+ After being recognized, the value is forwarded to the Processor.
+ -->
+<!ELEMENT repeat EMPTY>
+<!ATTLIST repeat
+        note CDATA #IMPLIED
+        line CDATA #IMPLIED
+        role CDATA #REQUIRED
+        time CDATA #REQUIRED>
+
+<!--
+ A 'set' represents the same kind of event as the 'entry', except that
+ the value is NOT forwarded to the Processor.
+ -->
+<!ELEMENT set EMPTY>
+<!ATTLIST set
+        note CDATA #IMPLIED
+        line CDATA #IMPLIED
+        role CDATA #REQUIRED
+        time CDATA #IMPLIED
+        state CDATA #IMPLIED
+        text CDATA #IMPLIED>
+
+<!--
+ A 'silence' element will commit the messaging transaction.
+
+ This is useful when some 'action' or 'exit' steps are activated by a
+ previous 'action' without an intervening 'entry'.
+ -->
+<!ELEMENT silence EMPTY>
+<!ATTLIST silence
+        note CDATA #IMPLIED
+        time CDATA #IMPLIED
+        line CDATA #IMPLIED>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

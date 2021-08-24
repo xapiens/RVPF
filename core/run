@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# $Id: run 3097 2016-07-13 20:12:59Z SFB $
+
+shopt -s extglob
+run_dir=${0%%*([^/])}
+[ -z "$run_dir" ] || cd $run_dir
+
+run_dir=bin
+run_file=$1.sh
+[ -e $run_dir/$run_file ] || run_dir="core/bin"
+shift
+
+pushd . > /dev/null
+cd $run_dir
+. setup/rvpf-env.sh
+popd > /dev/null
+
+exec $run_dir/$run_file $@
+
+# End.

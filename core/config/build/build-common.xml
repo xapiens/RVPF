@@ -1,0 +1,504 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE project>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: build-common.xml 4116 2019-08-04 18:02:05Z SFB $
+ -->
+
+<project name='RVPF-common'
+        xmlns:if='ant:if' xmlns:unless='ant:unless'
+        xmlns:ivy='antlib:org.apache.ivy.ant'>
+
+    <property environment='env'/>
+
+    <property name='rvpf.home' location='..'/>
+    <property name='rvpf.core' location='${rvpf.home}/core'/>
+
+    <property name='rvpf.name' value='RVPF'/>
+    <property name='rvpf.name.unix' value='rvpf'/>
+
+    <property name='copyright'
+            value="Copyright &#169; 2003-2019 Serge Brisson.&#160; All Rights Reserved."/>
+    <property name='package' value='org.${rvpf.name.unix}'/>
+    <pathconvert property='package.dir' targetos='unix'>
+        <propertyresource name='package'/>
+        <mapper type='unpackage' from='*' to='*'/>
+    </pathconvert>
+
+    <property file='${rvpf.core}/config/build/version.properties'
+            prefix='rvpf.version'/>
+
+    <property name='config.build.ivy.location' location='config/build/ivy'/>
+    <property name='setup.done.file' value='config/build/setup-done'/>
+
+    <condition property='rvpf.web.lib.root'
+            value='../../../${env.RVPF_VER}/${rvpf.name}' else='..'>
+        <isset property='env.RVPF_VER'/>
+    </condition>
+    <property name='rvpf.web.lib.rvpf'
+            location='${rvpf.web.lib.root}/web/lib/${rvpf.name.unix}'/>
+
+    <property name='config.xml' value='rvpf-config.xml'/>
+    <property name='home.jar' value='${rvpf.name.unix}-home.jar'/>
+    <property name='keystores' value='*.keystore'/>
+    <property name='metadata.components.xml' value='rvpf-components.xml'/>
+    <property name='metadata.contents.xml' value='rvpf-contents.xml'/>
+    <property name='metadata.points.xml' value='rvpf-points.xml'/>
+    <property name='metadata.syncs.xml' value='rvpf-syncs.xml'/>
+    <property name='metadata.tests.points.xml' value='rvpf-tests-points.xml'/>
+    <property name='metadata.transforms.xml' value='rvpf-transforms.xml'/>
+    <property name='metadata.xml' value='rvpf-metadata.xml'/>
+    <property name='realm.config' value='rvpf-realm.properties'/>
+    <property name='scenarios' value='rvpf-*scenario*.xml'/>
+    <property name='truststores' value='*.truststore'/>
+
+    <property name='rvpf.base.jar' value='${rvpf.name.unix}-base.jar'/>
+    <property name='rvpf.core.tests.jar' value='${rvpf.name.unix}-core-tests.jar'/>
+    <property name='rvpf.service.jar' value='${rvpf.name.unix}-service.jar'/>
+    <property name='rvpf.forwarder.jar' value='${rvpf.name.unix}-forwarder.jar'/>
+    <property name='rvpf.http.jar' value='${rvpf.name.unix}-http.jar'/>
+    <property name='rvpf.processor.jar' value='${rvpf.name.unix}-processor.jar'/>
+    <property name='rvpf.store.jar' value='${rvpf.name.unix}-store.jar'/>
+    <property name='rvpf.tests.jar' value='${rvpf.name.unix}-tests.jar'/>
+    <property name='rvpf.tools.jar' value='${rvpf.name.unix}-tools.jar'/>
+
+    <property name='rvpf.keystore' value='${env.HOME}/.rvpf.keystore'/>
+    <property name='rvpf.keystore.password' value="rvpf-password"/>
+    <property name='rvpf.keystore.alias' value='rvpf'/>
+
+    <property name='commons-logging.jar' value='commons-logging.jar'/>
+    <property name='jsr305.jar' value='jsr305.jar'/>
+    <property name='log4j.api.jar' value='log4j-api.jar'/>
+    <property name='log4j.core.jar' value='log4j-core.jar'/>
+    <property name='log4j.jcl.jar' value='log4j-jcl.jar'/>
+    <property name='log4j.jul.jar' value='log4j-jul.jar'/>
+    <property name='mail.jar' value='javax.mail.jar'/>
+    <property name='servlet.jar' value='javax.servlet-api.jar'/>
+    <property name='testng.jar' value='testng.jar'/>
+    <property name='jcommander.jar' value='jcommander.jar'/>
+    <property name='xstream.jar' value='xstream.jar'/>
+
+    <property name='testng.jars'
+            value="${testng.jar} ${jcommander.jar}"/>
+
+    <condition property='os.linux'>
+        <equals arg1='${os.name}' arg2='Linux'/>
+    </condition>
+
+    <condition property='os.osx'>
+        <and>
+            <os family='mac'/>
+            <os family='unix'/>
+        </and>
+    </condition>
+
+    <condition property='os.vms'>
+        <os family='openvms'/>
+    </condition>
+
+    <condition property='os.windows'>
+        <os family='winnt'/>
+    </condition>
+
+    <condition property='os.win32'>
+        <os family='winnt' arch='x86'/>
+    </condition>
+
+    <condition property='os.win64'>
+        <os family='winnt' arch='amd64'/>
+    </condition>
+
+    <condition property='vcs.git'>
+        <available file='${rvpf.home}/.git' type='dir'/>
+    </condition>
+
+    <condition property='vcs.svn'>
+        <available file='${rvpf.home}/.svn' type='dir'/>
+    </condition>
+
+    <condition property='setup.done'>
+        <available file='${setup.done.file}'/>
+    </condition>
+
+    <condition property='sign.jars'>
+        <available file='${rvpf.keystore}'/>
+    </condition>
+
+    <condition property='class.files.available'>
+        <available file='build/main/classes/org/${rvpf.name.unix}'/>
+    </condition>
+
+    <condition property='shell.cmd'>
+        <and>
+            <isset property='os.windows'/>
+            <not>
+                <isset property='env.HOME'/>
+            </not>
+        </and>
+    </condition>
+
+    <path id='rvpf.class.path'>
+        <pathelement location='${rvpf.core}/lib/${rvpf.base.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.service.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${log4j.api.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${log4j.core.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${log4j.jul.jar}'/>
+    </path>
+
+    <xmlcatalog id='rvpf.catalog'>
+        <classpath location='${rvpf.core}/lib/rvpf-service.jar'/>
+        <dtd
+                publicid="-//Serge Brisson//DTD RVPF//EN"
+                location='dtd/rvpf.dtd'/>
+        <classpath location='${rvpf.core}/lib/rvpf-core-tests.jar'/>
+        <dtd
+                publicid="-//Serge Brisson//DTD RVPF Scenarios//EN"
+                location='dtd/rvpf-scenarios.dtd'/>
+    </xmlcatalog>
+
+    <presetdef name='rvpf.javac'>
+        <javac taskname='javac'
+                deprecation='on' debug='on' includeantruntime='no'/>
+    </presetdef>
+
+    <presetdef name='rvpf.javadoc'>
+        <javadoc destdir='web/javadoc'
+                classpathref='project.class.path'
+                source='${source.java.revision}'
+                windowtitle="${project.name} API Documentation"
+                doctitle="${project.name} API" locale='en'
+                author='no' version='no'
+                use='yes' nodeprecatedlist='true' noqualifier='all'
+                noindex='true' nohelp='true' serialwarn='no'
+                failonerror='yes' additionalparam='-breakiterator'>
+            <arg value='-quiet'/>
+            <packageset dir='src/main/java'>
+                <include name='${package.dir}/**'/>
+            </packageset>
+            <bottom>${copyright}</bottom>
+        </javadoc>
+    </presetdef>
+
+    <taskdef resource='org/apache/ivy/ant/antlib.xml'
+            uri='antlib:org.apache.ivy.ant'
+            classpath='${rvpf.core}/config/build/ivy.jar'/>
+
+    <macrodef name='gitsvn'>
+        <attribute name='action'/>
+        <element name='args' implicit='yes' optional='yes'/>
+        <sequential>
+            <exec taskname='gitsvn' dir='.' executable='git'
+                    failonerror='yes' logerror='yes'
+                    outputproperty='gitsvn.@{action}.output'>
+                <arg line="svn @{action}"/>
+                <args/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name='javapp'>
+        <attribute name='skip'/>
+        <element name='sources' implicit='yes'/>
+        <sequential>
+            <replaceregexp match="//\s*\[@{skip} begins\].*?//\s*\[@{skip} ends\]"
+                    replace="// [@{skip} skipped]" flags='gs'>
+                <sources/>
+            </replaceregexp>
+        </sequential>
+    </macrodef>
+
+    <macrodef name='make' unless:true='shell.cmd'>
+        <attribute name='target' default=''/>
+        <element name='args' implicit='yes' optional='yes'/>
+        <sequential>
+            <svnversion/>
+            <exec taskname='make' dir='.' executable='make' failonerror='yes'>
+                <arg line="@{target}"/>
+                <args/>
+                <env key='RVPF_REVISION' value="${svnversion.output}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name='svn'>
+        <attribute name='action'/>
+        <element name='args' implicit='yes' optional='yes'/>
+        <sequential>
+            <exec taskname='svn' dir='.' executable='svn'
+                    failonerror='yes' logerror='yes'
+                    outputproperty='svn.@{action}.output'>
+                <arg value="@{action}"/>
+                <args/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name='svnversion'>
+        <sequential>
+            <exec taskname='svnversion' dir='.' executable='svnversion'
+                    failonerror='yes' logerror='yes'
+                    outputproperty='svnversion.output'/>
+        </sequential>
+    </macrodef>
+
+    <target name='build'
+            description="Builds the subsystem.">
+        <mkdir dir='log'/>
+        <antcall target='sync'/>
+        <antcall target='jar'/>
+    </target>
+
+    <target name='clean' depends='cleanup'
+            description="Removes generated files.">
+        <make target='clean' unless:set='shell.cmd'/>
+
+        <delete dir='build'/>
+        <delete dir='data'/>
+        <delete dir='dist'/>
+        <delete dir='lib'/>
+        <delete dir='log'/>
+        <delete dir='tmp'/>
+        <delete dir='tests/data'/>
+        <delete dir='tests/results'/>
+        <delete dir='tests/tmp'/>
+        <delete dir='web/javadoc'/>
+
+        <delete dir='.' includes='**/*.class'/>
+
+        <mkdir dir='log'/>
+        <mkdir dir='tmp'/>
+
+        <antcall target='setup-default'/>
+    </target>
+
+    <target name='cleanup'
+            description="Cleans up temporary and backup files.">
+        <delete quiet='true' verbose='false'>
+            <fileset defaultexcludes='false' dir='.'>
+                <include name='**/*~'/>
+                <include name='**/*%'/>
+                <include name='**/.#*'/>
+                <include name='**/*.bak'/>
+                <include name='**/*.log'/>
+                <include name='**/*.pyc'/>
+                <include name='**/*.tmp'/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name='compile' depends='setup-done'
+            description="Compiles files.">
+        <mkdir dir='build/main/classes'/>
+        <rvpf.javac srcdir='src/main/java' destdir='build/main/classes'
+                classpathref='project.class.path'/>
+        <copy todir='build/main/classes/${package.dir}'>
+            <fileset dir='src/main/resources'
+                    includes='messages/*.properties'/>
+        </copy>
+        <antcall target='compile-tests'/>
+    </target>
+
+    <target name='doc' depends='compile'
+            description="Builds the Documentation files.">
+        <rvpf.javadoc/>
+    </target>
+
+    <target name='rebuild' description="Rebuilds the subproject.">
+        <echo level='info' taskname='ant'
+                message="Rebuilding '${name.unix}'..."/>
+        <antcall target='clean'/>
+        <antcall target='setup-opt'/>
+        <antcall target='build'/>
+    </target>
+
+    <target name='recompile' description="Recompiles the subproject.">
+        <echo level='info' taskname='ant'
+                message="Recompiling '${name.unix}'..."/>
+        <antcall target='clean'/>
+        <antcall target='setup-opt'/>
+        <antcall target='compile'/>
+    </target>
+
+    <target name='refresh' description="Refreshes the subproject.">
+        <echo level='info' taskname='ant'
+                message="Refreshing '${name.unix}'..."/>
+        <antcall target='update'/>
+        <antcall target='clean'/>
+        <antcall target='setup-opt'/>
+        <antcall target='build'/>
+        <antcall target='test'/>
+    </target>
+
+    <target name='setup' depends='setup-default'
+            description="Default setup."/>
+
+    <target name='setup-opt' depends='setup'
+            description="Development setup."/>
+
+    <target name='setup-build' depends='setup-default'
+            description="Sets up for build."/>
+
+    <target name='test' depends='setup-done'
+            description="Runs tests.">
+        <delete quiet='true' verbose='false'>
+            <fileset dir='log'>
+                <include name='tests.log'/>
+            </fileset>
+            <fileset dir='tests/tmp'/>
+        </delete>
+        <delete dir='tests/data' quiet='true'/>
+        <property name='library.path' value='${rvpf.core}/lib'/>
+        <java classname='org.rvpf.tests.FrameworkTests'
+                taskname='test' fork='yes' failonerror='yes'>
+            <jvmarg line="-client -Xmx256M"/>
+            <classpath location='tests/config/local'/>
+            <classpath location='tests/config'/>
+            <classpath refid='tests.class.path'/>
+            <sysproperty key='java.library.path'
+                    path='${library.path};${java.library.path}'/>
+            <sysproperty key='user.country' value='CA'/>
+            <sysproperty key='user.language' value='en'/>
+            <env key='RVPF_LOG' value='log'/>
+            <env key='RVPF_HOME' value='${rvpf.core}/..'/>
+            <env key='RVPF_TESTS_VALUE' value='OK'/>
+            <env key='RVPF_TESTS_CLASSES' value='${rvpf.core}/tests/classes'/>
+            <env key='DYLD_LIBRARY_PATH' path='${library.path}'/>
+            <env key='LD_LIBRARY_PATH' path='${library.path}'/>
+            <assertions>
+                <enable/>
+            </assertions>
+            <arg value='-v'/>
+            <arg value='-halt'/>
+        </java>
+        <fail message="See log/tests.log">
+            <condition>
+                <isfileselected file='log/tests.log'>
+                    <containsregexp expression='FATAL|ERROR|WARN'/>
+                </isfileselected>
+            </condition>
+        </fail>
+    </target>
+
+    <target name='update'
+            description="Updates with version control system.">
+        <condition property='vcs.git'>
+            <available file='.git' type='dir'/>
+        </condition>
+        <condition property='vcs.svn'>
+            <available file='.svn' type='dir'/>
+        </condition>
+
+        <exec if:set='vcs.git'
+                taskname='git-svn' dir='.' executable='git'
+                failonerror='yes' logerror='yes'>
+                <arg line="svn rebase"/>
+        </exec>
+        <exec if:set='vcs.svn'
+                taskname='svn' dir='.' executable='svn'
+                failonerror='yes' logerror='yes'>
+            <arg value="update"/>
+        </exec>
+    </target>
+
+    <target name='validate' depends='validate-xml'
+            description="Validates some files."/>
+
+    <target name='compile-tests'>
+        <mkdir dir='build/test/classes'/>
+        <rvpf.javac srcdir='src/test/java'
+                destdir='build/test/classes'>
+            <classpath location='build/main/classes'/>
+            <classpath refid='project.class.path'/>
+            <classpath refid='project.tests.class.path'/>
+            <classpath location='${rvpf.core}/lib/${testng.jar}'/>
+            <classpath location='${rvpf.core}/lib/${jcommander.jar}'/>
+        </rvpf.javac>
+        <copy todir='build/test/classes'>
+            <fileset dir='src/test/java' includes='**/*.properties'/>
+        </copy>
+    </target>
+
+    <target name='setup-default'>
+        <mkdir dir='lib'/>
+        <ivy:settings file='${rvpf.core}/config/build/ivysettings.xml'/>
+        <ivy:resolve file='config/build/ivy.xml' conf='core' log='quiet'/>
+        <ivy:retrieve pattern='lib/[artifact].[ext]' log='quiet'/>
+        <delete dir='log' quiet='true'/>
+        <mkdir dir='log'/>
+        <delete dir='tmp' quiet='true'/>
+        <mkdir dir='tmp'/>
+    </target>
+
+    <target name='setup-done' unless='setup.done'>
+        <antcall target='setup'/>
+        <touch file='${setup.done.file}'/>
+    </target>
+
+    <target name='setup-wrap'>
+        <copy todir='bin'>
+            <mapper type='merge' to='rvpf-service.exe'/>
+            <zipfileset src='${rvpf.core}/lib/commons-daemon.zip'>
+                <include name='prunsrv.exe' if:set='os.win32'/>
+                <include name='amd64/prunsrv.exe' if:set='os.win64'/>
+            </zipfileset>
+        </copy>
+    </target>
+
+    <target name='validate-messages' if='class.files.available'
+            description="Validates messages.">
+        <java classname='org.rvpf.tool.MessagesVerifier'
+                fork='true' failonerror='true'>
+            <sysproperty key='rvpf.log.prefix' value='MessagesVerifier'/>
+            <classpath refid='validate.class.path'/>
+            <env key='RVPF_LOG' value='log'/>
+            <assertions>
+                <enable/>
+            </assertions>
+        </java>
+    </target>
+
+    <target name='validate-xml'
+            description="Validates XML files.">
+        <xmlvalidate>
+            <xmlcatalog refid='rvpf.catalog'/>
+            <fileset dir='shared' includes='*.xml'/>
+            <fileset dir='config/service' includes='*.xml'>
+                <exclude name='catalog.xml'/>
+                <exclude name='log4j2*.xml'/>
+            </fileset>
+            <fileset dir='tests/config' includes='*.xml'>
+                <exclude name='catalog.xml'/>
+                <exclude name='rvpf-metadata-bad.xml'/>
+                <exclude name='log4j2.xml'/>
+                <exclude name='testng.xml'/>
+                <exclude name='*.properties.xml'/>
+                <exclude name='*-protected.xml'/>
+                <exclude name='*store.xml'/>
+            </fileset>
+        </xmlvalidate>
+    </target>
+
+</project>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

@@ -1,0 +1,125 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-updates.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF 'updates' documents.
+
+ The DOCTYPE declarations are
+
+     <!DOCTYPE updates PUBLIC
+	 "-//Serge Brisson//DTD RVPF Updates//EN"
+	 "http://rvpf.org/dtd/rvpf-updates.dtd">
+
+ and
+
+     <!DOCTYPE responses PUBLIC
+	 "-//Serge Brisson//DTD RVPF Updates//EN"
+	 "http://rvpf.org/dtd/rvpf-updates.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+		Root elements.
+ -->
+
+<!--
+ A 'updates' document is sent by an Updates client.
+ -->
+<!ELEMENT updates (delete | update)*>
+<!ATTLIST updates
+	version CDATA %VERSION;>
+
+<!--
+ A 'responses' document is sent by the Updates server.
+
+ It will contain as many 'response' elements as there was 'update' and
+ 'delete' elements in the 'updates' document.
+ -->
+<!ELEMENT responses (response*)>
+<!ATTLIST responses
+	version CDATA %VERSION;
+	stamp CDATA #REQUIRED>
+
+<!--
+		Main elements.
+ -->
+
+<!--
+ The 'delete' element holds a point value delete request.
+
+ The 'point' attribute must contain a reference to the point definition.
+ It may refer to a 'Point' by its 'name' or by its 'uuid'.
+
+ The 'stamp' attribute must be supplied with a org.rvpf.base.DateTime
+ 'raw' value (the number of 100 nanoseconds since 1858-11-17 00:00) or
+ the ISO 8601 format (delimiters must not be omitted).
+ -->
+<!ELEMENT delete EMPTY>
+<!ATTLIST delete
+	point CDATA #REQUIRED
+	stamp CDATA #REQUIRED>
+
+<!--
+ The 'response' element holds a response.
+
+ The 'message' element is present when the corresponding 'update' or
+ 'delete' was not  completed.
+ -->
+<!ELEMENT response (message?)>
+
+<!--
+ The 'update' element holds a point value update request.
+
+ The 'point' attribute must contain a reference to the point definition.
+ It may refer to a 'Point' by its 'name' or by its 'uuid'.
+
+ The 'stamp' attribute must be supplied with a org.rvpf.base.DateTime
+ 'raw' value (the number of 100 nanoseconds since 1858-11-17 00:00) or
+ the ISO 8601 format (delimiters must not be omitted).
+
+ The data is supplied either by the 'value' attribute or by the
+ element's text. The absence of the 'value' attribute and an empty text
+ is interpreted as a 'null' value.
+ -->
+<!ELEMENT update (#PCDATA)>
+<!ATTLIST update
+	point CDATA #REQUIRED
+	stamp CDATA #REQUIRED
+	state CDATA #IMPLIED
+	value CDATA #IMPLIED>
+
+<!--
+		Child element.
+ -->
+
+<!--
+ The 'message' element contains a message from the Updates server.
+
+ The 'exception' attribute names the class of the Exception holding the
+ message.
+ -->
+<!ELEMENT message (#PCDATA)>
+<!ATTLIST message
+	exception CDATA #REQUIRED>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

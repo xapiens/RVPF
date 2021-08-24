@@ -1,0 +1,389 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-config-http-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<config lang='en' title="Shared HTTPServer configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper HTTPServer operations.
+    </description>
+
+    <notes>
+        This file is available as a resource in 'rvpf-http.jar'.
+    </notes>
+
+    <property name='config.http' validated='no'/>
+
+    <!-- HTTPServer properties. -->
+
+    <PropertiesDef name= 'http.server'>
+        <PropertiesDef name='context' multiple='yes'>
+            <description>
+                These properties are used to define an HTTP server
+                context.
+            </description>
+
+            <PropertiesDef name='alert'>
+                <PropertyDef name='limit' type='Integer'>
+                    <description>
+                        Specifies the number of events to keep as
+                        history.
+
+                        Defaults to 1000.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='restraint' type='Elapsed'>
+                    <description>
+                        Specifies a restraint period on startup or after
+                        a signal other than 'Ping'. This periods limits
+                        alert triggers only to the 'Ping' signal.
+
+                        Defaults to 60.0 (seconds).
+                    </description>
+                </PropertyDef>
+            </PropertiesDef>
+
+            <PropertyDef name='authenticator'>
+                <description>
+                    The Authenticator required for this context. It must
+                    be one of 'Basic', 'Digest' and 'Certificate'. The
+                    default is 'Digest'.
+                </description>
+                <notes>
+                    For security reasons, the 'Basic' Authenticator
+                    requires a 'confidential' context.
+                </notes>
+            </PropertyDef>
+
+            <PropertyDef name='confidential' type='Boolean'>
+                <description>
+                    Specifies if the communication channel must be
+                    confidential.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='engine'>
+                <description>
+                    Specifies the 'Engine' name to the RPN module.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='metadata'>
+                <description>
+                    Holds metadata configuration properties.
+
+                    Used by the Metadata Server module.
+                </description>
+                <PropertyDef name='encrypt' type='Boolean'>
+                    <description>
+                        Asks the metadata server to encrypt the content.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='encrypt.key' multiple='yes'>
+                    <description>
+                        An encryption key identification.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='path'>
+                    <description>
+                        The Metadata file path relative to the document
+                        version workspace directory.
+
+                        Defaults to 'rvpf-metadata.xml'.
+                    </description>
+                </PropertyDef>
+
+                <PropertiesDef name='security' extends='security'/>
+
+                <PropertyDef name='sign' type='Boolean'>
+                    <description>
+                        Asks the metadata server to sign the content.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='sign.key' multiple='yes'>
+                    <description>
+                        A signing key identification.
+                    </description>
+                </PropertyDef>
+            </PropertiesDef>
+
+            <PropertyDef name='module.class' type='ClassDef'>
+                <description>
+                    The Class of the module to activate for this
+                    context.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='module.uuid'>
+                <description>
+                    A UUID for the module. This is needed when the
+                    module is a client of the metadata server.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='notifier.class' type='ClassDef'>
+                <description>
+                    The Class of the 'Notifier' for the Notice module.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='path'>
+                <description>
+                    The relative path pointing to this context.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='som.queue' extends='som.queue'>
+                <description>
+                    The queue SOM queue properties.
+                </description>
+            </PropertiesDef>
+
+            <PropertyDef name='realm'>
+                <description>
+                    The realm used for this context.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='resource'>
+                <description>
+                    The path to a resource directory.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='role' multiple='yes'>
+                <description>
+                    A security role allowed to access this context.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='store'>
+                <PropertyDef name='binding'>
+                    <description>
+                        The RMI URI for the server binding.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='name'>
+                    <description>
+                        The name of the store.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='password' hidden='yes'>
+                    <description>
+                        The user password for store connections.
+                    </description>
+                </PropertyDef>
+
+                <PropertiesDef name='security' extends='security'>
+                    <description>
+                        The security configuration for store
+                        connections.
+                    </description>
+                </PropertiesDef>
+
+                <PropertyDef name='user' hidden='yes'>
+                    <description>
+                        The user identification for store connections.
+                    </description>
+                </PropertyDef>
+            </PropertiesDef>
+
+            <PropertyDef name='trigger.refresh' type='Boolean'>
+                <description>
+                    When true, a successful metadata reload by the
+                    Metadata Server module will trigger a
+                    'RefreshMetadata' signal.
+
+                    Defaults to false.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertiesDef name='listener' multiple='yes'>
+            <description>
+                These properties are used to define an HTTP server
+                listener.
+            </description>
+
+            <PropertyDef name='address'>
+                <description>
+                    Specifies on which network address to listen.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='confidential' type='Integer'>
+                <description>
+                    Refers to a secure port for confidential contexts.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='port'>
+                <description>
+                    Specifies on which network port to listen.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='security' extends='security'/>
+        </PropertiesDef>
+
+        <PropertiesDef name='realm' multiple='yes'
+                extends='security.realm'>
+            <description>
+                These properties are used to define an HTTP server
+                realm.
+            </description>
+
+            <PropertyDef name='name'>
+                <description>
+                    Specifies the name of the realm.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='security' extends='security'/>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <property name='http.support.class' validated='no'
+            value='HTTPJettySupport' unless='http.support.class'/>
+
+    <property name='tomcat.home' env='TOMCAT_HOME' validated='no'
+            unless='tomcat.home'/>
+    <property name='tomcat.home.url' if='tomcat.home' validated='no'
+            value='file:///${tomcat.home}'/>
+
+    <!-- HTTPServer class libraries. -->
+
+    <ClassLib name='Jetty'>
+        <location unless='jnlp'
+                location='${lib.url}/jetty-servlet.jar'/>
+        <classLib classLib='Ext'/>
+    </ClassLib>
+
+    <ClassLib name='Tomcat' if='tomcat.home'>
+        <location unless='jnlp'
+                location='${tomcat.home.url}/embed/tomcat-embed-core.jar'/>
+        <location unless='jnlp'
+                location='${tomcat.home.url}/embed/tomcat-embed-logging-log4j.jar'/>
+        <classLib classLib='Ext'/>
+    </ClassLib>
+
+    <!-- HTTP modules classes. -->
+
+    <ClassDef name='HTTPModule'
+            package='org.rvpf.http'/>
+
+    <ClassDef name='HTTPAlertModule'
+            package='org.rvpf.http.alert'
+            member='AlertModule'>
+        <implements classDef='HTTPModule'/>
+    </ClassDef>
+
+    <ClassDef name='HTTPMetadataServerModule'
+            package='org.rvpf.http.metadata'
+            member='MetadataServerModule'>
+        <implements classDef='HTTPModule'/>
+    </ClassDef>
+
+    <ClassDef name='HTTPNoticeModule'
+            package='org.rvpf.http.notice'
+            member='NoticeModule'>
+        <implements classDef='HTTPModule'/>
+    </ClassDef>
+
+    <ClassDef name='HTTPPurgeModule'
+            package='org.rvpf.http.update'
+            member='PurgeModule'>
+        <implements classDef='HTTPModule'/>
+    </ClassDef>
+
+    <ClassDef name='HTTPQueryModule'
+            package='org.rvpf.http.query'
+            member='QueryModule'>
+        <implements classDef='HTTPModule'/>
+    </ClassDef>
+
+    <ClassDef name='HTTPRPNModule'
+            package='org.rvpf.http.rpn'
+            member='RPNModule'>
+        <implements classDef='HTTPModule'/>
+    </ClassDef>
+
+    <ClassDef name='HTTPUpdateModule'
+            package='org.rvpf.http.update'
+            member='UpdateModule'>
+        <implements classDef='HTTPModule'/>
+    </ClassDef>
+
+    <ClassDef name='HTTPNotifier'
+            package='org.rvpf.http.notice'
+            member='Notifier'/>
+
+    <ClassDef name='HTTPSOMNotifier'
+            package='org.rvpf.http.notice'
+            member='SOMNotifier'>
+        <implements classDef='HTTPNotifier'/>
+    </ClassDef>
+
+    <!-- HTTP support classes. -->
+
+    <ClassDef name='HTTPSupport'
+            package='org.rvpf.http'/>
+
+    <ClassDef name='HTTPJettySupport'
+            package='org.rvpf.ext.jetty'
+            member='JettyHTTPSupport'
+            classLib='Jetty'>
+        <implements classDef='HTTPSupport'/>
+    </ClassDef>
+
+    <ClassDef name='HTTPTomcatSupport' if='tomcat.home'
+            package='org.rvpf.ext.tomcat'
+            member='TomcatHTTPSupport'
+            classLib='Tomcat'>
+        <implements classDef='HTTPSupport'/>
+    </ClassDef>
+
+    <!-- Container services class. -->
+
+    <ClassDef name='HTTPServer'
+            package='org.rvpf.http'
+            member='HTTPServerActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

@@ -1,0 +1,557 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<!--
+
+ Related Values Processing Framework.
+
+ $Id: rpn-summary.html 2956 2016-01-28 18:42:23Z SFB $
+
+ -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Language" content="en" />
+  <meta http-equiv="Content-Type" content="text/html" />
+  <link rel="stylesheet" type="text/css" href="style.css" title="RVPF Stylesheet" />
+  <title>RVPF RPN Engine words summary</title>
+</head>
+
+<body>
+    <div id="header">
+        <div id="header-left">
+            <h1>RVPF</h1>
+        </div>
+        <div id="header-right">
+            <h1>Related Values Processing Framework</h1>
+        </div>
+    </div>
+
+        <div id="main">
+            <h1>RPN Operations summary</h1>
+
+            <h2>
+                <ul>
+                    <li><a href="#basic">Basic</a></li>
+                    <li><a href="#stack">Stack</a></li>
+                    <li><a href="#dateTime">DateTime</a></li>
+                    <li><a href="#double">Double</a></li>
+                    <li><a href="#long">Long</a></li>
+                    <li><a href="#boolean">Boolean</a></li>
+                    <li><a href="#rational">Rational</a></li>
+                    <li><a href="#complex">Complex</a></li>
+                    <li><a href="#string">String</a></li>
+                    <li><a href="#bigDecimal">BigDecimal</a></li>
+                    <li><a href="#bigInteger">BigInteger</a></li>
+                    <li><a href="#bigRational">BigRational</a></li>
+                    <li><a href="#compound">Compound</a></li>
+                    <li><a href="#container">Container</a></li>
+                    <li><a href="#dict">Dict</a></li>
+                    <li><a href="#tuple">Tuple</a></li>
+                    <li><a href="#summarizer">Summarizer</a></li>
+                </ul>
+            </h2>
+
+            <div id="main-single">
+                <h2><a id="basic"></a>Basic</h2>
+                <table class="def">
+                    <tr><td>'A'</td><td>Pushes String("A").</td></tr>
+                    <tr><td>"B"</td><td>Pushes String("B").</td></tr>
+                    <tr><td>9</td><td>Pushes Long(9).</td></tr>
+                    <tr><td>9.0</td><td>Pushes Double(9.0).</td></tr>
+                    <tr><td>$1</td><td>Pushes input #1.</td></tr>
+                    <tr><td>$1!</td><td>Pushes required input #1.</td></tr>
+                    <tr><td>$1$</td><td>Pushes input #1 state.</td></tr>
+                    <tr><td>$1@</td><td>Pushes input #1 time stamp.</td></tr>
+                    <tr><td>$1.</td><td>Pushes input #1 point name.</td></tr>
+                    <tr><td>$1=</td><td>Pops object into input #1.</td></tr>
+                    <tr><td>:$1=</td><td>Peeks object into input #1.</td></tr>
+                    <tr><td>$1?</td><td>Pushes input #1 is present.</td></tr>
+                    <tr><td>$*</td><td>Pushes all inputs in order.</td></tr>
+                    <tr><td>$*!</td><td>Pushes all inputs in order disallowing nulls.</td></tr>
+                    <tr><td>$#</td><td>Pushes inputs count.</td></tr>
+                    <tr><td>$0</td><td>Pushes current value of result.</td></tr>
+                    <tr><td>$0!</td><td>Pushes required current value of result.</td></tr>
+                    <tr><td>$0=</td><td>Pops object into current result.</td></tr>
+                    <tr><td>:$0=</td><td>Peeks object into current result.</td></tr>
+                    <tr><td>$0$</td><td>Pushes current result state.</td></tr>
+                    <tr><td>$0@</td><td>Pushes current result time stamp.</td></tr>
+                    <tr><td>$0.</td><td>Pushes result point name.</td></tr>
+                    <tr><td>$0$=</td><td>Pops object into current result state.</td></tr>
+                    <tr><td>:$0$=</td><td>Peeks object into current result state.</td></tr>
+                    <tr><td>#1</td><td>Pushes memory #1.</td></tr>
+                    <tr><td>#1=</td><td>Pops object into memory #1.</td></tr>
+                    <tr><td>:#1=</td><td>Peeks object into memory #1.</td></tr>
+                    <tr><td>@1</td><td>Pushes param #1.</td></tr>
+                    <tr><td>@1!</td><td>Pushes required param #1.</td></tr>
+                    <tr><td>bpt</td><td>Breakpoint opportunity.</td></tr>
+                    <tr><td>deleted?</td><td>Pushes pop is deleted value state.</td></tr>
+                    <tr><td>fail</td><td>Fails.</td></tr>
+                    <tr><td>nop</td><td>Does nothing.</td></tr>
+                    <tr><td>!</td><td>Fails if pop is null.</td></tr>
+                    <tr><td>return</td><td>Ends execution of operations.</td></tr>
+                    <tr><td>stored</td><td>Pushes stored value of result.</td></tr>
+                    <tr><td>stored!</td><td>Pushes required stored value of result.</td></tr>
+                    <tr><td>stored?</td><td>Pushes result value is stored.</td></tr>
+                    <tr><td>$#</td><td>Pushes the type (class name) of pop.</td></tr>
+                </table>
+
+                <h2><a id="stack"></a>Stack</h2>
+                <table class="def">
+                    <tr><td>at</td><td>Pushes at pop.</td></tr>
+                    <tr><td>clear</td><td>Clears pop locations on stack.</td></tr>
+                    <tr><td>copy</td><td>Duplicates pop values.</td></tr>
+                    <tr><td>default</td><td>Pops default for peek null.</td></tr>
+                    <tr><td>depth</td><td>Pushes stack depth from topmost mark.</td></tr>
+                    <tr><td>depth*</td><td>Pushes total stack depth.</td></tr>
+                    <tr><td>drop</td><td>Drops pop.</td></tr>
+                    <tr><td>dump</td><td>Dumps peek marked to Processor's log.</td></tr>
+                    <tr><td>dump*</td><td>Dumps peek all to Processor's log.</td></tr>
+                    <tr><td>dup</td><td>Pushes peek.</td></tr>
+                    <tr><td>:</td><td>Pushes peek.</td></tr>
+                    <tr><td>eq</td><td>Pushes pop equal to pop.</td></tr>
+                    <tr><td>mark</td><td>Marks the stack.</td></tr>
+                    <tr><td>[</td><td>Marks the stack.</td></tr>
+                    <tr><td>mark?</td><td>Pushes stack is marked.</td></tr>
+                    <tr><td>ne</td><td>Pushes pop not equal to pop.</td></tr>
+                    <tr><td>nip</td><td>Drops second item on stack.</td></tr>
+                    <tr><td>null</td><td>Pushes null.</td></tr>
+                    <tr><td>null?</td><td>Pushes pop is null.</td></tr>
+                    <tr><td>over</td><td>Pushes second item on stack.</td></tr>
+                    <tr><td>reverse</td><td>Reverses the stack.</td></tr>
+                    <tr><td>roll</td><td>Rolls pop time pop offset.</td></tr>
+                    <tr><td>swap</td><td>Exchanges top values.</td></tr>
+                    <tr><td>tuck</td><td>Inserts peek before second item on stack.</td></tr>
+                    <tr><td>unmark</td><td>Removes last mark.</td></tr>
+                    <tr><td>]</td><td>Removes last mark.</td></tr>
+                    <tr><td>unmark*</td><td>Removes all marks.</td></tr>
+                </table>
+
+                <h2><a id="dateTime"></a>DateTime</h2>
+                <table class="def">
+                    <tr><td>-</td><td>Pushes pop substracted from pop.</td></tr>
+                    <tr><td>+</td><td>Pushes pop added to pop.</td></tr>
+                    <tr><td>day</td><td>Pushes day from pop.</td></tr>
+                    <tr><td>--day</td><td>Decrements day in peek.</td></tr>
+                    <tr><td>++day</td><td>Increments day in peek.</td></tr>
+                    <tr><td>-days</td><td>Substracts pop as days from peek.</td></tr>
+                    <tr><td>+days</td><td>Adds pop as days to peek.</td></tr>
+                    <tr><td>dim</td><td>Pushes days in month from pop.</td></tr>
+                    <tr><td>dow</td><td>Pushes day of week from pop.</td></tr>
+                    <tr><td>hour</td><td>Pushes hour from pop.</td></tr>
+                    <tr><td>--hour</td><td>Decrements hour in peek.</td></tr>
+                    <tr><td>++hour</td><td>Increments hour in peek.</td></tr>
+                    <tr><td>_hour</td><td>Floors the hour in peek.</td></tr>
+                    <tr><td>~hour</td><td>Rounds the hour in peek.</td></tr>
+                    <tr><td>hours</td><td>Toggles peek between elapsed and hours.</td></tr>
+                    <tr><td>midnight</td><td>Sets peek to midnight.</td></tr>
+                    <tr><td>milli</td><td>Pushes milli from pop.</td></tr>
+                    <tr><td>--milli</td><td>Decrements milli in peek.</td></tr>
+                    <tr><td>++milli</td><td>Increments milli in peek.</td></tr>
+                    <tr><td>_milli</td><td>Floors the millisecond in peek.</td></tr>
+                    <tr><td>~milli</td><td>Rounds the millisecond in peek.</td></tr>
+                    <tr><td>millis</td><td>Toggles peek between elapsed and milliseconds.</td></tr>
+                    <tr><td>minute</td><td>Pushes minute from pop.</td></tr>
+                    <tr><td>--minute</td><td>Decrements minute in peek.</td></tr>
+                    <tr><td>++minute</td><td>Increments minute in peek.</td></tr>
+                    <tr><td>_minute</td><td>Floors the minute in peek.</td></tr>
+                    <tr><td>~minute</td><td>Rounds the minute in peek.</td></tr>
+                    <tr><td>minutes</td><td>Toggles peek between elapsed and minutes.</td></tr>
+                    <tr><td>mjd</td><td>Pushes a DateTime (MJD) built from pop.</td></tr>
+                    <tr><td>month</td><td>Pushes month from pop.</td></tr>
+                    <tr><td>--month</td><td>Decrements month in peek.</td></tr>
+                    <tr><td>++month</td><td>Increments month in peek.</td></tr>
+                    <tr><td>-months</td><td>Substracts pop as months from peek.</td></tr>
+                    <tr><td>+months</td><td>Adds pop as months to peek.</td></tr>
+                    <tr><td>noon</td><td>Sets peek to noon.</td></tr>
+                    <tr><td>now</td><td>Pushes current system time.</td></tr>
+                    <tr><td>raw</td><td>Pushes raw value of pop.</td></tr>
+                    <tr><td>second</td><td>Pushes second (Double) from pop.</td></tr>
+                    <tr><td>--second</td><td>Decrements second in peek.</td></tr>
+                    <tr><td>++second</td><td>Increments second in peek.</td></tr>
+                    <tr><td>_second</td><td>Floors the second in peek.</td></tr>
+                    <tr><td>~second</td><td>Rounds the second in peek.</td></tr>
+                    <tr><td>seconds</td><td>Toggles peek between elapsed and seconds.</td></tr>
+                    <tr><td>split</td><td>Splits popped elapsed in days, hours, minutes, seconds.</td></tr>
+                    <tr><td>split</td><td>Splits popped time in year, month, day, hour, minute, seconds.</td></tr>
+                    <tr><td>join</td><td>Joins popped year, month, day, hour, minute, seconds into time.</td></tr>
+                    <tr><td>today</td><td>Pushes today at midnight.</td></tr>
+                    <tr><td>tomorrow</td><td>Pushes tomorrow at midnight.</td></tr>
+                    <tr><td>tz</td><td>Sets the time zone to the name in pop.</td></tr>
+                    <tr><td>year</td><td>Pushes year from pop.</td></tr>
+                    <tr><td>--year</td><td>Decrements year in peek.</td></tr>
+                    <tr><td>++year</td><td>Increments year in peek.</td></tr>
+                    <tr><td>-years</td><td>Substracts pop as years from peek.</td></tr>
+                    <tr><td>+years</td><td>Adds pop as years to peek.</td></tr>
+                    <tr><td>yesterday</td><td>Pushes yesterday at midnight.</td></tr>
+                </table>
+
+                <h2><a id="double"></a>Double</h2>
+                <table class="def">
+                    <tr><td>0?</td><td>Pushes pop is zero.</td></tr>
+                    <tr><td>0~?</td><td>Pushes within pop, pop is zero.</td></tr>
+                    <tr><td>0+?</td><td>Pushes pop is zero or positive.</td></tr>
+                    <tr><td>0-?</td><td>Pushes pop is zero or negative.</td></tr>
+                    <tr><td>abs</td><td>Pushes abs(pop).</td></tr>
+                    <tr><td>acos</td><td>Pushes acos(pop).</td></tr>
+                    <tr><td>asin</td><td>Pushes asin(pop).</td></tr>
+                    <tr><td>atan</td><td>Pushes atan(pop).</td></tr>
+                    <tr><td>+</td><td>Pushes addition of pop and pop.</td></tr>
+                    <tr><td>cbrt</td><td>Pushes cbrt(pop)</td></tr>
+                    <tr><td>ceil</td><td>Pushes ceil(pop).</td></tr>
+                    <tr><td>cos</td><td>Pushes cos(pop).</td></tr>
+                    <tr><td>cosh</td><td>Pushes cosh(pop).</td></tr>
+                    <tr><td>deg</td><td>Pushes pop in radians to degrees.</td></tr>
+                    <tr><td>/</td><td>Pushes quotient of division by pop of pop.</td></tr>
+                    <tr><td>/%</td><td>Pushes remainder and quotient of division by pop of pop.</td></tr>
+                    <tr><td>e</td><td>Pushes e.</td></tr>
+                    <tr><td>eq</td><td>Pushes pop equal to pop.</td></tr>
+                    <tr><td>=~</td><td>Pushes within pop, pop equal to pop.</td></tr>
+                    <tr><td>float</td><td>Pushes Double.valueOf(pop).</td></tr>
+                    <tr><td>float?</td><td>Pushes pop is a float.</td></tr>
+                    <tr><td>floor</td><td>Pushes floor(pop).</td></tr>
+                    <tr><td>ge</td><td>Pushes pop greater than or equal to pop.</td></tr>
+                    <tr><td>gt</td><td>Pushes pop greater than pop.</td></tr>
+                    <tr><td>hypot</td><td>Pushes hypot(pop, pop).</td></tr>
+                    <tr><td>inf?</td><td>Pushes pop is infinite.</td></tr>
+                    <tr><td>+inf</td><td>Pushes positive infinity.</td></tr>
+                    <tr><td>-inf</td><td>Pushes negative infinity.</td></tr>
+                    <tr><td>le</td><td>Pushes pop less than or equal to pop.</td></tr>
+                    <tr><td>log</td><td>Pushes natural log(pop).</td></tr>
+                    <tr><td>log10</td><td>Pushes log10(pop).</td></tr>
+                    <tr><td>lt</td><td>Pushes pop less than pop.</td></tr>
+                    <tr><td>max</td><td>Pushes maximum of pop and pop.</td></tr>
+                    <tr><td>min</td><td>Pushes minimum of pop and pop.</td></tr>
+                    <tr><td>mod</td><td>Pushes the modulo pop of pop.</td></tr>
+                    <tr><td>*</td><td>Pushes multiplication of pop and pop.</td></tr>
+                    <tr><td>nan</td><td>Pushes a NaN value.</td></tr>
+                    <tr><td>nan?</td><td>Pushes pop is NaN.</td></tr>
+                    <tr><td>ne</td><td>Pushes pop not equal to pop.</td></tr>
+                    <tr><td>neg</td><td>Pushes - pop.</td></tr>
+                    <tr><td>number?</td><td>Pushes pop is a number.</td></tr>
+                    <tr><td>pi</td><td>Pushes pi.</td></tr>
+                    <tr><td>**</td><td>Pushes power pop of pop.</td></tr>
+                    <tr><td>rad</td><td>Pushes pop in degress to radians.</td></tr>
+                    <tr><td>%</td><td>Pushes remainder of division by pop of pop.</td></tr>
+                    <tr><td>round</td><td>Pushes round(pop).</td></tr>
+                    <tr><td>sgn</td><td>Pushes the signum function of pop.</td></tr>
+                    <tr><td>sin</td><td>Pushes sin(pop).</td></tr>
+                    <tr><td>sinh</td><td>Pushes sinh(pop).</td></tr>
+                    <tr><td>sqrt</td><td>Pushes sqrt(pop)</td></tr>
+                    <tr><td>-</td><td>Pushes subtraction of pop from pop.</td></tr>
+                    <tr><td>tan</td><td>Pushes tan(pop).</td></tr>
+                    <tr><td>tanh</td><td>Pushes tanh(pop).</td></tr>
+                </table>
+
+                <h2><a id="long"></a>Long</h2>
+                <table class="def">
+                    <tr><td>0?</td><td>Pushes pop is zero.</td></tr>
+                    <tr><td>0+?</td><td>Pushes pop is zero or positive.</td></tr>
+                    <tr><td>0-?</td><td>Pushes pop is zero or negative.</td></tr>
+                    <tr><td>abs</td><td>Pushes abs(pop).</td></tr>
+                    <tr><td>+</td><td>Pushes addition of pop and pop.</td></tr>
+                    <tr><td>and</td><td>Pushes binary and of pop and pop.</td></tr>
+                    <tr><td>/</td><td>Pushes quotient of division by pop of pop.</td></tr>
+                    <tr><td>/%</td><td>Pushes remainder and quotient of division by pop of pop.</td></tr>
+                    <tr><td>--</td><td>Pushes pop - 1.</td></tr>
+                    <tr><td>eq</td><td>Pushes pop equal to pop.</td></tr>
+                    <tr><td>float</td><td>Pushes Double.valueOf(pop).</td></tr>
+                    <tr><td>ge</td><td>Pushes pop greater than or equal to pop.</td></tr>
+                    <tr><td>gt</td><td>Pushes pop greater than pop.</td></tr>
+                    <tr><td>++</td><td>Pushes pop + 1.</td></tr>
+                    <tr><td>int</td><td>Pushes Long.valueOf(pop).</td></tr>
+                    <tr><td>int?</td><td>Pushes pop is an int.</td></tr>
+                    <tr><td>le</td><td>Pushes pop less than or equal to pop.</td></tr>
+                    <tr><td>lshft</td><td>Pushes pop times left shift of pop.</td></tr>
+                    <tr><td>lt</td><td>Pushes pop less than pop.</td></tr>
+                    <tr><td>max</td><td>Pushes maximum of pop and pop.</td></tr>
+                    <tr><td>min</td><td>Pushes minimum of pop and pop.</td></tr>
+                    <tr><td>mod</td><td>Pushes the modulo pop of pop.</td></tr>
+                    <tr><td>*</td><td>Pushes multiplication of pop and pop.</td></tr>
+                    <tr><td>ne</td><td>Pushes pop not equal to pop.</td></tr>
+                    <tr><td>neg</td><td>Pushes - pop.</td></tr>
+                    <tr><td>not</td><td>Pushes binary complement of pop.</td></tr>
+                    <tr><td>or</td><td>Pushes binary or of pop and pop.</td></tr>
+                    <tr><td>%</td><td>Pushes remainder of division by pop of pop.</td></tr>
+                    <tr><td>rshft</td><td>Pushes pop times right shift of pop.</td></tr>
+                    <tr><td>rshftz</td><td>Pushes pop times right shift of pop with zero fill.</td></tr>
+                    <tr><td>sgn</td><td>Pushes the signum function of pop.</td></tr>
+                    <tr><td>-</td><td>Pushes subtraction of pop from pop.</td></tr>
+                    <tr><td>xor</td><td>Pushes binary xor of pop and pop.</td></tr>
+                </table>
+
+                <h2><a id="boolean"></a>Boolean</h2>
+                <table class="def">
+                    <tr><td>?:</td><td>Pushes, if pop, then pop, else pop.</td></tr>
+                    <tr><td>and</td><td>Pushes pop and pop.</td></tr>
+                    <tr><td>assert</td><td>Fails if pop is null or false.</td></tr>
+                    <tr><td>false</td><td>Pushes Boolean(false).</td></tr>
+                    <tr><td>false!</td><td>Fails if pop is true.</td></tr>
+                    <tr><td>not</td><td>Pushes not pop.</td></tr>
+                    <tr><td>or</td><td>Pushes pop or pop.</td></tr>
+                    <tr><td>true</td><td>Pushes Boolean(true).</td></tr>
+                    <tr><td>true!</td><td>Fails if pop is false.</td></tr>
+                    <tr><td>xor</td><td>Pushes pop xor pop.</td></tr>
+                </table>
+
+                <h2><a id="rational"></a>Rational</h2>
+                <table class="def">
+                    <tr><td>0?</td><td>Pushes pop is zero.</td></tr>
+                    <tr><td>0+?</td><td>Pushes pop is zero or positive.</td></tr>
+                    <tr><td>0-?</td><td>Pushes pop is zero or negative.</td></tr>
+                    <tr><td>abs</td><td>Pushes abs(pop).</td></tr>
+                    <tr><td>+</td><td>Pushes addition of pop and pop.</td></tr>
+                    <tr><td>/</td><td>Pushes quotient of division by pop of pop.</td></tr>
+                    <tr><td>*</td><td>Pushes multiplication of pop and pop.</td></tr>
+                    <tr><td>neg</td><td>Pushes - pop.</td></tr>
+                    <tr><td>rat</td><td>Pushes rational version of pop (and pop).</td></tr>
+                    <tr><td>1/</td><td>Pushes reciprocal of pop.</td></tr>
+                    <tr><td>sgn</td><td>Pushes the signum function of pop.</td></tr>
+                    <tr><td>split</td><td>Pushes numerator and denominator of pop.</td></tr>
+                    <tr><td>-</td><td>Pushes subtraction of pop from pop.</td></tr>
+                </table>
+
+                <h2><a id="complex"></a>Complex</h2>
+                <table class="def">
+                    <tr><td>abs</td><td>Pushes abs(pop).</td></tr>
+                    <tr><td>acos</td><td>Pushes acos(pop).</td></tr>
+                    <tr><td>arg</td><td>Pushes argument of pop.</td></tr>
+                    <tr><td>asin</td><td>Pushes asin(pop).</td></tr>
+                    <tr><td>atan</td><td>Pushes atan(pop).</td></tr>
+                    <tr><td>+</td><td>Pushes addition of pop and pop.</td></tr>
+                    <tr><td>conj</td><td>Pushes conjugate of pop.</td></tr>
+                    <tr><td>cos</td><td>Pushes cos(pop).</td></tr>
+                    <tr><td>cosh</td><td>Pushes cosh(pop).</td></tr>
+                    <tr><td>cplx</td><td>Pushes cartesian version of pop (and pop).</td></tr>
+                    <tr><td>/</td><td>Pushes quotient of division by pop of pop.</td></tr>
+                    <tr><td>exp</td><td>Pushes exponential of pop.</td></tr>
+                    <tr><td>i</td><td>Pushes i.</td></tr>
+                    <tr><td>imag</td><td>Pushes imaginary part of pop.</td></tr>
+                    <tr><td>*</td><td>Pushes multiplication of pop and pop.</td></tr>
+                    <tr><td>neg</td><td>Pushes - pop.</td></tr>
+                    <tr><td>polar</td><td>Pushes polar version of pop (and pop).</td></tr>
+                    <tr><td>pow</td><td>Pushes pop power of pop.</td></tr>
+                    <tr><td>real</td><td>Pushes real part of pop.</td></tr>
+                    <tr><td>sgn</td><td>Pushes the signum function of pop.</td></tr>
+                    <tr><td>sin</td><td>Pushes sin(pop).</td></tr>
+                    <tr><td>sinh</td><td>Pushes sinh(pop).</td></tr>
+                    <tr><td>split</td><td>Pushes pop splitted in two.</td></tr>
+                    <tr><td>-</td><td>Pushes subtraction of pop from pop.</td></tr>
+                    <tr><td>tan</td><td>Pushes tan(pop).</td></tr>
+                    <tr><td>tanh</td><td>Pushes tanh(pop).</td></tr>
+                </table>
+
+                <h2><a id="string"></a>String</h2>
+                <table class="def">
+                    <tr><td>+</td><td>Pushes concatenation of pop after pop.</td></tr>
+                    <tr><td>bool</td><td>Pushes Boolean.valueOf(pop).</td></tr>
+                    <tr><td>debug</td><td>Logs pop as DEBUG.</td></tr>
+                    <tr><td>empty?</td><td>Pushes pop is empty.</td></tr>
+                    <tr><td>error</td><td>Logs pop as ERROR and fails.</td></tr>
+                    <tr><td>float</td><td>Pushes Double.valueOf(pop).</td></tr>
+                    <tr><td>format</td><td>Pushes formatted with pop on peek marked.</td></tr>
+                    <tr><td>format*</td><td>Pushes formatted with pop on peek all.</td></tr>
+                    <tr><td>info</td><td>Logs pop as INFO.</td></tr>
+                    <tr><td>int</td><td>Pushes Long.valueOf(pop).</td></tr>
+                    <tr><td>lower</td><td>Pushes lower(pop).</td></tr>
+                    <tr><td>str</td><td>Pushes pop to String.</td></tr>
+                    <tr><td>str?</td><td>Pushes pop is a String.</td></tr>
+                    <tr><td>substring</td><td>Pushes substring to pop from pop of pop.</td></tr>
+                    <tr><td>trim</td><td>Pushes trim(pop).</td></tr>
+                    <tr><td>upper</td><td>Pushes upper(pop).</td></tr>
+                    <tr><td>warn</td><td>Logs pop as WARN.</td></tr>
+                </table>
+
+                <h2><a id="bigDecimal"></a>BigDecimal</h2>
+                <table class="def">
+                    <tr><td>0?</td><td>Pushes pop is zero.</td></tr>
+                    <tr><td>0+?</td><td>Pushes pop is zero or positive.</td></tr>
+                    <tr><td>0-?</td><td>Pushes pop is zero or negative.</td></tr>
+                    <tr><td>abs</td><td>Pushes abs(pop).</td></tr>
+                    <tr><td>+</td><td>Pushes addition of pop and pop.</td></tr>
+                    <tr><td>bigdec</td><td>Pushes pop as a BigDecimal.</td></tr>
+                    <tr><td>/</td><td>Pushes quotient of division by pop of pop.</td></tr>
+                    <tr><td>/%</td><td>Pushes remainder and quotient of division by pop of pop.</td></tr>
+                    <tr><td>eq</td><td>Pushes pop equal to pop.</td></tr>
+                    <tr><td>ge</td><td>Pushes pop greater than or equal to pop.</td></tr>
+                    <tr><td>gt</td><td>Pushes pop greater than pop.</td></tr>
+                    <tr><td>le</td><td>Pushes pop less than or equal to pop.</td></tr>
+                    <tr><td>lt</td><td>Pushes pop less than pop.</td></tr>
+                    <tr><td>max</td><td>Pushes maximum of pop and pop.</td></tr>
+                    <tr><td>min</td><td>Pushes minimum of pop and pop.</td></tr>
+                    <tr><td>mod</td><td>Pushes the modulo pop of pop.</td></tr>
+                    <tr><td>.left</td><td>Pushes the decimal point moved left by pop in pop.</td></tr>
+                    <tr><td>.right</td><td>Pushes the decimal point moved right by pop in pop.</td></tr>
+                    <tr><td>*</td><td>Pushes multiplication of pop and pop.</td></tr>
+                    <tr><td>ne</td><td>Pushes pop not equal to pop.</td></tr>
+                    <tr><td>neg</td><td>Pushes - pop.</td></tr>
+                    <tr><td>**</td><td>Pushes power pop of pop.</td></tr>
+                    <tr><td>prec</td><td>Pushes the precision of pop.</td></tr>
+                    <tr><td>%</td><td>Pushes remainder of division by pop of pop.</td></tr>
+                    <tr><td>scale</td><td>Pushes the scale of pop.</td></tr>
+                    <tr><td>scale=</td><td>Sets the scale pop of peek.</td></tr>
+                    <tr><td>sgn</td><td>Pushes the signum function of pop.</td></tr>
+                    <tr><td>strip</td><td>Strips trailing zeros of peek.</td></tr>
+                    <tr><td>-</td><td>Pushes subtraction of pop from pop.</td></tr>
+                    <tr><td>unscaled</td><td>Pushes the unscaled value of pop.</td></tr>
+                </table>
+
+                <h2><a id="bigInteger"></a>BigInteger</h2>
+                <table class="def">
+                    <tr><td>0?</td><td>Pushes pop is zero.</td></tr>
+                    <tr><td>0+?</td><td>Pushes pop is zero or positive.</td></tr>
+                    <tr><td>0-?</td><td>Pushes pop is zero or negative.</td></tr>
+                    <tr><td>abs</td><td>Pushes abs(pop).</td></tr>
+                    <tr><td>+</td><td>Pushes addition of pop and pop.</td></tr>
+                    <tr><td>and</td><td>Pushes binary and of pop and pop.</td></tr>
+                    <tr><td>bigint</td><td>Pushes pop as a BigInteger.</td></tr>
+                    <tr><td>bits</td><td>Pushes number of bits of pop not equal to sign.</td></tr>
+                    <tr><td>clear</td><td>Pushes with pop bit of pop cleared.</td></tr>
+                    <tr><td>/</td><td>Pushes quotient of division by pop of pop.</td></tr>
+                    <tr><td>/%</td><td>Pushes remainder and quotient of division by pop of pop.</td></tr>
+                    <tr><td>eq</td><td>Pushes pop equal to pop.</td></tr>
+                    <tr><td>flip</td><td>Pushes with pop bit of pop flipped.</td></tr>
+                    <tr><td>gcd</td><td>Pushes gcd of pop and pop.</td></tr>
+                    <tr><td>ge</td><td>Pushes pop greater than or equal to pop.</td></tr>
+                    <tr><td>gt</td><td>Pushes pop greater than pop.</td></tr>
+                    <tr><td>le</td><td>Pushes pop less than or equal to pop.</td></tr>
+                    <tr><td>low1</td><td>Pushes index of lowest set bit of pop or -1.</td></tr>
+                    <tr><td>lshft</td><td>Pushes pop times left shift of pop.</td></tr>
+                    <tr><td>lt</td><td>Pushes pop less than pop.</td></tr>
+                    <tr><td>max</td><td>Pushes maximum of pop and pop.</td></tr>
+                    <tr><td>min</td><td>Pushes minimum of pop and pop.</td></tr>
+                    <tr><td>mod</td><td>Pushes the modulo pop of pop.</td></tr>
+                    <tr><td>*</td><td>Pushes multiplication of pop and pop.</td></tr>
+                    <tr><td>ne</td><td>Pushes pop not equal to pop.</td></tr>
+                    <tr><td>neg</td><td>Pushes - pop.</td></tr>
+                    <tr><td>not</td><td>Pushes binary complement of pop.</td></tr>
+                    <tr><td>or</td><td>Pushes binary or of pop and pop.</td></tr>
+                    <tr><td>**</td><td>Pushes power pop of pop.</td></tr>
+                    <tr><td>%</td><td>Pushes remainder of division by pop of pop.</td></tr>
+                    <tr><td>rshft</td><td>Pushes pop times right shift of pop.</td></tr>
+                    <tr><td>set</td><td>Pushes with pop bit of pop set.</td></tr>
+                    <tr><td>sgn</td><td>Pushes the signum function of pop.</td></tr>
+                    <tr><td>-</td><td>Pushes subtraction of pop from pop.</td></tr>
+                    <tr><td>test</td><td>Pushes state of pop bit of pop.</td></tr>
+                    <tr><td>xor</td><td>Pushes binary xor of pop and pop.</td></tr>
+                </table>
+
+                <h2><a id="bigRational"></a>BigRational</h2>
+                <table class="def">
+                    <tr><td>0?</td><td>Pushes pop is zero.</td></tr>
+                    <tr><td>0+?</td><td>Pushes pop is zero or positive.</td></tr>
+                    <tr><td>0-?</td><td>Pushes pop is zero or negative.</td></tr>
+                    <tr><td>abs</td><td>Pushes abs(pop).</td></tr>
+                    <tr><td>+</td><td>Pushes addition of pop and pop.</td></tr>
+                    <tr><td>bigrat</td><td>Pushes big rational version of pop (and pop).</td></tr>
+                    <tr><td>/</td><td>Pushes quotient of division by pop of pop.</td></tr>
+                    <tr><td>*</td><td>Pushes multiplication of pop and pop.</td></tr>
+                    <tr><td>neg</td><td>Pushes - pop.</td></tr>
+                    <tr><td>rat</td><td>Pushes rational version of pop.</td></tr>
+                    <tr><td>1/</td><td>Pushes reciprocal of pop.</td></tr>
+                    <tr><td>sgn</td><td>Pushes the signum function of pop.</td></tr>
+                    <tr><td>split</td><td>Pushes numerator and denominator of pop.</td></tr>
+                    <tr><td>-</td><td>Pushes subtraction of pop from pop.</td></tr>
+                </table>
+
+                <h2><a id="compound"></a>Compound</h2>
+                <table class="def">
+                    <tr><td>{</td><td>Bundles next operations until '}' into one.</td></tr>
+                    <tr><td>break</td><td>Breaks out of a loop.</td></tr>
+                    <tr><td>continue</td><td>Continues a loop.</td></tr>
+                    <tr><td>do</td><td>Does next while pop.</td></tr>
+                    <tr><td>else</td><td>When seen by 'if', provides an alternative.</td></tr>
+                    <tr><td>}</td><td>Ends '{' operation.</td></tr>
+                    <tr><td>if</td><td>Skips next if pop is false.</td></tr>
+                    <tr><td>reduce</td><td>Applies next while stack size is greater than 1.</td></tr>
+                    <tr><td>#reduce</td><td>Pops stack size target and reduce.</td></tr>
+                    <tr><td>try</td><td>Unless next fails, skips next.</td></tr>
+                    <tr><td>unless</td><td>Skips next if pop is true.</td></tr>
+                    <tr><td>while</td><td>While pop, does next.</td></tr>
+                </table>
+
+                <h2><a id="container"></a>Container</h2>
+                <table class="def">
+                    <tr><td>append</td><td>Appends pop to tuple.</td></tr>
+                    <tr><td>apply</td><td>Applies next to pop container.</td></tr>
+                    <tr><td>container?</td><td>Pushes pop is a container.</td></tr>
+                    <tr><td>dict</td><td>Pushes an empty dict.</td></tr>
+                    <tr><td>dict?</td><td>Pushes pop is a dict.</td></tr>
+                    <tr><td>get</td><td>Gets container value for pop key.</td></tr>
+                    <tr><td>put</td><td>Puts in container at pop key a pop value.</td></tr>
+                    <tr><td>remove</td><td>Removes and pushes container value for pop key.</td></tr>
+                    <tr><td>size</td><td>Pushes size of container.</td></tr>
+                    <tr><td>tuple</td><td>Pushes an empty tuple.</td></tr>
+                    <tr><td>tuple?</td><td>Pushes pop is a tuple.</td></tr>
+                    <tr><td>values</td><td>Pushes container values.</td></tr>
+                </table>
+
+                <h2><a id="dict"></a>Dict (applied)</h2>
+                <table class="def">
+                    <tr><td>entries</td><td>Pushes entries.</td></tr>
+                    <tr><td>get</td><td>Gets value for pop key.</td></tr>
+                    <tr><td>keys</td><td>Pushes keys.</td></tr>
+                    <tr><td>put</td><td>Puts at pop key a pop value.</td></tr>
+                    <tr><td>remove</td><td>Removes and pushes value for pop key.</td></tr>
+                    <tr><td>size</td><td>Pushes size.</td></tr>
+                    <tr><td>values</td><td>Pushes values.</td></tr>
+                </table>
+
+                <h2><a id="tuple"></a>Tuple (applied)</h2>
+                <table class="def">
+                    <tr><td>append</td><td>Appends pop.</td></tr>
+                    <tr><td>get</td><td>Gets value at pop index.</td></tr>
+                    <tr><td>put</td><td>Puts at pop index a pop value.</td></tr>
+                    <tr><td>remove</td><td>Removes and pushes value at pop index.</td></tr>
+                    <tr><td>size</td><td>Pushes size.</td></tr>
+                    <tr><td>values</td><td>Pushes values.</td></tr>
+                </table>
+
+                <h2><a id="summarizer"></a>Summarizer</h2>
+                <table class="def">
+                    <tr><td>first</td><td>Pushes value of first step.</td></tr>
+                    <tr><td>first@</td><td>Pushes time stamp of first step.</td></tr>
+                    <tr><td>first$</td><td>Pushes state of first step.</td></tr>
+                    <tr><td>last</td><td>Pushes value of last step.</td></tr>
+                    <tr><td>last@</td><td>Pushes time stamp of last step.</td></tr>
+                    <tr><td>last$</td><td>Pushes state of last step.</td></tr>
+                    <tr><td>next</td><td>Pushes value of next step.</td></tr>
+                    <tr><td>next@</td><td>Pushes time stamp of next step.</td></tr>
+                    <tr><td>next$</td><td>Pushes state of next step.</td></tr>
+                    <tr><td>prev</td><td>Pushes value of previous step.</td></tr>
+                    <tr><td>prev@</td><td>Pushes time stamp of previous step.</td></tr>
+                    <tr><td>prev$</td><td>Pushes state of previous step.</td></tr>
+                    <tr><td>start</td><td>Pushes interval start value.</td></tr>
+                    <tr><td>start@</td><td>Pushes interval start time stamp.</td></tr>
+                    <tr><td>start$</td><td>Pushes interval start state.</td></tr>
+                    <tr><td>step</td><td>Pushes current step number.</td></tr>
+                    <tr><td>stop</td><td>Pushes interval stop value.</td></tr>
+                    <tr><td>stop@</td><td>Pushes interval stop time stamp.</td></tr>
+                    <tr><td>stop$</td><td>Pushes interval stop state.</td></tr>
+                    <tr><td>$*</td><td>Pushes all steps in order.</td></tr>
+                    <tr><td>$*!</td><td>Pushes all steps in order disallowing nulls.</td></tr>
+                    <tr><td>$#</td><td>Pushes number of steps.</td></tr>
+                    <tr><td>$</td><td>Pushes current step value.</td></tr>
+                    <tr><td>$!</td><td>Pushes required current step value.</td></tr>
+                    <tr><td>$@</td><td>Pushes current step time stamp.</td></tr>
+                    <tr><td>$$</td><td>Pushes current step state.</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="footer">
+                <div id="footer-left">
+                    <a href="http://sourceforge.net/projects/rvpf">
+                        <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=84654&amp;type=10"
+                                width="80" height="15" border="0"
+                                alt="Get RVPF at SourceForge.net. Fast, secure and Free Open Source software downloads"/>
+                    </a>
+                </div>
+                <p />
+        </div>
+</body>
+
+</html>
+
+<!-- End. -->

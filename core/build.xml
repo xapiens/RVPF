@@ -1,0 +1,556 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE project>
+
+<!--
+ Related Values Processing Framework (Core).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: build.xml 4116 2019-08-04 18:02:05Z SFB $
+ -->
+
+<project name='RVPF-Core' default='build'
+        xmlns:if='ant:if' xmlns:unless='ant:unless'
+        xmlns:ivy='antlib:org.apache.ivy.ant'>
+
+    <import file='../core/config/build/build-common.xml'/>
+
+    <property name='name' value='Core'/>
+    <property name='name.unix' value='core'/>
+    <property name='project.name' value='${rvpf.name}-${name}'/>
+    <property name='project.name.unix'
+            value='${rvpf.name.unix}-${name.unix}'/>
+    <property name='target.base'
+            value='${rvpf.name.unix}-base'/>
+    <property name='target.core.tests'
+            value='${rvpf.name.unix}-core-tests'/>
+    <property name='target.ext'
+            value='${rvpf.name.unix}-ext'/>
+    <property name='target.forwarder'
+            value='${rvpf.name.unix}-forwarder'/>
+    <property name='target.http'
+            value='${rvpf.name.unix}-http'/>
+    <property name='target.processor'
+            value='${rvpf.name.unix}-processor'/>
+    <property name='target.service'
+            value='${rvpf.name.unix}-service'/>
+    <property name='target.store'
+            value='${rvpf.name.unix}-store'/>
+    <property name='target.tests'
+            value='${rvpf.name.unix}-tests'/>
+    <property name='target.tools'
+            value='${rvpf.name.unix}-tools'/>
+
+    <property name='dbcp.jar' value='commons-dbcp2.jar'/>
+    <property name='javax.mail.jar' value='javax.mail.jar'/>
+    <property name='jetty.servlet.jar' value='jetty-servlet.jar'/>
+    <property name='javahl.jar' value='svn-javahl.jar'/>
+    <property name='json.jar' value='javax.json.jar'/>
+    <property name='json.api.jar' value='javax.json-api.jar'/>
+    <property name='resolver.jar' value='xml-resolver.jar'/>
+
+    <property name='json.jars'
+            value="${json.jar} ${json.api.jar}"/>
+
+    <condition property='bc.present'>
+        <isset property='env.BC_HOME'/>
+    </condition>
+    <condition property='bc.lib'
+            value='${env.BC_HOME}' else='lib'>
+        <isset property='bc.present'/>
+    </condition>
+
+    <condition property='bdbje.present'>
+        <isset property='env.BDBJE_HOME'/>
+    </condition>
+    <condition property='bdbje.lib'
+            value='${env.BDBJE_HOME}/lib' else='lib'>
+        <isset property='bdbje.present'/>
+    </condition>
+
+    <condition property='svnkit.present'>
+        <isset property='env.SVNKIT_HOME'/>
+    </condition>
+    <condition property='svnkit.lib'
+            value='${env.SVNKIT_HOME}/lib' else='lib'>
+        <isset property='svnkit.present'/>
+    </condition>
+
+    <condition property='tomcat.present'>
+        <isset property='env.TOMCAT_HOME'/>
+    </condition>
+    <condition property='tomcat.lib'
+            value='${env.TOMCAT_HOME}/embed' else='lib'>
+        <isset property='tomcat.present'/>
+    </condition>
+
+    <path id='project.class.path'>
+        <pathelement location='lib/${jsr305.jar}'/>
+        <pathelement location='lib/${log4j.api.jar}'/>
+        <pathelement location='lib/${log4j.core.jar}'/>
+        <pathelement location='lib/${log4j.jul.jar}'/>
+        <pathelement location='lib/${javax.mail.jar}'/>
+        <pathelement location='lib/${xstream.jar}'/>
+        <pathelement location='lib/${servlet.jar}'/>
+        <pathelement location='lib/${jetty.servlet.jar}'/>
+        <pathelement location='lib/${json.jar}'/>
+        <pathelement location='lib/${json.api.jar}'/>
+        <pathelement location='lib/${javahl.jar}'/>
+        <pathelement location='lib/${dbcp.jar}'/>
+        <pathelement location='lib/${pool.jar}'/>
+        <pathelement location='lib/${resolver.jar}'/>
+        <fileset dir='${bc.lib}' includes='bc*.jar'/>
+        <fileset dir='${bdbje.lib}' includes='je-*.jar'/>
+        <fileset dir='${svnkit.lib}' includes='*.jar'/>
+        <fileset dir='${tomcat.lib}' includes='tomcat-embed-core.jar'/>
+    </path>
+
+    <path id='validate.class.path'>
+        <pathelement location='config/script'/>
+        <pathelement location='build/main/classes'/>
+        <pathelement location='build/ext/classes'/>
+        <pathelement location='build/test/classes'/>
+        <pathelement location='lib/${log4j.api.jar}'/>
+        <pathelement location='lib/${log4j.core.jar}'/>
+        <pathelement location='lib/${log4j.jul.jar}'/>
+    </path>
+
+    <path id='project.tests.class.path'/>
+
+    <path id='tests.class.path'>
+        <pathelement location='lib/${target.core.tests}.jar'/>
+        <pathelement location='lib/${target.http}.jar'/>
+        <pathelement location='lib/${target.store}.jar'/>
+        <pathelement location='lib/${target.processor}.jar'/>
+        <pathelement location='lib/${target.forwarder}.jar'/>
+    </path>
+
+    <target name='help'
+            description="Provides some help on usage.">
+        <echo taskname=''>Please specify a target:
+
+    build -- Builds the jar files (default). (*)
+    clean -- Removes generated files.
+    compile -- Compiles the Java files. (*)
+    doc -- Builds the Documentation files. (*)
+    help -- Displays this.
+    jar -- Creates the jar files. (*)
+    rebuild -- Rebuilds the subproject. (*)
+    recompile -- Recompiles the subproject. (*)
+    refresh -- Refreshes the subproject. (*)
+    setup -- Sets up the default environment.
+    setup-opt -- Sets up the optional environment.
+    svnkit-all -- Builds an aggregate jar for SVNKit.
+    sync -- Synchronizes duplicated files.
+    test -- Runs tests.
+    update -- Updates sources from repository. (*)
+    validate -- Validates some files.
+
+(*) These targets need the source files.</echo>
+    </target>
+
+    <target name='build' depends='RVPF-common.build'
+            description="Builds the subsystem.">
+        <make unless:set='shell.cmd'/>
+    </target>
+
+    <target name='clean' depends='RVPF-common.clean'
+            description="Removes generated files.">
+        <delete dir='ext/build'/>
+        <delete dir='tests/data'/>
+        <delete dir='web/dtd'/>
+        <delete dir='web/ivy'/>
+    </target>
+
+    <target name='compile' depends='RVPF-common.compile'
+            description="Compiles the Java files.">
+        <mkdir dir='build/ext/classes'/>
+        <rvpf.javac srcdir='src/ext/java'
+                destdir='build/ext/classes'
+                classpathref='project.class.path'>
+            <classpath location='build/main/classes'/>
+            <exclude name='${package.dir}/ext/bc/**'
+                    unless='bc.present'/>
+            <exclude name='${package.dir}/ext/bdb/**'
+                    unless='bdbje.present'/>
+            <exclude name='${package.dir}/ext/SVNVersionControl.*'
+                    unless='svnkit.present'/>
+            <exclude name='${package.dir}/ext/tomcat/**'
+                    unless='tomcat.present'/>
+        </rvpf.javac>
+        <copy todir='build/ext/classes'>
+            <fileset dir='src/ext/java'>
+                <include name='**/*.properties'/>
+                <exclude name='${package.dir}/ext/bc/**'
+                        unless='bc.present'/>
+                <exclude name='${package.dir}/ext/bdb/**'
+                        unless='bdbje.present'/>
+                <exclude name='${package.dir}/ext/SVNVersionControl.*'
+                        unless='svnkit.present'/>
+                <exclude name='${package.dir}/ext/tomcat/**'
+                        unless='tomcat.present'/>
+            </fileset>
+        </copy>
+        <mkdir dir='tests/classes'/>
+        <rvpf.javac srcdir='tests/java'
+                destdir='tests/classes'
+                classpathref='project.class.path'>
+            <classpath location='build/main/classes'/>
+        </rvpf.javac>
+    </target>
+
+    <target name='doc' depends='compile'
+            description="Builds the Documentation files.">
+        <rvpf.javadoc
+                overview='src/main/java/${package.dir}/overview.html'>
+            <group title="Base" packages='${package}.base*'/>
+            <group title="Core">
+                <package name='${package}'/>
+                <package name='${package}.config*'/>
+                <package name='${package}.jmx*'/>
+                <package name='${package}.service*'/>
+                <package name='${package}.som*'/>
+            </group>
+            <group title="Forwarder" packages='${package}.forwarder*'/>
+            <group title="HTTP" packages='${package}.http*'/>
+            <group title="Metadata">
+                <package name='${package}.metadata*'/>
+                <package name='${package}.document*'/>
+                <package name='${package}.content*'/>
+            </group>
+            <group title="Processor" packages='${package}.processor*'/>
+            <group title="Store" packages='${package}.store*'/>
+        </rvpf.javadoc>
+    </target>
+
+    <target name='jar' depends='compile'
+            description="Creates the jar files.">
+        <svnversion/>
+        <jar jarfile='lib/${target.base}.jar' duplicate='fail'>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/base/**/*.class'/>
+                <exclude name='${package.dir}/som/**/*.class'/>
+                <include name='${package.dir}/messages/base*.properties'/>
+                <include name='${package.dir}/messages/rlp*.properties'/>
+            </fileset>
+            <fileset dir='config/build' includes='log4j2.xml'/>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${log4j.api.jar} ${log4j.core.jar} ${log4j.jul.jar} ${xstream.jar} ${javax.mail.jar}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.ext}.jar' duplicate='fail'>
+            <fileset dir='build/ext/classes'/>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.base}.jar"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.service}.jar' duplicate='fail'>
+            <fileset dir='shared'>
+                <include name='rvpf-config-shared.xml'/>
+                <include name='rvpf-metadata-shared.xml'/>
+            </fileset>
+            <fileset dir="." includes="dtd/rvpf.dtd"/>
+            <fileset dir='build/main/classes'>
+                <include name='**/*.class'/>
+                <exclude name='${package.dir}/base/'/>
+                <exclude name='${package.dir}/document/exporter/**/*.class'/>
+                <exclude name='${package.dir}/forwarder/**/*.class'/>
+                <exclude name='${package.dir}/http/**/*.class'/>
+                <exclude name='${package.dir}/processor/**/*.class'/>
+                <exclude name='${package.dir}/store/database/**/*.class'/>
+                <exclude name='${package.dir}/store/server/**/*.class'/>
+                <exclude name='${package.dir}/tool/**/*.class'/>
+                <include name='${package.dir}/messages/service*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.base}.jar ${resolver.jar}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.forwarder}.jar' duplicate='fail'>
+            <fileset dir='shared' includes='rvpf-config-forwarder-shared.xml'/>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/forwarder/**/*.class'/>
+                <include name='${package.dir}/messages/forwarder*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.service}.jar"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.http}.jar' duplicate='fail'>
+            <fileset dir='shared' includes='rvpf-config-http-shared.xml'/>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/http/**/*.class'/>
+                <include name='${package.dir}/document/exporter/**/*.class'/>
+                <include name='${package.dir}/messages/http*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.service}.jar ${servlet.jar} ${json.jars}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.processor}.jar' duplicate='fail'>
+            <fileset dir='shared' includes='rvpf-config-processor-shared.xml'/>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/processor/**/*.class'/>
+                <include name='${package.dir}/messages/processor*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.service}.jar"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.store}.jar' duplicate='fail'>
+            <fileset dir='shared' includes='rvpf-config-store-shared.xml'/>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/store/database/**/*.class'/>
+                <include name='${package.dir}/store/server/**/*.class'/>
+                <include name='${package.dir}/messages/store*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.service}.jar ${log4j.jcl.jar} ${commons-logging.jar}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.tests}.jar' duplicate='fail'>
+            <fileset dir='build/test/classes'>
+                <include name='${package.dir}/tests/service/*.class'/>
+                <include name='${package.dir}/tests/som/SOMSupport*.class'/>
+                <include name='${package.dir}/tests/*.class'/>
+                <include name='${package.dir}/tests/messages/tests*.properties'/>
+                <include name='org/apache/logging/dumbster/smtp/*.class'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.service}.jar ${testng.jars} ${javax.mail.jar}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.core.tests}.jar' duplicate='fail'>
+            <fileset dir="." includes="dtd/rvpf-scenarios.dtd"/>
+            <fileset dir='build/test/classes'>
+                <exclude name='${package.dir}/tests/service/*.class'/>
+                <exclude name='${package.dir}/tests/som/SOMSupport*.class'/>
+                <exclude name='${package.dir}/tests/*.class'/>
+                <exclude name='${package.dir}/tests/messages/tests*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.tests}.jar"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.tools}.jar' duplicate='fail'>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/tool/**/*.class'/>
+                <include name='${package.dir}/messages/tool*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Main-Class' value='${package}.tool.Home'/>
+                <attribute name='Class-Path'
+                        value="${target.base}.jar"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name='recompile' depends='RVPF-common.recompile'
+            description="Recompiles the Java files.">
+        <antcall target='jar'/>
+    </target>
+
+    <target name='setup' depends='setup-default'
+            description="Setup.">
+        <mkdir dir='../config/script/ivy'/>
+        <mkdir dir='../config/wrap'/>
+        <mkdir dir='../lib'/>
+        <mkdir dir='../log'/>
+        <mkdir dir='../script'/>
+        <mkdir dir='../tmp'/>
+
+        <chmod dir='bin' perm='+x' includes='**/*.sh'/>
+        <chmod file='run' perm='+x'/>
+        <chmod file='wrap' perm='+x'/>
+
+        <antcall target='setup-wrap'/>
+
+        <available file='../config/service' type='dir'
+                property='root.config.service.present'/>
+        <copy todir='..'>
+            <fileset dir='.'>
+                <present targetdir='..' present='srconly'/>
+                <include name='rc.rvpf'/>
+                <include name='run'/>
+                <include name='wrap'/>
+                <include name='bin/js.sh'/>
+                <include name='bin/jython.sh'/>
+                <include name='bin/script.sh'/>
+                <include name='bin/service.sh'/>
+                <include name='bin/wrap.cmd' if:set='os.windows'/>
+                <include name='bin/wrap.sh'/>
+                <include name='run.cmd' if:set='os.windows'/>
+                <include name='wrap.cmd' if:set='os.windows'/>
+                <include name='bin/jython.cmd' if:set='os.windows'/>
+                <include name='bin/script.cmd' if:set='os.windows'/>
+                <include name='bin/service.cmd' if:set='os.windows'/>
+                <include name='bin/rvpf-service.exe'
+                        if:set='os.windows'/>
+                <include name='config/script/log4j2.xml'/>
+            </fileset>
+        </copy>
+        <chmod dir='../bin' perm='+x' includes='**/*.sh'/>
+        <chmod file='../rc.rvpf' perm='+x'/>
+        <chmod file='../run' perm='+x'/>
+        <chmod file='../wrap' perm='+x'/>
+        <copy file='config/build/rvpf-root.cmd'
+                tofile='../bin/setup/rvpf.cmd'
+                if:set='os.windows'/>
+        <copy file='config/build/rvpf-root.sh'
+                tofile='../bin/setup/rvpf.sh'/>
+        <copy file='config/build/rvpf-env-root.cmd'
+                tofile='../bin/setup/rvpf-env.cmd'
+                if:set='os.windows'/>
+        <copy file='config/build/rvpf-env-root.sh'
+                tofile='../bin/setup/rvpf-env.sh'/>
+        <copy todir='..'>
+            <fileset dir='.'>
+                <include name='config/service/*'
+                        unless='root.config.service.present'/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name='setup-opt' depends='setup'
+            description="Development setup.">
+        <ivy:resolve file='config/build/ivy.xml' conf='optional' log='quiet'/>
+        <ivy:retrieve pattern='lib/[artifact].[ext]' log='quiet'/>
+    </target>
+
+    <target name='svnkit-all' if='svnkit.present'
+            description="Build 'svnkit-all.jar'">
+        <jar jarfile='lib/svnkit-all.jar' duplicate='preserve'>
+            <restrict>
+                <name name='**/*.class'/>
+                <archives>
+                    <zips>
+                        <fileset dir='${svnkit.lib}'>
+                            <include name='svnkit-*.jar'/>
+                            <exclude name='svnkit-*-javadoc.jar'/>
+                            <exclude name='svnkit-*-sources.jar'/>
+                            <include name='sequence-library-*.jar'/>
+                            <include name='sqljet-*.jar'/>
+                            <include name='antlr-runtime-*.jar'/>
+                            <include name='trilead-ssh2-*.jar'/>
+                            <include name='jsch.agentproxy.*.jar'/>
+                        </fileset>
+                    </zips>
+                </archives>
+            </restrict>
+            <restrict>
+                <name name='svnkit.build.properties'/>
+                <archives>
+                    <zips>
+                        <fileset dir='${svnkit.lib}'
+                                includes='svnkit-*.jar'/>
+                    </zips>
+                </archives>
+            </restrict>
+        </jar>
+    </target>
+
+    <target name='sync'
+            description="Synchronizes duplicated files."/>
+
+    <target name='validate'
+            description="Validates some files.">
+        <antcall target='validate-xml'/>
+        <antcall target='validate-messages'/>
+    </target>
+
+    <target name='setup-report'>
+        <ivy:settings file='config/build/ivysettings.xml'/>
+        <ivy:resolve file='config/build/ivy.xml' conf='*' log='quiet'/>
+        <mkdir dir='web/ivy'/>
+        <ivy:report todir='web/ivy' graph='false'/>
+    </target>
+
+</project>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

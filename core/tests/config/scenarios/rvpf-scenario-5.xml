@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE scenario PUBLIC
+        "-//Serge Brisson//DTD RVPF Scenarios//EN"
+        "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-scenario-5.xml 3388 2017-03-14 16:36:04Z SFB $
+ -->
+
+<scenario title="Inter/extra-polation" time='2017-02-01'>
+
+    <casting director='tests.scenario.5'>
+        <cast role='BEGIN' actor='TESTS.BEGIN:TEXT'/>
+        <cast role='DATA' actor='TESTS.DATA:NUMERIC'/>
+        <cast role='END' actor='TESTS.END:TEXT'/>
+        <cast role='SNAPSHOT' actor='TESTS.SNAPSHOT:NUMERIC'/>
+        <cast role='TRIGGER' actor='TESTS.TRIGGER:LOGICAL'/>
+    </casting>
+
+    <scene title='Introduction'>
+        <set line='A1' role='DATA' time='00:01' text='1.0'/>
+        <silence line='A2'/>
+        <set line='A3' role='DATA' time='00:03' text='3.0'/>
+        <set line='A4' role='DATA' time='00:04' text='4.0'/>
+        <silence line='A5'/>
+        <entry line='A6' role='TRIGGER' time='00:01'/>
+        <entry line='A7' role='TRIGGER' time='00:02'/>
+        <entry line='A8' role='TRIGGER' time='00:03'/>
+        <entry line='A9' role='TRIGGER' time='00:04'/>
+        <entry line='A10' role='TRIGGER' time='00:05'/>
+        <action line='A11' role='SNAPSHOT' time='00:01' text='1.0'/>
+        <action line='A12' role='SNAPSHOT' time='00:02' text='2.0'/>
+        <action line='A13' role='SNAPSHOT' time='00:03' text='3.0'/>
+        <action line='A14' role='SNAPSHOT' time='00:04' text='4.0'/>
+        <action line='A15' role='SNAPSHOT' time='00:05' text='5.0'/>
+    </scene>
+
+    <scene title="End" time='+1'>
+        <!-- Ensures that there are no more results. -->
+        <entry line='Z1' role='BEGIN' time='01:00' state='Done' text='Z'/>
+        <exit line='Z2' role='END' time='01:00' state='Done' text='Z'/>
+    </scene>
+
+</scenario>
+
+<!-- End. -->

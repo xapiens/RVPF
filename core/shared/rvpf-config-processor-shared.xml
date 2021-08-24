@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-config-processor-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<config lang='en' title="Shared Processor configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper Processor operations.
+    </description>
+
+    <notes>
+        This file is available as a resource in 'rvpf-processor.jar'.
+    </notes>
+
+    <property name='config.processor' validated='no'/>
+
+    <!-- Processor Properties. -->
+
+    <PropertiesDef name='processor'>
+        <PropertyDef name='batch.limit.initial' type='Integer'>
+            <description>
+                The initial number of notices to accept before
+                processing them.
+
+                Defaults to 1000.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='batch.limit.maximum' type='Integer'>
+            <description>
+                The maximum number of notices to accept before
+                processing them.
+
+                Defaults to 5000.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='cache.boost' type='Integer'>
+            <description>
+                The initial hits count for a newly cached value.
+
+                Defaults to 10.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='cache.disabled' type='Boolean'>
+            <description>
+                Disables the cache.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='cache.size' type='Integer'>
+            <description>
+                The maximum number of points to keep in the cache.
+
+                Defaults to 1000.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='cache.updates.filtered' type='Boolean'>
+            <description>
+                Enables the updates filter.
+
+                This filter avoid sending updates to the Store when the
+                computed value has not changed.
+
+                Defaults to false.
+            </description>
+            <notes>
+                Enabling this optimization interferes with the massive
+                recalc script.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='memory.total.use.high' type='Integer'>
+            <description>
+                The maximum percentage of the JVM total memory that
+                should be used be a batch. When exceeded, the next batch
+                will be allowed 2 times less notices.
+
+                Defaults to 50.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='memory.total.use.low' type='Integer'>
+            <description>
+                The minimum percentage of the JVM total memory that
+                should be used by a full batch. When underused, the next
+                batch will be allowed 2 times more notices, up to
+                'processor.batch.limit.maximum'.
+
+                Defaults to 5.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='memory.total.use.maximum' type='Integer'>
+            <description>
+                The maximum percentage of the JVM total memory that can
+                be used by a batch. When exceeded, the batch will be
+                cancelled and the next one will be allowed 10 times less
+                notices (but at least 1). If the cancelled batch only
+                had one notice in it, that notice will be dropped, since
+                its processing requires too much resources.
+
+                Defaults to 75.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='memory.actual.use.low' type='Integer'>
+            <description>
+                The minimum percentage of the JVM actual memory that
+                should be used by a full batch. When underused, the next
+                batch will be allowed 2 times more notices, up to
+                'processor.batch.limit.maximum'.
+
+                Defaults to 25.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='name'>
+            <description>
+                Identifies in the metadata the 'Processor' entity that
+                is instantiated. Defaults to 'Processor'.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='receptionist.class' type='ClassDef'>
+            <description>
+                This property may be used to specify an alternative to
+                the SOM Receptionist.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='receptionist.som.queue'
+                extends='som.queue'>
+            <description>
+                The receptionist's input queue properties.
+            </description>
+        </PropertiesDef>
+
+        <PropertyDef name='receptionist.wait' type='Elapsed'>
+            <description>
+                The maximum elapsed time to wait for an additional
+                notice when at least one has been accepted for
+                processing.
+
+                Defaults to 1.0 (second).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='resynchronizes' type='Boolean'>
+            <description>
+                Specifies that this processor is dedicated to
+                resynchronization. This disables the out of sync notices
+                filter.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='server.name'>
+            <description>
+                Specifies the remote engine name.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='server.role.execute' hidden='yes' multiple='yes'>
+            <description>
+                Specifies a role allowed to execute on remote engine.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='summarizer.interval.reverse' type='Boolean'>
+            <description>
+                Reverses the Summarizer intervals.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='summarizer.result.position'>
+            <description>
+                Specifies the default Summarizer result position.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <!-- Processor Class library. -->
+
+    <ClassLib name='Proc'>
+        <location unless='jnlp'>${lib.url}/rvpf-processor.jar</location>
+    </ClassLib>
+
+    <!-- Receptionist classes. -->
+
+    <ClassDef name='Receptionist'
+            package='org.rvpf.processor.receptionist'>
+        <description>
+            The 'Receptionist' interface defines the protocol of a
+            receptionist for a processor.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SOMReceptionist'
+            package='org.rvpf.processor.receptionist'>
+        <implements classDef='Receptionist'/>
+    </ClassDef>
+
+    <ClassDef name='StoreListenerReceptionist'
+            package='org.rvpf.processor.receptionist'>
+        <implements classDef='Receptionist'/>
+    </ClassDef>
+
+    <!-- Container services class. -->
+
+    <ClassDef name='ProcessorService'
+            package='org.rvpf.processor'
+            member='ProcessorServiceActivator'
+            classLib='Proc'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

@@ -1,0 +1,35 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE FindBugsFilter>
+
+<FindBugsFilter>
+
+    <Match>
+        <Bug pattern='DM_GC'/>
+    </Match>
+
+    <Match>
+        <Class name='org.rvpf.service.ServiceActivatorBase'/>
+        <Method name='terminate'/>
+        <Bug pattern='DM_EXIT'/>
+    </Match>
+
+    <Match>
+        <Class name='org.rvpf.tests.GUIListener'/>
+        <Method name='closed'/>
+        <Bug pattern='DM_EXIT'/>
+    </Match>
+
+    <Match>
+        <Class name='org.apache.logging.dumbster.smtp.SimpleSmtpServer'/>
+        <Bug pattern='PS_PUBLIC_SEMAPHORES'/>
+    </Match>
+
+    <Match>
+        <Class name='org.rvpf.base.util.tool.Require'/>
+        <Method name='notNull'/>
+    </Match>
+
+</FindBugsFilter>
+
+<!-- End. -->

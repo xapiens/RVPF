@@ -1,0 +1,83 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-port.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF streamed messages exchanged on a
+ TCP/IP port.
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!ENTITY % BOOL.t '
+         (on | yes | y | true | t | 1
+        | off | no | n | false | f | 0)'>
+
+<!--
+		Main elements.
+ -->
+
+<!--
+ A 'done' element is returned as success response.
+ -->
+<!ELEMENT done EMPTY>
+<!ATTLIST done
+	ref CDATA #REQUIRED>
+
+<!--
+ A 'messages' element holds messages.
+ -->
+<!ELEMENT messages ANY>
+<!ATTLIST messages
+	id CDATA #REQUIRED
+	flush %BOOL.t; #IMPLIED>
+
+<!--
+ A 'failed' element is returned as failed response.
+
+ The 'exception' attribute names the class of the Exception identifying
+ the failure.
+
+ The element's text holds an explanatory message.
+ -->
+<!ELEMENT failed (#PCDATA)>
+<!ATTLIST failed
+	ref CDATA #REQUIRED
+	exception CDATA #REQUIRED>
+
+<!--
+ A 'flush' element flushes (commits) accumulated entries.
+ -->
+<!ELEMENT flush EMPTY>
+<!ATTLIST flush
+	id CDATA #REQUIRED>
+
+<!--
+ A 'login' element identifies a client.
+ -->
+<!ELEMENT login EMPTY>
+<!ATTLIST login
+	id CDATA #REQUIRED
+	user CDATA #REQUIRED
+	password CDATA #IMPLIED
+	client CDATA #IMPLIED>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

@@ -1,0 +1,71 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          rvpf
+# Required-Start:    $remote_fs $syslog $time
+# Required-Stop:     $remote_fs $syslog $time
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: RVPF service
+# Description:       Referenced by symbolic links in /etc/init.d identifying
+#                    their 'wrap' target in config/wrap, the configured
+#                    RVPF service is started under the owner of this file.
+### END INIT INFO
+
+# $Id: rc.rvpf 3051 2016-06-05 13:12:28Z SFB $
+
+# Note: This file should be referenced by symbolic links named
+#       'rvpf-' followed by the name of a 'wrap' target.
+
+shopt -s extglob
+
+# Configures the exit command.
+if [ "$0" = "$BASH_SOURCE" ]; then
+    # Executed as a command.
+    exit="exit"
+else
+    # Sourced.
+    exit="return"
+fi
+
+# Gets the real path of this file.
+rc_rvpf_path="$(readlink -f $BASH_SOURCE)"
+
+# Gets the wrap target.
+rc_rvpf_target="${BASH_SOURCE##*rvpf-}"
+if [ "$rc_rvpf_target" = "$BASH_SOURCE" ]; then
+    # This is a callback.
+    rc_rvpf_target=$1
+    shift
+fi
+
+# Executes under this file owner.
+rc_rvpf_owner=$(stat -c %u $rc_rvpf_path)
+user_id=$(id -u)
+if [ "$rc_rvpf_owner" -ne "$user_id" ]; then
+    if [ "$user_id" -ne 0 ]; then
+        echo "Bad user '$USER'!"
+        $exit 2
+    fi
+    # Calls back this file under its owner with the target
+    # as the first parameter.
+    rc_rvpf_owner=$(stat -c %U $rc_rvpf_path)
+    su $rc_rvpf_owner -- -c "$rc_rvpf_path $rc_rvpf_target $@"
+    $exit
+fi
+
+# Uses this file's directory as the new current directory.
+rc_rvpf_directory="$(dirname $rc_rvpf_path)"
+cd $rc_rvpf_directory
+
+case "$1" in
+    start|stop|restart|status)
+        $rc_rvpf_directory/wrap $1 $rc_rvpf_target
+        ;;
+    *)
+        echo "Usage: $BASH_SOURCE {start|stop|status|restart}" >&2
+        $exit 3
+        ;;
+esac
+
+# End.
+

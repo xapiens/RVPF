@@ -1,0 +1,382 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This document was created with Syntext Serna Free. -->
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<article>
+  <title>RVPF Components</title>
+  <subtitle>
+    <phrase role="revised-date">Revised: 2010-03-10.</phrase>
+  </subtitle>
+  <articleinfo>
+    <copyright>
+      <year>2003</year>
+      <year>2004</year>
+      <year>2005</year>
+      <year>2006</year>
+      <year>2007</year>
+      <year>2008</year>
+      <year>2009</year>
+      <year>2010</year>
+      <holder>Serge Brisson.</holder>
+    </copyright>
+  </articleinfo>
+  <para><acronym>RVPF</acronym> has multiple components that have been
+  designed to work together. These components can be executed by
+  themselves or under a JMX container. One of the components
+  (<classname>Container</classname>) may also be used as a container for
+  other components. The components can run in the same or different
+  <acronym>JVM</acronym>s, on the same or different host
+  computers.</para> <para>The following sections contain short
+  descriptions, diagrams and notes on the principal components.</para>
+  <section>
+    <title>Clock Service</title>
+    <para>This service generates time events which may trigger computations.
+    It has to be able to generate past events scheduled to occur while the
+    service was not running. The event generation must always be in
+    chronological order.</para>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="clock-store"/>
+      </imageobject>
+      <caption>
+        <para>Interaction between a <classname>Clock</classname> and
+      the <classname>Store</classname> holding some of its
+      <classname>Point</classname>s.</para>
+      </caption>
+    </mediaobject>
+    <para>The values generation must be assisted by the
+    <classname>Point</classname>s <classname>Content</classname>. The
+    CrontabContent provides such assistance by following a <systemitem class="osname">UNIX</systemitem> style specification
+    (<application>
+        <systemitem>crontab</systemitem>
+      </application>).</para>
+  </section>
+  <section>
+    <title>Container Service</title>
+    <para>This component can be used as a light weight container for other
+    framework components.</para>
+  </section>
+  <section>
+    <title>Database Service</title>
+    <para>This is a convenience service to host a database engine instance. It
+    currently supports Derby, H2 and HSQL.</para>
+  </section>
+  <section>
+    <title>Document Version Control</title>
+    <para>Interfaces with version control software to refresh the
+    <classname>Metadata</classname> document. Upon receiving the
+    <action>
+        <command>UpdateDocument</command>
+      </action>
+    <classname>Signal</classname>, this component updates the configured
+    workspace; it then broadcast a <command>DocumentUpdated</command>
+    <classname>Event</classname>. If it sees a <command>BadDocument</command>
+    <classname>Event</classname>, it will try to restore the previous revision
+    of the document.</para>
+  </section>
+  <section>
+    <title>Forwarder Service</title>
+    <para>The <classname>ForwarderService</classname> is a generic component
+    for the handling of messages queues and topics. It can accept multiple
+    input modules and multiple output modules. Messages filters can be
+    attached to any module.</para>
+    <para>While other services from the framework will react to a
+    communication failure with an attempt to restart themselves, forwarder
+    modules are expected to resist such failure by closing the communication
+    channel and keep trying to open it again.</para>
+    <section>
+      <title>Input Modules</title>
+      <para>The input modules accept messages (usually
+      <classname>PointValues</classname>) from a specified input.</para>
+      <section>
+        <title>Pull Notifier</title>
+        <para>Pulls notices from a <classname>Store</classname>..</para>
+      </section>
+      <section>
+        <title>SOM Receiver</title>
+        <para>Receives messages from a <classname>SOM</classname>
+        <classname>Queue</classname>.</para>
+      </section>
+      <section>
+        <title>SOM Subscriber</title>
+        <para>Receives messages from a <classname>SOM</classname>
+        <classname>Topic</classname>.</para>
+      </section>
+      <section>
+        <title>Streamed Messages Files</title>
+        <para>Receives streamed messages from files in a specified
+        directory.</para>
+      </section>
+      <section>
+        <title>Streamed Messages Port</title>
+        <para>Receives streamed messages from a specified
+        <acronym>TCP</acronym> port.</para>
+      </section>
+    </section>
+    <section>
+      <title>Output Modules</title>
+      <para>The output modules submit messages (usually
+      <classname>PointValues</classname>) to specified output.</para>
+      <section>
+        <title>SOM Publisher</title>
+        <para>Sends messages to a <classname>SOM</classname>
+        <classname>Topic</classname>.</para>
+      </section>
+      <section>
+        <title>SOM Sender</title>
+        <para>Sends messages to a <classname>SOM</classname>
+        <classname>Queue</classname>.</para>
+      </section>
+    </section>
+    <section>
+      <title>Messages Filters</title>
+      <para>The messages filters can be applied to input and output
+      modules.</para>
+      <section>
+        <title>Class Filter</title>
+        <para>Only allows or blocks messages which are instance of specified
+        classes.</para>
+      </section>
+      <section>
+        <title>Point Value Filter</title>
+        <para>Accepts only messages which are values for known points. Also
+        reformats the values.</para>
+      </section>
+      <section>
+        <title>Processor Filter</title>
+        <para>Accepts only point values which can act as notices for a
+        specified <classname>Processor</classname>.</para>
+      </section>
+      <section>
+        <title>Store Filter</title>
+        <para>Accepts only point values which are held at a specified
+        <classname>Store</classname>.</para>
+      </section>
+    </section>
+  </section>
+  <section>
+    <title>HTTP Server</title>
+    <para>This component can host multiple modules supplying
+    <acronym>HTTP</acronym> services</para>
+    <section>
+      <title>Alert Module</title>
+      <para>Receives queries for <classname>Event</classname>s and components
+      status and sends <classname>Signal</classname>s.</para>
+    </section>
+    <section>
+      <title>Metadata Server Module</title>
+      <para>Serves <classname>Metadata</classname> filtered according to a
+      client&apos;s request.</para>
+      <para>An important use is the distribution of up to date, validated and
+      condensed metadata to other components.</para>
+    </section>
+    <section>
+      <title>Notice Module</title>
+      <para>Sends notices (<classname>PointValue</classname>s).</para>
+    </section>
+    <section>
+      <title>Query Module</title>
+      <para>Responds to <classname>PointInfo</classname>s and
+      <classname>PointValue</classname>s queries.</para>
+    </section>
+    <section>
+      <title>RPN Module</title>
+      <para>Executes <acronym>RPN</acronym> formulas on supplied data.</para>
+    </section>
+    <section>
+      <title>Update Module</title>
+      <para>Sends updates (<classname>PointValue</classname>s).</para>
+    </section>
+  </section>
+  <section>
+    <title>Logger Service</title>
+    <para>Provides remote logging.</para>
+  </section>
+  <section>
+    <title>Processor Service</title>
+    <para>This is the heart of the system. Using relationships specified in
+    the metadata, incoming notices trigger computations and updates. It is
+    able to handle cascading events. It can be configured to support
+    customized point behavior and content.</para>
+    <para>A number of <classname>PointValue</classname>s are received by the
+    <classname>Receptionist</classname> and collected in a
+    <classname>Batch</classname>. Each <classname>PointValue</classname> may
+    request the computation of some other <classname>PointValue</classname>s.
+    The inputs of the values to be produced are then collected and the
+    appropriate computations are performed. The results are then sent to the
+    appropriate <classname>Store</classname>s. The processing of the received
+    values is then confirmed (committed) by the
+    <classname>Receptionist</classname>.</para>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="processor"/>
+      </imageobject>
+      <caption>
+        <para><classname>Processor</classname>.</para>
+      </caption>
+    </mediaobject>
+    <section>
+      <title>Receptionist</title>
+      <para>The <classname>Processor</classname> uses an interface
+      (<interfacename>Receptionist</interfacename>) to receive notices from a
+      replaceable module (<classname>JMSReceptionist</classname>).</para>
+    </section>
+    <section>
+      <title>Engine</title>
+      <para>The <classname>Processor</classname> uses an interface
+      (<interfacename>Engine</interfacename>) to produce results from
+      inputs.</para>
+      <section>
+        <title>Clone Engine</title>
+        <para>Clones <classname>PointValue</classname>s.</para>
+      </section>
+      <section>
+        <title>Control Engine</title>
+        <para>Controls some aspects of the framework thru special
+        <classname>PointValue</classname>s.</para>
+      </section>
+      <section>
+        <title>Local Executor Engine</title>
+        <para>Allows computation of result values by class implementing a
+        simplified API: <classname>EngineExecutor</classname>.</para>
+        <section>
+          <title>Pipe Engine Executor</title>
+          <para>Allows the use of an external process to perform the
+          computation of result values. The communication with this process is
+          made thru the standard input, output and error streams.</para>
+        </section>
+        <section>
+          <title>Script Engine Executor</title>
+          <para>Allows the use of a script process to perform the computation
+          of result values.</para>
+        </section>
+      </section>
+      <section>
+        <title>Null Engine</title>
+        <para>Does nothing.</para>
+      </section>
+      <section>
+        <title>Remote Executor Engine</title>
+        <para>Allows computation of result values on an other machine.</para>
+      </section>
+      <section>
+        <title>Replicator Engine</title>
+        <para>Replicates <classname>PointValue</classname>s.</para>
+      </section>
+      <section>
+        <title>Resynchronizer Engine</title>
+        <para>Resynchronizes <classname>PointValue</classname>s.</para>
+      </section>
+      <section>
+        <title>RPN Engine</title>
+        <para>A simple stack engine using a <command> Forth</command> like
+        syntax to generate <classname>Transform</classname>s.</para>
+      </section>
+      <section>
+        <title>Step Filter Engine</title>
+        <para>Filters <classname>PointValue</classname>s based on minimum step
+        requirements.</para>
+      </section>
+      <section>
+        <title>Summarizer Engine</title>
+        <para>Extends the <classname>RPN</classname>
+        <classname>Engine</classname> to allow operations on series of values
+        of a <classname>Point</classname> within an interval formed by the
+        occurrence of two values of a triggering
+        <classname>Point</classname>.</para>
+      </section>
+    </section>
+  </section>
+  <section>
+    <title>Script Service</title>
+    <para>This is a convenience service to hold a script engine.</para>
+  </section>
+  <section>
+    <title>SOM Server</title>
+    <para>This component can host multiple queues and/or topics. These
+    messaging facilities can be hosted by most components needing them, but
+    this service can be used when some of them need some independence.</para>
+    <section>
+      <title>SOM Queue</title>
+      <para>A SOM queue allows one reader (receiver) and any number of
+      writers (senders). It is always transactional and persistent. A
+      transaction is stored in a file as an <acronym>XML</acronym> fragment.
+      The name of the transaction file is the <orgname>ISO-8601</orgname> date
+      and time format for the moment (<acronym>UCT</acronym>) of the start of
+      that transaction. The name of the directory holding the transactions is
+      the name of the queue.</para>
+    </section>
+    <section>
+      <title>SOM Topic</title>
+      <para>A SOM topic allows any number of readers (subscribers) and of
+      writers (publishers). it is non transactional and non persistent. A
+      subscriber must be connected at the time of publication to receive a
+      message.</para>
+    </section>
+  </section>
+  <section>
+    <title>Store Service</title>
+    <para>A <classname>Store</classname> is responsible for the storage and
+    retrieval of the point values.</para>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="processor-store"/>
+      </imageobject>
+      <caption>
+        <para>Interaction between a <classname>Processor</classname>
+      and a <classname>Store</classname> in a one to one
+      configuration.</para>
+      </caption>
+    </mediaobject>
+    <para>This component has to be implemented to enable the support of a
+    specific <application>Historian System</application>.</para>
+    <section>
+      <title>C Store</title>
+      <para>Implements a <classname>Store</classname> using a driver written
+      in the <acronym>C</acronym> language to the <acronym>API</acronym> of a
+      data historian.</para>
+    </section>
+    <section>
+      <title>My Store</title>
+      <para>Implements a <classname>Store</classname> using a
+      <interfacename>JDBC</interfacename> driver. Its supports cloning,
+      allowing updates on any clone.</para>
+    </section>
+    <section>
+      <title>Null Store</title>
+      <para>Responds negatively to any query and ignore any update. Although
+      this component appears ludicrous, it is actually useful in some
+      situations.</para>
+      <para>A particularity of this store: it exists only on the client
+      side.</para>
+    </section>
+    <section>
+      <title>Proxy Store</title>
+      <para>Relays queries and updates to the appropriate
+      <classname>Store</classname>.</para>
+    </section>
+    <section>
+      <title>Sink Store</title>
+      <para>Responds negatively to any request but is expected to process
+      updates. The processing is done by a contained module.</para>
+      <section>
+        <title>Null Sink</title>
+        <para>Ignores the update values. Although the effect of using a
+        <classname>SinkStore</classname> with this module seems equivalent to
+        using the <classname>NullStore</classname>, there is one important
+        difference aside the additional communication overhead: the
+        <classname>SinkStore</classname> container can generate a notice for
+        the update value.</para>
+      </section>
+      <section>
+        <title>Pipe Sink</title>
+        <para>Supplies the update values to an external process. The
+        communication with this process is made thru the standard input,
+        output and error streams.</para>
+      </section>
+      <section>
+        <title>Script Sink</title>
+        <para>Supplies the update values to a script process.</para>
+      </section>
+    </section>
+  </section>
+</article>

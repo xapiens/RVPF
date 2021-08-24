@@ -1,0 +1,215 @@
+/** Related Values Processing Framework.
+ *
+ * Copyright (c) 2003-2019 Serge Brisson.
+ *
+ * This software is distributable under the LGPL license.
+ * See details at the bottom of this file.
+ *
+ * $Id: build.gradle 3961 2019-05-06 20:14:59Z SFB $
+ */
+
+project.description = "RVPF Core"
+
+apply from: '../core/config/build/build-common.gradle'
+
+task help(overwrite: true,
+        description: "Provides some help on usage.") {
+    doLast {
+        println """Please specify a target:
+
+        style -- Runs Checkstyle on the Java files. (*)
+
+    (*) These targets need the source files.
+        """
+
+        ant.project.executeTarget 'help'
+    }
+}
+
+debStep = {debDir ->
+    copy {
+        from '.'
+        into "${debDir}/opt/rvpf/bin"
+        include 'wrap'
+    }
+    copy {
+        from 'config/build/deb'
+        into "${debDir}/usr/share/doc/rvpf-core"
+        include 'copyright'
+    }
+    copy {
+        from 'config/build/deb'
+        into "${debDir}/DEBIAN"
+        include 'postinst'
+        include 'postrm'
+        fileMode 0755
+    }
+    copy {
+        from 'bin'
+        into "${debDir}/opt/rvpf/share/sh"
+        include 'js.sh'
+        include 'tests.sh'
+        include 'wrap.sh'
+    }
+
+    mkdirs "${debDir}/etc/opt/rvpf/tests/core/config/local"
+    mkdirs "${debDir}/etc/opt/rvpf/tests/core/config/scenarios/local"
+    mkdirs "${debDir}/var/opt/rvpf/tests"
+    copy {
+        from 'tests/config'
+        into "${debDir}/etc/opt/rvpf/tests/core/config"
+        include '*.*'
+        include 'scenarios/*.*'
+    }
+    copy {
+        from 'tests/classes'
+        into "${debDir}/etc/opt/rvpf/tests/core/classes"
+    }
+    copy {
+        from 'tests/script'
+        into "${debDir}/etc/opt/rvpf/tests/core/script"
+        include '*.*'
+    }
+}
+
+izpackSetupStep = {izpackHome ->
+    def izpackPanels = "${izpackHome}/bin/panels"
+
+    ant.unjar(src: "${izpackPanels}/TargetPanel.jar",
+            dest: 'build/izpack/classes') {
+        ant.patternset {
+            ant.include(name: '**/Path*Panel.class')
+        }
+    }
+    ant."rvpf.javac"(srcdir: 'src/izpack/java',
+            destdir: 'build/izpack/classes') {
+        ant.classpath(location: 'build/izpack/classes')
+        ant.classpath(location: "${izpackHome}/lib/installer.jar")
+        ant.classpath(location: '${rvpf.core}/lib/${rvpf.tools.jar}')
+    }
+    ant.jar(jarfile: "${izpackPanels}/AnchoredTargetPanel.jar") {
+        ant.fileset(dir: 'build/izpack/classes',
+            includes: '**/*.class',
+            excludes: '**/PostInstallPanel*.class')
+    }
+    ant.jar(jarfile: "${izpackPanels}/PostInstallPanel.jar") {
+        ant.fileset(dir: 'build/izpack/classes',
+            includes: '**/PostInstallPanel*.class')
+        ant.zipfileset(src: '${rvpf.core}/lib/${rvpf.tools.jar}') {
+            ant.include(name: '${package.dir}/tool/PostInstallAction.class')
+            ant.include(name: '${package.dir}/tool/PostInstallAction$*.class')
+        }
+    }
+}
+
+styleGroups << 'ext'
+
+tagTargets = [
+    '.base',
+    '.ext',
+    '.forwarder',
+    '.http',
+    '.processor',
+    '.service',
+    '.store',
+    '.tests',
+    '.tools'
+]
+
+tarsStepRepl = {->
+    ant.zip(destfile: 'dist/${project.name.unix}-${version.string}.zip',
+            duplicate: 'fail', whenempty: 'fail') {
+        ant.zipfileset(dir: '.', prefix: '${tar.root.dir}') {
+            ant.include(name: 'LICENSE.txt')
+            ant.include(name: 'VERSION')
+            ant.include(name: 'lib/${rvpf.name.unix}-*.jar')
+            ant.include(name: 'config/*.example')
+            ant.include(name: 'config/script/**')
+            ant.include(name: 'config/service/**')
+            ant.include(name: 'config/wrap/**')
+            ant.include(name: 'shared/**')
+            ant.include(name: 'script/**')
+            ant.include(name: 'dtd/**')
+            ant.include(name: 'log/build.log')
+            ant.include(name: 'tmp/build.tmp')
+            ant.include(name: 'tests/config/**')
+            ant.include(name: 'tests/classes/**/*.class')
+            ant.include(name: 'tests/script/**')
+            ant.include(name: 'platform/**')
+            ant.include(name: 'build.xml')
+            ant.include(name: 'config/build/build-*.xml')
+            ant.include(name: 'config/build/ivy.jar')
+            ant.include(name: 'config/build/ivy*.xml')
+            ant.include(name: 'config/build/ivy/**')
+            ant.include(name: 'doc/**')
+            ant.exclude(name: 'platform/izpack/**')
+            ant.exclude(name: '**/*.exe')
+            ant.exclude(name: '**/*.dll')
+            ant.exclude(name: '**/*.so')
+            ant.exclude(name: '**/*.jnilib')
+        }
+        ant.zipfileset(dir: '.', prefix: '${tar.root.dir}', filemode: '755') {
+            ant.include(name: 'lib/${rvpf.name.unix}-*.dll')
+            ant.include(name: 'bin/**')
+            ant.include(name: '*.cmd')
+            ant.include(name: '*.dcl')
+            ant.include(name: 'rc.rvpf')
+            ant.exclude(name: '**/*.exe')
+        }
+        ant.zipfileset(dir: '.', prefix: '${tar.root.dir}', filemode: '755') {
+            ant.and {
+                ant.type(type: 'file')
+                ant.filename(name: '*')
+                ant.filename(name: '*.*', negate: 'true')
+            }
+            ant.exclude(name: 'VERSION')
+            ant.exclude(name: 'Makefile')
+        }
+    }
+    ant.tar(destfile: 'dist/${project.name.unix}-${version.string}-src.tgz',
+            longfile: 'gnu', compression: 'gzip') {
+        ant.tarfileset(dir: '.', prefix: '${tar.root.dir}') {
+            ant.include(name: 'config/build/**')
+            ant.exclude(name: 'config/build/build-*.xml')
+            ant.exclude(name: 'config/build/ivy*.xml')
+            ant.exclude(name: 'config/build/ivy/**')
+            ant.include(name: 'Makefile')
+            ant.include(name: 'src/**')
+            ant.exclude(name: 'src/main/docs/uml/**')
+            ant.include(name: 'tests/java/**/*.java')
+            ant.include(name: 'tests/src/**')
+            ant.include(name: 'platform/izpack/**/*.java')
+            ant.include(name: 'web/*.css')
+            ant.include(name: 'web/*.html')
+            ant.exclude(name: '**/*.class')
+        }
+        ant.tarfileset(dir: '.', prefix: '${tar.root.dir}',
+                defaultexcludes: 'no') {
+            ant.include(name: '.checkclipse')
+            ant.include(name: '.checkstyle')
+            ant.include(name: '.classpath')
+            ant.include(name: '.project')
+        }
+    }
+}
+
+updateWebDirStep = {->
+    ant.copy(todir: 'web/dtd') {
+        ant.fileset(dir: 'dtd', includes: '*.dtd')
+    }
+}
+
+/* This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA
+ */

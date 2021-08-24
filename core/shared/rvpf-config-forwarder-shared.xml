@@ -1,0 +1,659 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-config-forwarder-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<config lang='en' title="Shared Forwarder configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper Forwarder operations.
+    </description>
+
+    <notes>
+        This file is available as a resource in 'rvpf-http.jar'.
+    </notes>
+
+    <property name='config.forwarder' validated='no'/>
+
+    <!-- Forwarder Properties. -->
+
+    <PropertiesDef name='forwarder.module' multiple='yes'>
+        <description>
+            These properties are used to define a Forwarder module.
+        </description>
+
+        <PropertyDef name='address'>
+            <description>
+                Specifies on which address to listen.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='batch.limit' type='Integer'>
+            <description>
+                Specifies the maximum number of messages in a
+                transaction.
+
+                Defaults to 100 for an input module and unlimited for
+                an output module.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='batch.timeout' type='Elapsed'>
+            <description>
+                The maximum elapsed time to complete the batch when at
+                least one message has been received in the current
+                transaction.
+            </description>
+            <notes>
+                Defaults to unlimited.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='batch.wait' type='Elapsed'>
+            <description>
+                The maximum elapsed time to wait for an additional
+                message when at least one has been received in the
+                current transaction.
+            </description>
+            <notes>
+                Defaults to unlimited. The SOM receiver recognizes a
+                negative or empty value as a request to keep the
+                original transaction size, as long as it does not exceed
+                the limit.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='connection.retry.delay' type='Elapsed'>
+            <description>
+                The elapsed time before trying to reconnect to the queue
+                or topic.
+
+                Defaults to 60.0 (seconds).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='client.name'>
+            <description>
+                A client name for port connections.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='control.dir'>
+            <description>
+                The module's control directory.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='deliver' type='Boolean'>
+            <description>
+                Specifies the use of 'deliver' requests.
+
+                Defaults to 'false'.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='filter' multiple='yes'>
+            <description>
+                Each instance of this properties group specifies a
+                filter for the module.
+            </description>
+
+            <PropertyDef name='allowed.class' type='ClassDef'
+                    multiple='yes'>
+                <description>
+                    A class whose messages are allowed by the class
+                    filter.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='confirm'>
+                <description>
+                    Specifies when a point value is confirmed. The value
+                    of this property must be either a choice between
+                    'never', 'marked', 'replicated' and 'always' or a
+                    boolean value where true means 'always' and false
+                    means 'never'.
+
+                    A value is confirmed when its store returns a
+                    value for the same point and time stamp.
+
+                    Defaults to 'never'.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='confirm.value' type='Boolean'>
+                <description>
+                    Specifies that a value must compare equal when it is
+                    confirmed; otherwise, only the value existence is
+                    verified.
+
+                    Defaults to 'false'.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='dropped.class' type='ClassDef'
+                    multiple='yes'>
+                <description>
+                    A class whose messages are dropped by the class
+                    filter.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='decrypt' type='Boolean'>
+                <description>
+                    Asks the verify filter to decrypt the content.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='decrypt.key' multiple='yes'>
+                <description>
+                    A decryption key identification.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='encrypt.key' multiple='yes'>
+                <description>
+                    An encryption key identification.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='filter.class' type='ClassDef'>
+                <description>
+                    The class of the filter.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='filter.uuid'>
+                <description>
+                    A UUID for the filter. This is needed when the
+                    filter is a client of the metadata server.
+
+                    It is also used as a marker by the Alert filter.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='processor'>
+                <description>
+                    The entity name name of the processor for the
+                    processor filter.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='replicates' type='Boolean'>
+                <description>
+                    Indicates that the processor replicates.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='resynchronizes' type='Boolean'>
+                <description>
+                    Indicates that the processor resynchronizes.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='security' extends='security'/>
+
+            <PropertyDef name='stamp.required' type='Boolean'>
+                <description>
+                    Assigns a stamp if necessary.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='sign' type='Boolean'>
+                <description>
+                    Asks the encrypt filter to sign the result.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='sign.key' multiple='yes'>
+                <description>
+                    A signing key identification.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='store'>
+                <description>
+                    The entity name name of the store for the
+                    store filter.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='strict' type='Boolean'>
+                <description>
+                    The filter operates in strict mode.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='verify.key' multiple='yes'>
+                <description>
+                    A verification key identification.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='warn.dropped' type='Boolean'>
+                <description>
+                    Asks that dropped messages be logged at the 'WARN'
+                    level instead of 'TRACE'.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertyDef name='input.dir'>
+            <description>
+                The module's input directory.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='input.point'>
+            <description>
+                The name of an input point.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='input.points.all' type='Boolean'>
+            <description>
+                Asks for all input points.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='input.points.group'>
+            <description>
+                The name of an input points group.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='input.prefix.data'>
+            <description>
+                The file name prefix for data entries.
+
+                Defaults to empty.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='input.prefix.done'>
+            <description>
+                The file name prefix for done entries.
+
+                Defaults to the file name prefix for data entries.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='input.scan.interval' type='Elapsed'>
+            <description>
+                The elapsed time between scans of the input directory.
+
+                Defaults to 60.0 (seconds).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='input.suffix.data'>
+            <description>
+                The file name suffix for data entries.
+
+                For the StreamedMessagesFiles module, defaults to
+                '.xml'.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='input.suffix.done'>
+            <description>
+                The file name suffix for done entries.
+
+                For the StreamedMessagesFiles module, defaults to
+                '.bak'.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='module.class' type='ClassDef'>
+            <description>
+                The class of the module to activate.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='module.uuid'>
+            <description>
+                A UUID for the module. This is needed when the module is
+                a client of the metadata server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='notices' type='Boolean'>
+            <description>
+                Specifies the use of the store notices filter.
+
+                Defaults to 'false'.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='password' hidden='yes'>
+            <description>
+                The user password for the connection.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='point' multiple='yes'>
+            <description>
+                Specifies a point for subscriptions.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='pull' type='Boolean'>
+            <description>
+                Specifies the use of 'pull' requests.
+
+                Defaults to 'false'.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='queue' extends='som.queue' multiple='no'>
+            <description>
+                The queue server specifications.
+            </description>
+        </PropertiesDef>
+
+        <PropertyDef name='reliable' type='Boolean'>
+            <description>
+                Overrides the module logic for determining if it is
+                reliable.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role' hidden='yes' multiple='yes'>
+            <description>
+                A security role allowing access to the module.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='security' extends='security'/>
+
+        <PropertyDef name='sem.dir'>
+            <description>
+                The module's semaphore directory.
+
+                Defaults to the module's input directory.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='sem.match.enabled' type='Boolean'>
+            <description>
+                Enables the match of semaphore files with the name of
+                input files.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='sem.prefix'>
+            <description>
+                The prefix for the name of the module's semaphore files.
+
+                Defaults to the prefix of the input files.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='sem.purge.enabled' type='Boolean'>
+            <description>
+                Enables the purge of semaphore files.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='sem.suffix'>
+            <description>
+                The suffix for the name of the module's semaphore files.
+            </description>
+            <notes>
+                This property activates the semaphore logic.
+            </notes>
+        </PropertyDef>
+
+        <PropertiesDef name='store'>
+            <PropertyDef name='binding'>
+                <description>
+                    Specifies the RMI URI for the server binding.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='name'>
+                <description>
+                    The name of the store.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='password' hidden='yes'>
+                <description>
+                    The user password for the connection to the store.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='security' extends='security'/>
+
+            <PropertyDef name='user' hidden='yes'>
+                <description>
+                    The user identification for connection to the store.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertiesDef name='topic' extends='som.topic' multiple='no'>
+            <description>
+                The topic server specifications.
+            </description>
+        </PropertiesDef>
+
+        <PropertyDef name='traces'>
+            <description>
+                Supplies the name of the subdirectory under which the
+                traces files will be created.
+
+                Defaults to no traces.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='user' hidden='yes'>
+            <description>
+                The user identification for connection.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='xstream.annotated.class' type='ClassDef'
+                multiple='yes'>
+            <description>
+                An XStream annotated class.
+            </description>
+            <notes>
+                For files queue clients and servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='xstream.converter.class' type='ClassDef'
+                multiple='yes'>
+            <description>
+                Specification of an XStream converter class.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <!-- Forwarder Class library. -->
+
+    <ClassLib name='Forw'>
+        <location unless='jnlp'>${lib.url}/rvpf-forwarder.jar</location>
+    </ClassLib>
+
+    <!-- Forwarder Filter classes. -->
+
+    <ClassDef name='ForwarderFilter'
+            package='org.rvpf.forwarder.filter'/>
+
+    <ClassDef name='ForwarderAlertFilter'
+            package='org.rvpf.forwarder.filter'
+            member='AlertFilter'>
+        <implements classDef='ForwarderFilter'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderClassFilter'
+            package='org.rvpf.forwarder.filter'
+            member='ClassFilter'>
+        <implements classDef='ForwarderFilter'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderDecryptFilter'
+            package='org.rvpf.forwarder.filter'
+            member='DecryptFilter'>
+        <implements classDef='ForwarderFilter'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderEncryptFilter'
+            package='org.rvpf.forwarder.filter'
+            member='EncryptFilter'>
+        <implements classDef='ForwarderFilter'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderPointValueFilter'
+            package='org.rvpf.forwarder.filter'
+            member='PointValueFilter'>
+        <implements classDef='ForwarderFilter'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderProcessorFilter'
+            package='org.rvpf.forwarder.filter'
+            member='ProcessorFilter'>
+        <implements classDef='ForwarderFilter'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderSignFilter'
+            package='org.rvpf.forwarder.filter'
+            member='SignFilter'>
+        <implements classDef='ForwarderFilter'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderVerifyFilter'
+            package='org.rvpf.forwarder.filter'
+            member='VerifyFilter'>
+        <implements classDef='ForwarderFilter'/>
+    </ClassDef>
+
+    <!-- Forwarder Module classes. -->
+
+    <ClassDef name='ForwarderModule'
+            package='org.rvpf.forwarder'/>
+
+    <ClassDef name='ForwarderInput'
+            package='org.rvpf.forwarder.input'
+            member='InputModule'>
+        <implements classDef='ForwarderModule'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderOutput'
+            package='org.rvpf.forwarder.output'
+            member='OutputModule'>
+        <implements classDef='ForwarderModule'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderFromAlerter'
+            package='org.rvpf.forwarder.input'
+            member='FromAlerterModule'>
+        <implements classDef='ForwarderInput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderMessagesFiles'
+            package='org.rvpf.forwarder.input'
+            member='MessagesFilesModule'>
+        <implements classDef='ForwarderInput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderMessagesPortServer'
+            package='org.rvpf.forwarder.input'
+            member='MessagesPortServerModule'>
+        <implements classDef='ForwarderInput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderMessagesPortClient'
+            package='org.rvpf.forwarder.output'
+            member='MessagesPortClientModule'>
+        <implements classDef='ForwarderOutput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderSOMPublisher'
+            package='org.rvpf.forwarder.output'
+            member='SOMPublisherModule'>
+        <implements classDef='ForwarderOutput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderSOMReceiver'
+            package='org.rvpf.forwarder.input'
+            member='SOMReceiverModule'>
+        <implements classDef='ForwarderInput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderSOMSender'
+            package='org.rvpf.forwarder.output'
+            member='SOMSenderModule'>
+        <implements classDef='ForwarderOutput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderSOMSubscriber'
+            package='org.rvpf.forwarder.input'
+            member='SOMSubscriberModule'>
+        <implements classDef='ForwarderInput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderStoreRequests'
+            package='org.rvpf.forwarder.input'
+            member='StoreRequestsModule'>
+        <implements classDef='ForwarderInput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderStoreUpdater'
+            package='org.rvpf.forwarder.output'
+            member='StoreUpdaterModule'>
+        <implements classDef='ForwarderOutput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderToAlerter'
+            package='org.rvpf.forwarder.output'
+            member='ToAlerterModule'>
+        <implements classDef='ForwarderOutput'/>
+    </ClassDef>
+
+    <ClassDef name='ForwarderToRVPF080'
+            package='org.rvpf.forwarder.output'
+            member='RVPF080XMLPortClientModule'>
+        <implements classDef='ForwarderOutput'/>
+    </ClassDef>
+
+    <!-- Container services class. -->
+
+    <ClassDef name='ForwarderService'
+            package='org.rvpf.forwarder'
+            member='ForwarderServiceActivator'
+            classLib='Forw'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: postgresql.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='postgresql'
+            revision='${postgresql.revision}'
+            organisation='org.postgresql'
+            status='release'>
+        <license name='BSD-style'
+                url='http://jdbc.postgresql.org/license.html'/>
+        <description homepage='http://jdbc.postgresql.org/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

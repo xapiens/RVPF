@@ -1,0 +1,121 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: ivy.xml 4114 2019-08-03 15:53:43Z SFB $
+ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='rvpf'
+            revision='${rvpf.revision}'
+            organisation='rvpf'>
+        <license name='LGPL-2.1'
+                url='http://rvpf.org/LICENSE.txt'/>
+        <description homepage='http://rvpf.org/'>
+            The Related Values Processing Framework (RVPF) is being
+            developed to help the integration of Process Control Data
+            Historian Systems.
+
+            The software is written in Java, uses Jython for scripts and
+            XML for configuration files. Except for the Java runtime,
+            all libraries needed to use this software (Jetty, log4j,
+            XStream, etc.) are available with an open source license.
+
+            RVPF is licensed under the GNU Lesser General Public License
+            (LGPL) version 2.1.
+        </description>
+    </info>
+
+    <configurations defaultconfmapping='*->default'>
+        <conf name='compile'/>
+        <conf name='run'/>
+        <conf name='test'/>
+
+        <conf name='core'/>
+        <conf name='optional'/>
+    </configurations>
+
+    <publications>
+        <artifact name='rvpf-base' conf='run'/>
+        <artifact name='rvpf-service' conf='run'/>
+        <artifact name='rvpf-forwarder' conf='run'/>
+        <artifact name='rvpf-http' conf='run'/>
+        <artifact name='rvpf-processor' conf='run'/>
+        <artifact name='rvpf-store' conf='run'/>
+        <artifact name='rvpf-ext' conf='run'/>
+        <artifact name='rvpf-tests' conf='test'/>
+        <artifact name='rvpf-core-tests' conf='test'/>
+        <artifact name='rvpf-tools' conf='compile'/>
+    </publications>
+
+    <dependencies>
+        <dependency name='bcpg-jdk15on' rev='${bc.revision}'
+                org='org.bouncycastle' conf='compile,run,core'/>
+        <dependency name='commons-daemon' rev='${daemon.revision}'
+                org='commons-daemon' conf='compile,run,core'/>
+        <dependency name='commons-dbcp2' rev='${dbcp2.revision}'
+                org='org.apache.commons' conf='compile,run,core'/>
+        <dependency name='h2' rev='${h2.revision}'
+                org='com.h2database' conf='compile,run,core'/>
+        <dependency name='javax.servlet-api' rev='${servlet.revision}'
+                org='javax.servlet' conf='compile,run,core'/>
+        <dependency name='jetty-servlet' rev='${jetty.revision}'
+                org='org.eclipse.jetty.aggregate' conf='compile,run,core'/>
+        <dependency name='log4j-core' rev='${log4j.revision}'
+                org='org.apache.logging.log4j' conf='compile,run,core'/>
+        <dependency name='log4j-jcl' rev='${log4j.revision}'
+                org='org.apache.logging.log4j' conf='compile,run,core'/>
+        <dependency name='log4j-jul' rev='${log4j.revision}'
+                org='org.apache.logging.log4j' conf='compile,run,core'/>
+        <dependency name='xml-resolver' rev='${resolver.revision}'
+                org='xml-resolver' conf='run,core'/>
+        <dependency name='xstream' rev='${xstream.revision}'
+                org='com.thoughtworks.xstream' conf='compile,run,core'/>
+
+        <dependency name='javax.json' rev='${json.revision}'
+                org='org.glassfish' conf='run,core'/>
+        <dependency name='javax.mail' rev='${mail.revision}'
+                org='com.sun.mail' conf='run,core'/>
+
+        <dependency name='jcommander' rev='${jcommander.revision}'
+                org='com.beust' conf='compile,test,core'/>
+        <dependency name='testng' rev='${testng.revision}'
+                org='org.testng' conf='compile,test,core'/>
+
+        <dependency name='jsr305' rev='${jsr305.revision}'
+                org='com.google.code.findbugs' conf='compile,core'/>
+
+        <dependency name='hsqldb' rev='${hsqldb.revision}'
+                org='org.hsqldb' conf='optional'/>
+        <dependency name='mariadb-java-client' rev='${mariadb.revision}'
+                org='org.mariadb.jdbc' conf='optional'/>
+        <dependency name='postgresql' rev='${postgresql.revision}'
+                org='org.postgresql' conf='optional'/>
+    </dependencies>
+
+</ivy-module>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

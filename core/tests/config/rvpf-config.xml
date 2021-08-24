@@ -1,0 +1,430 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-common-config.xml'?>
+
+    <ClassDef name='TestsMessagingSupport'
+            package='org.rvpf.tests'
+            member='MessagingSupport'>
+        <description>
+            Provides messaging support for tests.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SOMTestsSupport'
+            package='org.rvpf.som'
+            member='SOMSupport'
+            notes="Default.">
+        <implements classDef='TestsMessagingSupport'/>
+    </ClassDef>
+
+    <property name='substitution.enabled'/>
+
+    <ClassLib location='file:///${tests.classes}/'>
+        <description>
+            Holds classes used for testing of customizing facilities.
+        </description>
+    </ClassLib>
+
+    <properties name='jmx'>
+        <property name='registration.enabled'
+                property='jmx.registration.enabled'/>
+        <property name='role.connect' property='tests.role'/>
+        <property name='user' property='tests.user'/>
+        <property name='password' property='tests.password'/>
+        <properties name='security' extends='tests.server.security'/>
+    </properties>
+
+    <PropertyDef name='tests.notice.timeout' type='Elapsed'/>
+    <PropertyDef name='tests.queue'/>
+    <PropertyDef name='tests.store.service' type='ClassDef'/>
+    <PropertyDef name='tests.topic'/>
+
+    <property name='tests.alerts.queue' def='tests.queue'
+            if='tests.alerts.queued'
+            value='queue/TestsAlerts'/>
+
+    <properties name='tests.processor.receptionist.queue'
+            def='som.queue'>
+        <property name='name' value='TestsReceptionist'/>
+        <property name='keep.alive' value='60.0'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+    </properties>
+
+    <properties name='tests.publisher.topic' def='som.topic'>
+        <property name='name' value='TestsNotices'/>
+    </properties>
+
+    <property name='tests.command.java' validated='no'
+            value='java'/>
+
+    <properties name='traces'>
+        <property name='disabled' property='tests.traces.disabled'/>
+        <property name='compressed' property='tests.traces.compressed'/>
+    </properties>
+
+    <property name='tests.store.notices.filtered' validated='no'
+            value='yes'/>
+
+    <?include href='resource:rvpf-store-config.xml'?>
+
+    <property name='database.server' unless='database.server'
+            validated='no' value='H2'/>
+    <property name='database.server.derby' validated='no'
+            property='database.server' eq='yes' value='Derby'/>
+    <property name='database.server.h2' validated='no'
+            property='database.server' eq='yes' value='H2'/>
+    <property name='database.server.hsql' validated='no'
+            property='database.server' eq='yes' value='HSQL'/>
+
+    <properties name='processor'>
+        <property name='cache.updates.filtered'/>
+        <property name='receptionist.class'
+                if='tests.processor.receptionist'
+                classDef='${tests.processor.receptionist}'/>
+        <properties name='receptionist.som.queue'
+                extends='tests.processor.receptionist.queue'/>
+    </properties>
+
+    <properties name='tests.queue' def='som.queue'>
+        <property name='name' value='TestsForwarder'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+    </properties>
+
+    <property name='service.monitor.disabled'/>
+
+    <properties name='tests.valve' def='valve'>
+        <property name='required'/>
+        <properties name='security' extends='tests.client.security'/>
+    </properties>
+
+    <properties name='document.version'>
+        <property name='workspace' value='../metadata'/>
+    </properties>
+
+    <property name='script.engine' unless='script.engine'
+            validated='no' value='JS'/>
+    <property name='script.engine.jython' validated='no'
+            property='script.engine' eq='yes' value='Jython'/>
+    <property name='script.engine.js' validated='no'
+            property='script.engine' eq='yes' value='JS'/>
+
+    <properties if='script.engine.jython' validated='no'
+            unless='script.engine.name'>
+        <property name='script.engine.name' value='jython'/>
+        <property name='script.file.type' value='py'/>
+    </properties>
+    <properties if='script.engine.js' validated='no'
+            unless='script.engine.name'>
+        <property name='script.engine.name' value='js'/>
+        <property name='script.file.type' value='js'/>
+    </properties>
+
+    <service name='org.rvpf:type=ClockService'>
+        <description>Used for base tests of Clock.</description>
+        <property name='service.log.id' value='CLCK'/>
+        <property name='clock.name' value='TestsClock'/>
+        <property name='service.monitor.disabled' value='false'/>
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='clock'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=CStoreService'>
+        <description>Used for base tests of CStore.</description>
+        <property name='service.log.id' value='CSPR'/>
+        <property name='service.uuid'
+                value='33a48040-ec43-4eed-abb0-5e1b69d39d0e'/>
+        <property name='store.name' value='TestsCStore'/>
+        <properties name='store.server.c' extends='store.server'>
+            <property name='impl.so' value='rvpf-c-store'/>
+            <property name='log.level' value='DEBUG'/>
+            <property name='log.name' value='Proxy'/>
+            <properties name='env'>
+                <property name='binding'
+                        unless='tests.rmi.registry.private'
+                        value='//${rmi.registry.address}:${rmi.registry.port}'/>
+                <property name='name' value='TestsStore'/>
+                <property name='user' property='tests.user'/>
+                <property name='password' property='tests.password'/>
+            </properties>
+            <property name='notifier.poll.interval'
+                    property='tests.store.notifier.poll.interval'
+                    value='1.0'/>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='c-store-proxy'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=DatabaseService'>
+        <description>
+            Used for basic database service tests.
+        </description>
+        <property name='service.log.id' value='DBSV'/>
+        <properties name='database.server' if='database.server.derby'>
+            <property name='support.class' classDef='DerbySupport'/>
+            <properties name='support.properties'>
+                <property name='drda.portNumber'
+                        required='database.server.port.1'/>
+            </properties>
+        </properties>
+        <properties name='database.server' if='database.server.h2'>
+            <property name='support.class' classDef='H2Support'/>
+            <properties name='support.properties'>
+                <property name='tcpPort'
+                        required='database.server.port.1'/>
+                <property name='pgPort'
+                        required='database.server.port.2'/>
+                <property name='webPort'
+                        required='database.server.port.3'/>
+                <!-- <property name='trace'/> -->
+            </properties>
+        </properties>
+        <properties name='database.server' if='database.server.hsql'>
+            <property name='support.class' classDef='HSQLSupport'/>
+            <properties name='support.properties'>
+                <property name='server.port'
+                        required='database.server.port.1'/>
+                <property name='server.database.0' value='tests'/>
+                <property name='server.dbname.0' value='tests'/>
+            </properties>
+        </properties>
+        <properties name='service.alerter'>
+            <property name='alerter.class' classDef='NullAlerter'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=DocumentVersionControl'>
+        <classLib classLib='SVN'/>
+        <property name='service.log.id' value='VERS'/>
+    </service>
+
+    <service name='org.rvpf:type=LoggerService'>
+        <property name='service.log.id' value='LOGG'/>
+        <properties name='logger.server'>
+            <property name='address' required='tests.logger.address'/>
+        </properties>
+        <properties name='service.alerter'>
+            <property name='alerter.class' classDef='NullAlerter'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=MetadataServiceAppHolder'>
+        <property name='service.log.id' value='MSAH'/>
+        <description>
+            Used for base tests of metadata service app holder.
+        </description>
+        <property name='service.app.class'
+                value='org.rvpf.tests.example.ServiceAppExampleImpl'/>
+        <properties name='service.app.properties'>
+            <property name='tests.app.specific' value='Test'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=TheStoreService,name=Snapshot'>
+        <description>Used for snapshot tests of TheStore.</description>
+        <property name='service.log.id' value='TSSN'/>
+
+        <properties name='store.server.the' extends='store.server.the'>
+            <property name='snapshot'/>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='the-snapshot'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService'>
+        <description>Used for base tests of Processor.</description>
+        <classLib classLib='ScriptJython' if='script.engine.jython'/>
+        <property name='service.log.id' value='PROC'/>
+        <properties name='processor' extends='processor'>
+            <property name='name' value='TestsProcessor'/>
+            <property name='receptionist.wait'
+                    value='15000'/>
+        </properties>
+        <property name='service.uuid'
+                value='cc5e3292-3a91-4478-9c27-817df41edd95'/>
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='processor'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProxyStoreService'>
+        <property name='service.log.id' value='PXST'/>
+        <property name='store.name' value='TestsProxyStore'/>
+        <properties name='store.server.proxy' extends='store.server'>
+            <properties name='stores'>
+                <property name='name' value='TestsStore'/>
+                <property name='name' value='TestsProxyStore'/>
+            </properties>
+            <properties name='updates.listener' overrides='yes'
+                    if='tests.store.updates.listener.enabled'>
+                <properties name='som.queue' extends='tests.queue'/>
+            </properties>
+            <property name='updates.listener.user'
+                    property='tests.user'/>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+    </service>
+
+    <service name='org.rvpf:type=RemoteExecutor'>
+        <description>
+            Used for basic remote executor tests.
+        </description>
+        <property name='service.log.id' value='RMEX'/>
+        <properties name='service.alerter'>
+            <property name='alerter.class' classDef='NullAlerter'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=RLPService'>
+        <description>Used for base tests of RLP.</description>
+        <property name='service.log.id' value='RLPS'/>
+        <properties name='rlp.server'>
+            <property name='port' property='tests.rlp.server.udp.port'/>
+            <properties name='resource'>
+                <property name='protocol' value='UDP'/>
+                <property name='identifier' value="Test 1"/>
+            </properties>
+            <properties name='resource'>
+                <property name='protocol' value='UDP'/>
+                <property name='identifier' value="Test 3"/>
+            </properties>
+            <properties name='resource'>
+                <property name='protocol' value='UDP'/>
+                <property name='identifier' value="Test 4"/>
+            </properties>
+        </properties>
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='rlp'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ScriptService'>
+        <description>
+            Used for base tests of the script service.
+        </description>
+        <classLib classLib='ScriptJython' if='script.engine.jython'/>
+        <property name='service.log.id' value='SCRI'/>
+        <property name='service.uuid'
+                value='2437b536-9b77-4772-88cb-e706a8a66f16'/>
+        <properties name='script.service'>
+            <property name='engine.name'
+                    property='script.engine.name'/>
+            <property name='file.start'
+                    value='${config.dir}/../script/script-service-tests.${script.file.type}'/>
+            <property name='text.start' value='onStart()'/>
+            <property name='text.run' value='onRun()'/>
+            <property name='text.stop' value='onStop()'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=SOMContainerService,name=Tests'>
+        <description>
+            Used for base tests of the SOM server.
+        </description>
+        <property name='service.log.id' value='SOMT'/>
+
+        <properties name='som.topic'>
+            <property name='name' value='Tests'/>
+        </properties>
+
+        <properties name='som.queue'>
+            <property name='name' value='Tests'/>
+            <property name='backup'/>
+            <property name='memory' property='tests.queue.memory'/>
+            <property name='compressed'
+                    property='tests.queue.compressed'/>
+        </properties>
+
+        <properties name='service.alerter'>
+            <property name='alerter.class' classDef='NullAlerter'/>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+    </service>
+
+    <?log message="Sink service mode: ${tests.sink}" if='tests.sink'?>
+    <property name='tests.sink.null' validated='no'
+            property='tests.sink' eq='yes' value='Null'/>
+    <property name='tests.sink.pipe' validated='no'
+            property='tests.sink' eq='yes' value='Pipe'/>
+    <property name='tests.sink.script' validated='no'
+            property='tests.sink' eq='yes' value='Script'/>
+
+    <service name='org.rvpf:type=SinkService' if='tests.sink'>
+        <description>Used for base tests of PipeSink.</description>
+        <property name='service.uuid'
+                value='04078684-7745-4576-9624-aab22df8875c'/>
+        <property name='service.log.id' value='SINK'/>
+        <property name='store.name' value='TestsSink'/>
+        <properties name='store.server.sink' extends='store.server'
+                if='tests.sink.null'/>
+        <properties name='store.server.sink' extends='store.server'
+                if='tests.sink.pipe'>
+            <property name='module.class' classDef='PipeSinkModule'/>
+            <properties name='pipe'>
+                <property name='name' value='PipeExample'/>
+                <property name='program'
+                        value='${tests.command.java}'
+                        property='tests.pipe.program'/>
+                <property name='arg'>
+                    <value value='org.rvpf.tests.example.PipeProgramExample'
+                            unless='tests.pipe.program'/>
+                    <value value='SINK'/>
+                </property>
+                <property name='set' unless='tests.pipe.program'>
+                    <value value='CLASSPATH=${tests.classes}'/>
+                    <value value='CLASSPATH+=${rvpf.core.lib}/rvpf-base.jar'/>
+                </property>
+            </properties>
+        </properties>
+        <classLib classLib='ScriptJython' if='script.engine.jython'/>
+        <properties name='store.server.sink' extends='store.server'
+                if='tests.sink.script'>
+            <property name='module.class' classDef='ScriptSinkModule'/>
+            <properties name='script'>
+                <property name='engine.name'
+                        property='script.engine.name'/>
+                <property name='file.start'
+                        value='${config.dir}/../script/script-sink-tests.${script.file.type}'/>
+                <property name='text.delete'
+                        value='deleteValue()'/>
+                <property name='text.update'
+                        value='updateValue()'/>
+            </properties>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='sink'/>
+        </properties>
+    </service>
+
+    <?include href='resource:rvpf-som-config.xml'?>
+
+</config>
+
+<!-- End. -->
