@@ -1,0 +1,188 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE project>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: build.xml 4112 2019-08-02 20:00:26Z SFB $
+ -->
+
+<project name='RVPF' default='build'
+        xmlns:if='ant:if'
+        xmlns:unless='ant:unless'>
+
+    <xmlcatalog id='rvpf.catalog'>
+        <classpath location='core/lib/rvpf-service.jar'/>
+        <dtd
+                publicid="-//Serge Brisson//DTD RVPF//EN"
+                location='core/dtd/rvpf.dtd'/>
+    </xmlcatalog>
+
+    <target name='help'
+            description="Provides some help on usage.">
+        <echo taskname=''>Please specify a target:
+
+    build -- Builds the jar files (default). (*)
+    clean -- Removes generated files.
+    cleanup -- Cleans up temporary and backup files.
+    doc -- Builds the Documentation files. (*)
+    rebuild -- Rebuilds all subprojects. (*)
+    recompile -- Recompiles all subprojects. (*)
+    refresh -- Refreshes all subprojects. (*)
+    test -- Runs tests.
+    update -- Updates from remote repository.
+    validate -- Validates the XML files.
+
+(*) These targets need the source files.</echo>
+    </target>
+
+    <condition property='rvpf.jdbc.present'>
+        <available file='jdbc' type='dir'/>
+    </condition>
+    <condition property='rvpf.jnlp.present'>
+        <available file='jnlp' type='dir'/>
+    </condition>
+    <condition property='rvpf.pap.present'>
+        <available file='pap' type='dir'/>
+    </condition>
+    <condition property='rvpf.valve.present'>
+        <available file='valve' type='dir'/>
+    </condition>
+
+    <target name='build' description="Builds the subsystems.">
+        <ant dir='core' inheritAll='false'/>
+        <ant dir='jdbc' if:set='rvpf.jdbc.present'
+                inheritAll='false'/>
+        <ant dir='jnlp' if:set='rvpf.jnlp.present'
+                inheritAll='false'/>
+        <ant dir='pap' if:set='rvpf.pap.present'
+                inheritAll='false'/>
+        <ant dir='valve' if:set='rvpf.valve.present'
+                inheritAll='false'/>
+    </target>
+
+    <target name='clean' description="Removes generated files.">
+        <ant dir='core' target='clean' inheritAll='false'/>
+        <ant dir='jdbc' if:set='rvpf.jdbc.present'
+                inheritAll='false' target='clean'/>
+        <ant dir='jnlp' if:set='rvpf.jnlp.present'
+                inheritAll='false' target='clean'/>
+        <ant dir='pap' if:set='rvpf.pap.present'
+                inheritAll='false' target='clean'/>
+        <ant dir='valve' if:set='rvpf.valve.present'
+                inheritAll='false' target='clean'/>
+    </target>
+
+    <target name='cleanup'
+            description="Cleans up temporary and backup files.">
+        <delete quiet='true' verbose='false'>
+            <fileset defaultexcludes='false' dir='.'>
+                <include name='**/*~'/>
+                <include name='**/*%'/>
+                <include name='**/.#*'/>
+                <include name='**/*.bak'/>
+                <include name='**/*.log'/>
+                <include name='**/*.pyc'/>
+                <include name='**/*.tmp'/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name='doc' description="Builds documentation files.">
+        <ant dir='core' target='doc' inheritAll='false'/>
+        <ant dir='jdbc' if:set='rvpf.jdbc.present'
+                inheritAll='false' target='doc'/>
+        <ant dir='jnlp' if:set='rvpf.jnlp.present'
+                inheritAll='false' target='doc'/>
+        <ant dir='pap' if:set='rvpf.pap.present'
+                inheritAll='false' target='doc'/>
+        <ant dir='valve' if:set='rvpf.valve.present'
+                inheritAll='false' target='doc'/>
+    </target>
+
+    <target name='rebuild' description="Rebuilds all subprojects.">
+        <ant dir='core' target='rebuild' inheritAll='false'/>
+        <ant dir='jdbc' if:set='rvpf.jdbc.present'
+                inheritAll='false' target='rebuild'/>
+        <ant dir='jnlp' if:set='rvpf.jnlp.present'
+                inheritAll='false' target='rebuild'/>
+        <ant dir='pap' if:set='rvpf.pap.present'
+                inheritAll='false' target='rebuild'/>
+        <ant dir='valve' if:set='rvpf.valve.present'
+                inheritAll='false' target='rebuild'/>
+    </target>
+
+    <target name='recompile' description="Rebuilds all subprojects.">
+        <ant dir='core' target='recompile' inheritAll='false'/>
+        <ant dir='jdbc' if:set='rvpf.jdbc.present'
+                inheritAll='false' target='recompile'/>
+        <ant dir='jnlp' if:set='rvpf.jnlp.present'
+                inheritAll='false' target='recompile'/>
+        <ant dir='pap' if:set='rvpf.pap.present'
+                inheritAll='false' target='recompile'/>
+        <ant dir='valve' if:set='rvpf.valve.present'
+                inheritAll='false' target='recompile'/>
+    </target>
+
+    <target name='refresh' description="Refreshes all subprojects.">
+        <ant dir='core' target='refresh' inheritAll='false'/>
+        <ant dir='jdbc' if:set='rvpf.jdbc.present'
+                inheritAll='false' target='refresh'/>
+        <ant dir='jnlp' if:set='rvpf.jnlp.present'
+                inheritAll='false' target='refresh'/>
+        <ant dir='pap' if:set='rvpf.pap.present'
+                inheritAll='false' target='refresh'/>
+        <ant dir='valve' if:set='rvpf.valve.present'
+                inheritAll='false' target='refresh'/>
+    </target>
+
+    <target name='test' description="Runs tests.">
+        <ant dir='core' target='test' inheritAll='false'/>
+        <ant dir='jdbc' if:set='rvpf.jdbc.present'
+                inheritAll='false' target='test'/>
+        <ant dir='jnlp' if:set='rvpf.jnlp.present'
+                inheritAll='false' target='test'/>
+        <ant dir='pap' if:set='rvpf.pap.present'
+                inheritAll='false' target='test'/>
+        <ant dir='valve' if:set='rvpf.valve.present'
+                inheritAll='false' target='test'/>
+    </target>
+
+    <target name='update'
+            description="Updates with version control system.">
+        <condition property='vcs.git'>
+            <available file='.git' type='dir'/>
+        </condition>
+        <condition property='vcs.svn'>
+            <available file='.svn' type='dir'/>
+        </condition>
+
+        <exec if:set='vcs.git'
+                taskname='git-svn' dir='.' executable='git'
+                failonerror='yes' logerror='yes'>
+                <arg line="svn rebase"/>
+        </exec>
+        <exec if:set='vcs.svn'
+                taskname='svn' dir='.' executable='svn'
+                failonerror='yes' logerror='yes'>
+            <arg value="update"/>
+        </exec>
+    </target>
+
+    <target name='validate'
+            description="Validates XML files.">
+        <xmlvalidate>
+            <xmlcatalog refid='rvpf.catalog'/>
+            <fileset dir='.'>
+                <include name='config/service/**/*.xml'/>
+                <exclude name='config/service/**/log4j2.xml'/>
+                <include name='metadata/**/*.xml'/>
+                <exclude name='metadata/**/build.xml'/>
+            </fileset>
+        </xmlvalidate>
+    </target>
+
+</project>
+
+<!-- End. -->
