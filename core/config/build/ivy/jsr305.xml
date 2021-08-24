@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: jsr305.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='jsr305'
+            revision='${jsr305.revision}'
+            organisation='com.google.code.findbugs'
+            status='release'>
+        <license name='LGPL'
+                url='http://www.gnu.org/licenses/lgpl.html'/>
+        <description homepage='http://findbugs.sourceforge.net/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

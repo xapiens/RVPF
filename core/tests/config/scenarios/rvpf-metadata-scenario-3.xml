@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-scenario-3.xml 1962 2013-10-27 14:59:15Z SFB $
+ -->
+
+<metadata lang='en' title="Scenario 3 metadata">
+
+    <?log message="Scenario 3"?>
+
+    <Point name='TESTS.QUARTER:CLOCK'
+            store='TestsStore' content='Clock' sync='Quarter'
+            uuid='3c1b0260-cd7b-4a4a-9999-18f58c7525fd'>
+        <param name='Tag' value='RVPF-11'/>
+    </Point>
+
+    <Point name='TESTS.QUARTER-AFTER:CLOCK'
+            store='NullStore' content='Clock' sync='Hour:15'
+            uuid='c58bebb7-9601-1d49-b685-5cd8576ffcd5'>
+    </Point>
+
+    <Point name='TESTS.SYNC-ORIGINAL:NUMERIC'
+            store='TestsStore' content='Numeric'
+            sync='Hour:15'
+            uuid='3f641e4e-75c8-6747-96fa-07f388df4de9'>
+        <param name='Tag' value='RVPF-1'/>
+    </Point>
+
+    <Point name='TESTS.SYNC-COPY:NUMERIC'
+            store='TestsStore' content='Numeric'
+            transform='Copy' processor='TestsProcessor'
+            uuid='1fe528fa-f344-6d4e-af62-476296b15d8d'>
+        <param name='Tag' value='RVPF-2'/>
+        <input point='TESTS.SYNC-ORIGINAL:NUMERIC' behavior='Retriggers'>
+            <param name='SinceSyncPosition'/>
+        </input>
+        <input point='TESTS.QUARTER:CLOCK' control='true'/>
+    </Point>
+
+    <Point name='TESTS.BEGIN:TEXT'
+            store='TestsStore' content='Text'
+            uuid='5ebba3cc-b0ed-ac45-b2b9-161ec0d91d53'>
+        <param name='Tag' value='RVPF-19'/>
+    </Point>
+
+    <Point name='TESTS.END:TEXT'
+            store='TestsStore' content='Text'
+            transform='Copy' processor='TestsProcessor'
+            uuid='0a1887e3-38c3-3942-89dd-4817c412a580'>
+        <param name='Tag' value='RVPF-20'/>
+        <input point='TESTS.BEGIN:TEXT'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

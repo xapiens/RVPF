@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: commons-logging.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='commons-logging'
+            revision='${logging.revision}'
+            organisation='commons-logging'
+            status='release'>
+        <license name='ASL-2.0'
+                url='http://www.apache.org/licenses/LICENSE-2.0.txt'/>
+        <description homepage='http://commons.apache.org/proper/commons-logging/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

@@ -1,0 +1,1839 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-config-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<config lang='en' title="Shared configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper RVPF operations.
+    </description>
+
+    <notes>
+        It is recommended to include this file at the top of the master
+        'rvpf-config.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+
+        This file is available as a resource in 'rvpf-service.jar'.
+    </notes>
+
+    <!-- Dynamic properties. -->
+
+    <PropertyDef name='substitution.deferred' type='Boolean'>
+        <description>
+            Asks to defer substitution when a marker is of the form
+            '$${x}'. The 'x' would be the name of a property.
+
+            This is used for metadata supplied by the metadata server
+            for properties which should be substituted only in the
+            client environment.
+
+            Defaults to false.
+        </description>
+        <notes>
+            This property is dynamic.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='substitution.enabled' type='Boolean'>
+        <description>
+            Enables or disables the marker substitution mode where a
+            marker is of the form '${x}'. The 'x' would be the name of a
+            property.
+
+            Defaults to false.
+        </description>
+        <notes>
+            This property is dynamic.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='validation.disabled' type='Boolean'>
+        <description>
+            Disables or enables the validation of 'property',
+            'properties' and 'params' elements with their definition.
+
+            Defaults to false.
+        </description>
+        <notes>
+            This property is dynamic.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='validation.enabled' type='Boolean'>
+        <description>
+            Enables or disables the validation of 'property',
+            'properties' and 'params' elements with their definition.
+
+            Defaults to true.
+        </description>
+        <notes>
+            This property is dynamic.
+        </notes>
+    </PropertyDef>
+
+    <!-- Magic properties. -->
+
+    <PropertyDef name='config.dir'>
+        <description>
+            This property is automagically created when the
+            configuration file loading is initiated.
+
+            It contains the path to the configuration directory.
+        </description>
+        <notes>
+            The property will only be set if the configuration is loaded
+            from a file URL protocol.
+
+            By presetting this property prior to the configuration file
+            loading, either with a system property or from the
+            'rvpf.properties' file, it is possible to redirect the file
+            lookup to a specific directory.
+        </notes>
+    </PropertyDef>
+
+    <!-- Security properties. -->
+
+    <PropertiesDef name='security.realm'>
+        <description>
+            Specifies the security realm configuration.
+        </description>
+        <PropertyDef name='decrypt' type='Boolean'>
+            <description>
+                Asks to decrypt the security realm configuration.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='decrypt.key' multiple='yes'>
+            <description>
+                A decryption key identification.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='path'>
+            <description>
+                Specifies the path to the file containing the
+                security realm configuration.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='verify' type='Boolean'>
+            <description>
+                Asks to verify the security realm configuration.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='verify.key' multiple='yes'>
+            <description>
+                A verification key identification.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='security'>
+        <title>Security properties</title>
+
+        <PropertyDef name='certified' type='Boolean'>
+            <description>
+                Specifies if the connection must be certified by a
+                client certificate.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='crypt'>
+            <description>
+                Contains the crypt engine properties.
+            </description>
+            <PropertyDef name='class' type='ClassDef'>
+                <description>
+                    Specifies the crypt engine.
+
+                    Defaults to the null crypt engine.
+                </description>
+            </PropertyDef>
+
+            <PropertiesDef name='private'>
+                <description>
+                    Specifies private keys for the crypt engine.
+                </description>
+                <PropertyDef name='path'>
+                    <description>
+                        Specifies the path to the file containing the keys.
+                    </description>
+                </PropertyDef>
+                <PropertiesDef name='key' multiple='yes'>
+                    <description>
+                        Specifies a private key.
+                    </description>
+                    <PropertyDef name='ident'>
+                        <description>
+                            Specifies the key identification.
+                        </description>
+                    </PropertyDef>
+                    <PropertyDef name='password' hidden='yes'>
+                        <description>
+                            Specifies the key's password.
+                        </description>
+                    </PropertyDef>
+                </PropertiesDef>
+            </PropertiesDef>
+
+            <PropertiesDef name='public'>
+                <description>
+                    Specifies public keys for the crypt engine.
+                </description>
+                <PropertyDef name='path'>
+                    <description>
+                        Specifies the path to the file containing the keys.
+                    </description>
+                </PropertyDef>
+            </PropertiesDef>
+        </PropertiesDef>
+
+        <PropertiesDef name='keystore'>
+            <description>
+                Supplies the keystore informations.
+            </description>
+            <PropertyDef name='decrypt' type='Boolean'>
+                <description>
+                    Asks to decrypt the keystore.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='decrypt.key' multiple='yes'>
+                <description>
+                    A decryption key identification.
+                </description>
+            </PropertyDef>
+            <PropertiesDef name='key' multiple='yes'>
+                <description>
+                    Specifies a key.
+                </description>
+                <PropertyDef name='ident'>
+                    <description>
+                        Specifies the key identification.
+                    </description>
+                </PropertyDef>
+                <PropertyDef name='password' hidden='yes'>
+                    <description>
+                    Specifies the key's password. It defaults to the
+                    keystore's password.
+                    </description>
+                </PropertyDef>
+            </PropertiesDef>
+            <PropertyDef name='password' hidden='yes'>
+                <description>
+                    Specifies the keystore's password.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='path'>
+                <description>
+                    Specifies the path to the keystore.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='provider'>
+                <description>
+                    Specifies the keystore's provider.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='type'>
+                <description>
+                    Specifies the keystore's type.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='verify' type='Boolean'>
+                <description>
+                    Asks to verify the keystore.
+
+                Defaults to false.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='verify.key' multiple='yes'>
+                <description>
+                    A verification key identification.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertiesDef name='realm' extends='security.realm'/>
+
+        <PropertyDef name='secure' type='Boolean'>
+            <description>
+                Specifies if the connection must be secure.
+
+                Defaults to false for local connections.
+            </description>
+            <notes>
+                This can be used to force a local connection to be
+                secure. It has no effect on remote connections.
+            </notes>
+        </PropertyDef>
+
+        <PropertiesDef name='truststore'>
+            <description>
+                Supplies the truststore informations.
+            </description>
+            <PropertyDef name='decrypt' type='Boolean'>
+                <description>
+                    Asks to decrypt the truststore.
+
+                    Defaults to false.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='decrypt.key' multiple='yes'>
+                <description>
+                    A decryption key identification.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='password' hidden='yes'>
+                <description>
+                    Specifies the truststore's password.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='path'>
+                <description>
+                    Specifies the path to the truststore.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='provider'>
+                <description>
+                    Specifies the truststore's provider.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='type'>
+                <description>
+                    Specifies the truststore's type.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='verify' type='Boolean'>
+                <description>
+                    Asks to verify the truststore.
+
+                    Defaults to false.
+                </description>
+            </PropertyDef>
+            <PropertyDef name='verify.key' multiple='yes'>
+                <description>
+                    A verification key identification.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <!-- Generic properties. -->
+
+    <PropertyDef name='cache.dir'>
+        <description>
+            Contains the path to the cache directory.
+
+            Defaults to 'cache'.
+        </description>
+        <notes>
+            The directory is used to cache remote class libraries and
+            metadata.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='classlib.dir'>
+        <description>
+            Contains the path to the ClassLib jars directory.
+
+            Defaults to the current directory.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='classlib.server'>
+        <description>
+            The URL to the ClassLib server.
+
+            Defaults to None.
+        </description>
+    </PropertyDef>
+
+    <PropertiesDef name='jmx'>
+        <description>
+            JMX agent configuration.
+        </description>
+
+        <PropertyDef name='password' hidden='yes'>
+            <description>
+                The user password for connection to the JMX agent.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='platform' type='Boolean'>
+            <description>
+                Use the platform MBean server.
+
+                Defaults to a private server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='registration.enabled' type='Boolean'>
+            <description>
+                Enables automatic registration of standalone services.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.connect' hidden='yes' multiple='yes'>
+            <description>
+                A security role allowed connection to the JMX agent.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='security' extends='security'/>
+
+        <PropertyDef name='user' hidden='yes'>
+            <description>
+                The user identification for connection to the JMX agent.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='metadata'>
+        <description>
+            Holds metadata configuration properties.
+        </description>
+        <PropertyDef name='decrypt' type='Boolean'>
+            <description>
+                Asks the metadata cache to decrypt the content.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='decrypt.key' multiple='yes'>
+            <description>
+                A decryption key identification.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='domain'>
+            <description>
+                The application domain to request from the Medatata server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='path'>
+            <description>
+                Provides the path to the metadata definition file.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='security' extends='security'/>
+
+        <PropertyDef name='server'>
+            <description>
+                The URL to the Medatata server.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='verify' type='Boolean'>
+            <description>
+                Asks the metadata cache to verify the content.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='verify.key' multiple='yes'>
+            <description>
+                A verification key identification.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='rmi.registry'>
+        <PropertyDef name='address'>
+            <description>
+                Specifies the RMI registry address.
+
+                Defaults to "0.0.0.0".
+            </description>
+            <notes>
+                When both this and the 'port' property are
+                specified, they must not conflict.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='port' type='Integer'>
+            <description>
+                Specifies the RMI registry port.
+            </description>
+            <notes>
+                The interface used to access the registry may be
+                specified by the 'address' property.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='private' type='Boolean'>
+            <description>
+                Specifies a private registry.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='protected' type='Boolean'>
+            <description>
+                Disables registry modifications from outside its VM.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='shared' type='Boolean'>
+            <description>
+                Allows the use of the RMI registry of an other VM as the
+                active registry.
+
+                Defaults to false.
+            </description>
+            <notes>
+                When this property is false or absent, the presence of
+                an RMI registry at the same address and port will be
+                considered a collision.
+            </notes>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='storage'>
+        <PropertyDef name='free.alert' type='Integer'>
+            <description>
+                Specifies the amount of free storage which should
+                trigger automatic remedial actions.
+
+                The unit of value is one million bytes (1 means 1000000
+                bytes).
+
+                The default disables the trigger.
+            </description>
+        </PropertyDef>
+        <PropertyDef name='free.warn' type='Integer'>
+            <description>
+                Specifies the amount of free storage which should
+                trigger a warning.
+
+                The unit of value is one million bytes (1 means 1000000
+                bytes).
+
+                The default disables the trigger.
+            </description>
+        </PropertyDef>
+        <PropertyDef name='root.dir'>
+            <description>
+                Specifies the root directory of the storage to monitor.
+
+                The default is application dependant
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertyDef name='xstream.annotated.class' type='ClassDef'
+            multiple='yes'>
+        <description>
+            Specification of an XStream annotated class.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='xstream.converter.class' type='ClassDef'
+            multiple='yes'>
+        <description>
+            Specification of an XStream converter class.
+        </description>
+    </PropertyDef>
+
+    <!-- SOM properties. -->
+
+    <notes>
+        Since some definitions in this group extend 'security', it must
+        be placed after the 'Generic Properties' group.
+
+        Some service definitions extend 'som.queue' or 'som.topic' and
+        must be placed after this group.
+    </notes>
+
+    <PropertyDef name='service.som.keep.alive' type='Elapsed'>
+        <description>
+            The default elapsed time for a keep-alive message.
+
+            Defaults to 5 minutes.
+        </description>
+        <notes>
+            Affects SOM servers unless overridden by the 'keep.alive'
+            property in 'som' properties.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='service.som.queue.backup' type='Boolean'>
+        <description>
+            A true value will backup messages on all queues.
+
+            Defaults to false.
+        </description>
+        <notes>
+            Affects SOM queue servers unless overridden by the 'backup'
+            property in 'som.queue' properties.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='service.som.queue.lock.disabled' type='Boolean'>
+        <description>
+            A true value disables queue locks.
+
+            Used on operating systems with an incompatible support of
+            file locks.
+
+            Defaults to false.
+        </description>
+        <notes>
+            Affects all SOM servers.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='service.som.queue.merge.limit' type='Integer'>
+        <description>
+            Specifies an upper limit on the number of messages for
+            transaction merge on all queues.
+
+            This may be used to avoid a large number of small files.
+
+            Defaults to 0 (no merge).
+        </description>
+        <notes>
+            Affects SOM queue servers unless overridden by the
+            'merge.limit' property in 'som.queue' properties.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='service.som.queue.merge.split' type='Integer'>
+        <description>
+            Specifies a merge split based on the number of merged
+            messages on all queues.
+
+            This may be used to keep manageable the size of merge target
+            files.
+
+            Defaults to no split.
+        </description>
+        <notes>
+            Affects SOM queue servers unless overridden by the
+            'merge.split' property in 'som.queue' properties.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='service.som.queue.root'>
+        <description>
+            The default root directory for the SOM queues. It can be
+            specified as a relative or absolute path.
+
+            Defaults to 'queue' (relative to current directory).
+        </description>
+        <notes>
+            Affects SOM queue servers unless overridden by the 'root'
+            property in 'som.queue' properties.
+        </notes>
+    </PropertyDef>
+
+    <PropertiesDef name='som' multiple='yes'>
+        <description>
+            These properties are used to define a SOM objects.
+        </description>
+
+        <PropertyDef name='binding'>
+            <description>
+                The RMI registry binding for this SOM object.
+            </description>
+            <notes>
+                For SOM clients and servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='keep.alive' type='Elapsed'>
+            <description>
+                The elapsed time for a keep-alive message.
+            </description>
+            <notes>
+                Overrides the default established by the
+                'service.som.keep.alive' property.
+            </notes>
+            <notes>
+                For SOM servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='name'>
+            <description>
+                Name of this SOM object.
+            </description>
+            <notes>
+                For SOM queues, this names the subdirectory.
+            </notes>
+            <notes>
+                For SOM servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='password' hidden='yes'>
+            <description>
+                The user password for connection to the SOM object.
+            </description>
+            <notes>
+                For SOM clients.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='private' type='Boolean'>
+            <description>
+                A true value identifies a private configuration.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='role.read' hidden='yes' multiple='yes'>
+            <description>
+                A security role allowed to read from this queue.
+            </description>
+            <notes>
+                For SOM servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='role.write' hidden='yes' multiple='yes'>
+            <description>
+                A security role allowed to write to this queue.
+            </description>
+            <notes>
+                For SOM servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertiesDef name='security' extends='security'/>
+
+        <PropertyDef name='server' type='Boolean'>
+            <description>
+                A true value identifies a server configuration.
+
+                Defaults to false.
+            </description>
+            <notes>
+                Usually specified in a properties group extension.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='timeout' type='Elapsed'>
+            <description>
+                The elapsed time for a receive timeout.
+
+                Defaults to twice the 'keep.alive' value.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='user' hidden='yes'>
+            <description>
+                The user identification for connection to the queue.
+            </description>
+            <notes>
+                For SOM clients.
+            </notes>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='som.queue'
+            extends='som'>
+        <description>
+            These properties are used to define a SOM queue.
+        </description>
+
+        <PropertyDef name='autocommit' type='Boolean'>
+            <description>
+                A true value will commit messages sent to the queue on
+                closed sessions and service restarts.
+
+                Defaults to false.
+            </description>
+            <notes>
+                For queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='autocommit.threshold' type='Integer'>
+            <description>
+                A positive value will commit messages sent by a sender
+                to the queue as soon as their count reaches the
+                specified number.
+
+                Defaults to no threshold.
+            </description>
+            <notes>
+                For queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='autocommit.timeout' type='Elapsed'>
+            <description>
+                A positive elapsed time value will commit messages sent
+                by a sender to the queue when the sender has been
+                inactive for that length of time.
+
+                Defaults to no timeout.
+            </description>
+            <notes>
+                The commit may actually occur after up to twice the
+                specified time.
+            </notes>
+            <notes>
+                For queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='backup' type='Boolean'>
+            <description>
+                A true value will backup messages received from the
+                queue on commit.
+
+                Defaults to false.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='compressed' type='Boolean'>
+            <description>
+                Requests that the message files be compressed.
+
+                Defaults to false.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='compressed.suffix'>
+            <description>
+                The file name suffix for compressed message files.
+
+                Defaults to '.gz'.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='directory'>
+            <description>
+                The directory for the queue. It can be specified as a
+                relative or absolute path.
+
+                Defaults to the name of the queue (relative to the root
+                directory).
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='keep.limit' type='Integer'>
+            <description>
+                Specifies a limit on the number of messages to keep.
+
+                Defaults to 0 (no limit).
+            </description>
+            <notes>
+                For memory queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='memory' type='Boolean'>
+            <description>
+                Requests a memory based queue instead of files based.
+
+                Defaults to false.
+            </description>
+            <notes>
+                For memory queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='merge.limit' type='Integer'>
+            <description>
+                Specifies a limit on the number of messages for
+                transaction merge.
+
+                Defaults to 0 (no merge).
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='merge.split' type='Integer'>
+            <description>
+                Specifies a merge split based on the number of merged
+                messages.
+
+                This may be used to keep manageable the size of merge
+                target files.
+
+                Defaults to no split.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='prefix.entry'>
+            <description>
+                The prefix for queue entries.
+
+                Defaults to ''.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='prefix.lock'>
+            <description>
+                The prefix for the queue lock file.
+
+                Defaults to the value of the 'prefix.entry' property.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='receiver.required' type='Boolean'>
+            <description>
+                Drops messages when a receiver is not connected.
+
+                Defaults to false.
+            </description>
+            <notes>
+                For memory queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='root'>
+            <description>
+                The root directory for the SOM queues. It can be
+                specified as a relative or absolute path.
+
+                Defaults to 'queue' (relative to current directory).
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='suffix.backup'>
+            <description>
+                The file suffix for backup queue entries.
+
+                Defaults to '.backup'.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='suffix.bad'>
+            <description>
+                The file suffix for bad queue entries.
+
+                Defaults to '.bad'.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='suffix.data'>
+            <description>
+                The file suffix for queue data entries.
+
+                Defaults to '.data'.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='suffix.lock'>
+            <description>
+                The file suffix for the queue lock file.
+
+                Defaults to '.lock'.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='suffix.next'>
+            <description>
+                The file suffix for the next queue entry.
+
+                Defaults to '.next'.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='suffix.trans'>
+            <description>
+                The file suffix for queue transaction entries.
+
+                Defaults to '.trans'.
+            </description>
+            <notes>
+                For files queue servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='xstream.annotated.class' type='ClassDef'
+                multiple='yes'>
+            <description>
+                An XStream annotated class.
+            </description>
+            <notes>
+                For files queue clients and servers.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='xstream.converter.class' type='ClassDef'
+                multiple='yes'>
+            <description>
+                Specification of an XStream converter class.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='som.topic' extends='som'>
+        <description>
+            These properties are used to define a SOM topic.
+        </description>
+    </PropertiesDef>
+
+    <!-- Generic service properties. -->
+
+    <PropertiesDef name='document.version'>
+        <PropertyDef name='control.class' type='ClassDef'>
+            <description>
+                The Class of the 'VersionControl' implementation for the
+                Metadata module.
+
+                Defaults to 'org.rvpf.ext.SVNVersionControl'.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='repository.password' hidden='yes'>
+            <description>
+                The user password for connection to the repository.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='repository.user' hidden='yes'>
+            <description>
+                The user identification for connection to the
+                repository.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='update.trigger'>
+            <description>
+                The path of a file whose presence will trigger an
+                automatic update on startup.
+            </description>
+            <notes>
+                After the update, the file is deleted.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='workspace'>
+            <description>
+                The version control workspace directory.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='service.alerter'>
+        <PropertyDef name='alerter.class' type='ClassDef'>
+            <description>
+                This property may be used to specify an alternative to
+                the SOM Alerter.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='connection.retry.delay' type='Elapsed'>
+            <description>
+                The elapsed time before retrying to connect to the
+                alerts topic.
+
+                Defaults to 15.0 (seconds).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='embedded' type='Boolean'>
+            <description>
+                Embeds the alerter server within the service.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='som.topic' extends='som.topic'>
+            <description>
+                Provides the 'Alerts' topic specifications.
+            </description>
+        </PropertiesDef>
+
+        <PropertyDef name='shared' type='Boolean'>
+            <description>
+                Tries to share the alerter.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='stealth' type='Boolean'>
+            <description>
+                Disables response to 'Ping' signals.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='watchdog.period' type='Elapsed'>
+            <description>
+                The elapsed time between wathdog calls.
+
+                Defaults to 60.0 (seconds).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='watchdog.trigger' type='Elapsed'>
+            <description>
+                The elapsed time before triggering a watchdog event.
+
+                Defaults to 300.0 (seconds).
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertyDef name='service.app.class' type='ClassDef'>
+        <description>
+            The class of the service application held by a service
+            application holder.
+        </description>
+    </PropertyDef>
+
+    <PropertiesDef name='service.app.properties' validated='no'>
+        <description>
+            Supplies properties to the service application held by a
+            service application holder.
+        </description>
+    </PropertiesDef>
+
+    <PropertyDef name='service.data.dir'>
+        <description>
+            Specifies the service data directory path.
+
+            Defaults to './data'.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.dependency' multiple='yes'>
+        <description>
+            Contains the UUID or the service name (JMX) of an other
+            service upon which the current one is dependent.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.join.timeout' type='Elapsed'>
+        <description>
+            The time limit to wait for a thread join to complete.
+
+            Defaults to one minute.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.log.id'>
+        <description>
+            Used within a 'service' element to provide an identifying
+            log ID to a service. This may be used to tag log entries.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.memory.log.interval' type='Elapsed'>
+        <description>
+            Specifies a maximum elapsed time between memory logs.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.monitor.disabled' type='Boolean'>
+        <description>
+            Disables the service monitor.
+
+            Defaults to enabled.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.monitor.ping.interval' type='Elapsed'>
+        <description>
+            Specifies the elapsed time between 'ping' signals while
+            waiting for a 'pong' event.
+
+            Defaults to 60.0 (seconds).
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.monitor.ping.limit' type='Integer'>
+        <description>
+            Specifies the maximum number of 'ping' signals to send while
+            waiting for a service before performing a self-restart.
+
+            Defaults to 60.
+        </description>
+        <notes>
+            A zero of negative value means no limit.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='service.restart.allowed'
+            type='Boolean'>
+        <description>
+            Allows restarts.
+
+            Defaults to disallowed.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.restart.delay' type='Elapsed'>
+        <description>
+            Specifies a delay when the service is self-restarting.
+
+            Defaults to 60.0 (seconds).
+        </description>
+        <notes>
+            This delay is observed only by some services (Clock,
+            Processor, HTTP) when they try to recover from environmental
+            errors.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='service.restart.ignored' type='Boolean'>
+        <description>
+            Ignores the restart signal.
+        </description>
+        <notes>
+            This does not affect the possibility for the service to
+            restart itself.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='service.starting.extend' type='Elapsed'>
+        <description>
+            Extends the allowed start time. This is used to prevent a
+            timeout when the service is wrapped.
+
+            Defaults to 60.0 (seconds).
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.startup.delay' type='Elapsed'>
+        <description>
+            Specifies a delay before making the service available.
+
+            Defaults to 0.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.stats.log.enabled' type='Boolean'>
+        <description>
+            Enables the logging of service stats.
+
+            Defaults to false.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.stopping.extend' type='Elapsed'>
+        <description>
+            Extend the allowed stop time. This is used to prevent a
+            timeout when the service is wrapped.
+
+            Defaults to 60.0 (seconds).
+        </description>
+    </PropertyDef>
+
+    <PropertiesDef name='traces'>
+        <PropertyDef name='compressed' type='Boolean'>
+            <description>
+                Requests that the service traces be compressed.
+
+                Defaults to false.
+            </description>
+            <notes>
+                When compressed, the trace file names end with ".gz"
+                instead of ".txt".
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='compressed.suffix'>
+            <description>
+                The file name suffix for compressed traces files.
+
+                Defaults to the value of 'traces.suffix' + '.gz'.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='dir'>
+            <description>
+                The directory name for the service traces.
+
+                Defaults to the service UUID in base 36.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='disabled' type='Boolean'>
+            <description>
+                Disables the service traces.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='prefix'>
+            <description>
+                The file name prefix for traces files.
+
+                Defaults to ''.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='root'>
+            <description>
+                The root directory for the service traces. It can be
+                specified as a relative or absolute path.
+
+                Defaults to 'traces' (relative to current directory).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='suffix'>
+            <description>
+                The file name suffix for traces files.
+
+                Defaults to '.txt'.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertyDef name='service.uuid'>
+        <description>
+            Used within a 'service' element to provide an identifying
+            UUID to a service.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='service.zombie.enabled' type='Boolean'>
+        <description>
+            Enables a 'zombie' state when the service fails to start.
+            This allows the service to respond to 'Signals'.
+
+            Defaults to false.
+        </description>
+        <notes>
+            To be able to reach a 'zombie' state, a failed service must
+            have completed successfully at least the basic set up.
+        </notes>
+    </PropertyDef>
+
+    <!-- Clock properties. -->
+
+    <PropertyDef name='clock.midnight.enabled' type='Boolean'>
+        <description>
+            Enables the generation of 'Midnight' events.
+
+            Defaults to false.
+        </description>
+        <notes>
+            The 'Midnight' event is used to generate daily statistics
+            and allows dated log files switch.
+        </notes>
+    </PropertyDef>
+
+    <PropertyDef name='clock.name'>
+        <description>
+            Identifies the 'Origin' entry in the Metadata associated
+            with the Clock service instance. Its value defaults to
+            'Clock'.
+        </description>
+    </PropertyDef>
+
+    <!-- Logger server properties. -->
+
+    <PropertiesDef name='logger.server'>
+        <description>
+            These properties are used to configure a Logger server.
+        </description>
+
+        <PropertyDef name='address'>
+            <description>
+                Specifies on which address to listen.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='security' extends='security'/>
+    </PropertiesDef>
+
+    <!-- RLP server properties. -->
+
+    <PropertiesDef name='rlp.server'>
+        <description>
+            These properties are used to configure a RLP server.
+        </description>
+
+        <PropertyDef name='address'>
+            <description>
+                Specifies on which address to listen.
+
+                Defaults to "0.0.0.0".
+            </description>
+            <notes>
+                When both this and the 'port' property are
+                specified, they must not conflict.
+            </notes>
+        </PropertyDef>
+
+        <PropertyDef name='port' type='Integer'>
+            <description>
+                Specifies the port on which to listen.
+
+                Defaults to '39'.
+            </description>
+            <notes>
+                The interface used to access RLP may be
+                specified by the 'address' property.
+            </notes>
+        </PropertyDef>
+
+        <PropertiesDef name='resource' multiple='yes'>
+            <description>
+                These properties are used to configure resources.
+            </description>
+
+            <PropertyDef name='protocol'>
+                <description>
+                    Specifies the protocol to access the resource.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='identifier'>
+                <description>
+                    Specifies the identifier of the resource.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <!-- Script properties. -->
+
+    <PropertiesDef name='script.service'>
+        <PropertyDef name='engine.name'>
+            <description>
+                The script service engine name.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='file.run'>
+            <description>
+                The script service run file.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='text.run'>
+            <description>
+                The script service run text.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='file.start'>
+            <description>
+                The script service start file.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='text.start'>
+            <description>
+                The script service start text.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='text.stop'>
+            <description>
+                The script service stop text.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <!-- Service properties (container). -->
+
+    <PropertiesDef name='service' multiple='yes'>
+        <description>
+            These properties are used to declare a contained service.
+        </description>
+
+        <PropertyDef name='config'>
+            <description>
+                Specification of the configuration file to use for the
+                service.
+
+                Defaults to the configuration file used by the container
+                service.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='name'>
+            <description>
+                Name of this service.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='optional' type='Boolean'>
+            <description>
+                The service is optional: if it fails to start or
+                terminates prematurely, other services may still run.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='service.class' type='ClassDef'>
+            <description>
+                The Class of the service to activate.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='wait' type='Boolean'>
+            <description>
+                Wait until the service is running before starting the
+                next service.
+
+                Defaults to false.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <!-- Valve properties. -->
+
+    <PropertiesDef name='valve'>
+        <description>
+            These properties supply the informations needed to take
+            control of a Valve.
+        </description>
+
+        <PropertyDef name='control.address'>
+            <description>
+                Specifies the interface and port listening for the
+                control of the Valve. It must have the form
+                "interface:port" (without the quotes).
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='required' type='Boolean'>
+            <description>
+                Indicates that a successful connection to the control
+                port of the Valve is required for this service to
+                complete its initialization.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='retry' type='Boolean'>
+            <description>
+                Requests retries for a successful connection.
+
+                Defaults to no retries.
+            </description>
+        </PropertyDef>
+
+        <PropertyDef name='retry.delay' type='Elapsed'>
+            <description>
+                The elapsed time before retrying to connect.
+
+                Defaults to 15.0 (seconds).
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='security' extends='security'/>
+    </PropertiesDef>
+
+    <!-- RVPF directory properties. -->
+
+    <PropertyDef name='rvpf.home'>
+        <description>
+            Root directory.
+
+            All subproject, including 'core' are located in
+            subdirectories.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='rvpf.core'>
+        <description>
+            Core subproject directory.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='rvpf.core.lib'>
+        <description>
+            Core subproject library directory.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='rvpf.core.lib.url'>
+        <description>
+            URL of core subproject library directory.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='core.url'>
+        <description>
+            URL of core jars directory.
+        </description>
+    </PropertyDef>
+
+    <PropertyDef name='lib.url'>
+        <description>
+            URL of library directory.
+        </description>
+    </PropertyDef>
+
+    <property name='substitution.enabled'/>
+
+    <property name='rvpf.home' env='RVPF_HOME' value='..'
+            unless='rvpf.home'/>
+    <property name='rvpf.core' value='${rvpf.home}/core'/>
+    <property name='rvpf.core.lib' env='RVPF_CORE_SHARE_JAVA'
+            value='${rvpf.core}/lib'
+            unless='rvpf.core.lib'/>
+    <property name='rvpf.core.lib.url'
+            value='file:///${rvpf.core.lib}'/>
+    <property name='lib.url' value='${rvpf.core.lib.url}'
+            unless='lib.url'/>
+
+    <property name='svn.jar' env='SVN_JAR' validated='no'
+            unless='svn.jar'/>
+    <property name='svnkit.home' env='SVNKIT_HOME' validated='no'
+            unless='svnkit.home'/>
+    <property name='svn.classlib' validated='no' if='svn.jar'
+            value='SVN-JavaHL' unless='svn.classlib'/>
+    <property name='svn.classlib' validated='no' if='svnkit.home'
+            value='SVNKit' unless='svn.classlib'/>
+
+    <property name='bc.home' env='BC_HOME' validated='no'
+            unless='bc.home'/>
+    <property name='bc.lib.url' if='bc.home' validated='no'
+            value='file:///${bc.home}'/>
+    <property name='jython.home' env='JYTHON_HOME' validated='no'
+            unless='jython.home'/>
+
+    <!-- Class libraries. -->
+
+    <ClassLib name='Ext' title="External libraries proxy classes">
+        <description>
+            This library contains RVPF specific classes containing
+            references to classes from external libraries which are not
+            in the initial class path. Its classes will be loaded by the
+            'ServiceClassLoader' which will also know the location of
+            those external libraries.
+        </description>
+        <location unless='jnlp'>${lib.url}/rvpf-ext.jar</location>
+    </ClassLib>
+
+    <ClassLib name='BC-PGP'>
+        <location unless='jnlp'>${bc.lib.url}/bcpg-*.jar</location>
+        <location unless='jnlp'>${bc.lib.url}/bcprov-*.jar</location>
+        <classLib classLib='Ext'/>
+    </ClassLib>
+
+    <ClassLib name='ScriptJython' if='jython.home'>
+        <location unless='jnlp'
+                location='file:///${jython.home}/jython.jar'/>
+    </ClassLib>
+
+    <ClassLib name='SVN-JavaHL' if='svn.jar'>
+        <location unless='jnlp' location='${svn.jar}'/>
+    </ClassLib>
+
+    <ClassLib name='SVNKit' if='svnkit.home'>
+        <location unless='jnlp'
+                location='file:///${svnkit.home}/lib/svnkit-*.jar'/>
+        <location unless='jnlp'
+                location='file:///${svnkit.home}/lib/sqljet-*.jar'/>
+        <location unless='jnlp'
+                location='file:///${svnkit.home}/lib/antlr-runtime-*.jar'/>
+        <location unless='jnlp'
+                location='file:///${svnkit.home}/lib/sequence-library-*.jar'/>
+        <location unless='jnlp'
+                location='file:///${svnkit.home}/lib/trilead-ssh2-*.jar'/>
+    </ClassLib>
+
+    <ClassLib name='SVN' if='svn.classlib'>
+        <classLib classLib='${svn.classlib}'/>
+        <classLib classLib='Ext'/>
+    </ClassLib>
+
+    <!-- Alerter classes. -->
+
+    <ClassDef name='Alerter' package='org.rvpf.service'>
+        <description>
+            The 'Alerter' interface defines the protocol of an Alerter.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='NullAlerter' package='org.rvpf.service'>
+        <description>
+            This 'Alerter' does nothing. This is useful for stand alone
+            services.
+        </description>
+        <implements classDef='Alerter'/>
+    </ClassDef>
+
+    <ClassDef name='SOMAlerter' package='org.rvpf.service'>
+        <implements classDef='Alerter'/>
+    </ClassDef>
+
+    <!-- Crypt engine classes. -->
+
+    <ClassDef name='CryptEngine' package='org.rvpf.base.security'
+            member='CryptEngineWrapper'>
+        <description>
+            The 'CryptEngine' interface defines the protocol of a crypt
+            engine.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='NullCryptEngine' package='org.rvpf.base.security'
+            member='NullCryptEngineWrapperImpl'>
+        <description>
+            This 'CryptEngine' does not really encrypt or produce a
+            valid signature. It is used for tests of the crypt facility
+            when no real engines are available.
+        </description>
+        <implements classDef='CryptEngine'/>
+    </ClassDef>
+
+    <ClassDef name='PGPCryptEngine' package='org.rvpf.ext.bc'
+        member='PGPCryptEngineWrapperImpl' classLib='BC-PGP'>
+        <implements classDef='CryptEngine'/>
+    </ClassDef>
+
+    <!-- Service classes. -->
+
+    <ClassDef name='Service' package='org.rvpf.service'
+            member='ServiceActivator'/>
+
+    <ClassDef name='ClockService' package='org.rvpf.clock'
+            member='ClockServiceActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <ClassDef name='ContainerService' package='org.rvpf.container'
+            member='ContainerServiceActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <ClassDef name='DocumentVersionControl'
+            package='org.rvpf.document.version'
+            member='DocumentVersionControlActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <ClassDef name='LoggerService' package='org.rvpf.service.log4j'
+            member='LoggerServiceActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <ClassDef name='MetadataServiceAppHolder'
+            package='org.rvpf.service.metadata.app'
+            member='MetadataServiceAppHolderActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <ClassDef name='ServiceApp' package='org.rvpf.service.app'/>
+
+    <ClassDef name='MetadataServiceApp'
+            package='org.rvpf.service.metadata.app'>
+        <implements classDef='ServiceApp'/>
+    </ClassDef>
+
+    <ClassDef name='ServiceAppHolder' package='org.rvpf.service.app'
+            member='ServiceAppHolderActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <ClassDef name='SOMContainerService' package='org.rvpf.som'
+            member='SOMContainerServiceActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <!-- Version control classes. -->
+
+    <ClassDef name='VersionControl'
+            package='org.rvpf.document.version'/>
+
+    <ClassDef name='SVNVersionControl' package='org.rvpf.ext'>
+        <implements classDef='VersionControl'/>
+    </ClassDef>
+
+    <!-- Optional module configuration files. -->
+
+    <?include href='resource:rvpf-config-store-shared.xml'
+            optional='yes'?>
+    <?include href='resource:rvpf-config-processor-shared.xml'
+            optional='yes'?>
+    <?include href='resource:rvpf-config-http-shared.xml'
+            optional='yes'?>
+    <?include href='resource:rvpf-config-forwarder-shared.xml'
+            optional='yes'?>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# $Id$
+
+set -e
+
+case "$1" in
+
+    purge)
+        rm -rf /opt/rvpf
+        rm -rf /etc/opt/rvpf
+        rm -rf /srv/opt/rvpf
+        rm -rf /var/opt/rvpf
+        if $(id -u rvpf >/dev/null 2>&1); then
+            deluser --quiet --remove-home rvpf
+        fi
+    ;;
+
+    remove|upgrade|disappear|failed-upgrade|abort-install|abort-upgrade)
+        exit 0
+    ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+
+esac
+
+# End.

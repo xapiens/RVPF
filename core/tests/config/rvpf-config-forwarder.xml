@@ -1,0 +1,405 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config-forwarder.xml 3619 2018-05-21 13:24:56Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-common-config.xml'?>
+
+    <PropertyDef name='tests.messaging' type='ClassDef'
+            title="Tests messaging support"/>
+
+    <ClassDef name='TestsMessagingSupport'
+            package='org.rvpf.tests'
+            member='MessagingSupport'>
+        <description>
+            Provides messaging support for tests.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SOMTestsSupport'
+            package='org.rvpf.som'
+            member='SOMSupport'
+            notes="Default.">
+        <implements classDef='TestsMessagingSupport'/>
+    </ClassDef>
+
+    <property name='substitution.enabled'/>
+
+    <ClassLib location='file:///${tests.classes}/'>
+        <description>
+            Holds classes used for testing of customizing facilities.
+        </description>
+    </ClassLib>
+
+    <properties name='jmx'>
+        <property name='registration.enabled'
+                property='jmx.registration.enabled'/>
+        <property name='role.connect' property='tests.role'/>
+        <property name='user' property='tests.user'/>
+        <property name='password' property='tests.password'/>
+        <properties name='security' extends='tests.server.security'/>
+    </properties>
+
+    <PropertyDef name='tests.notice.timeout' type='Elapsed'/>
+    <PropertyDef name='tests.queue'/>
+    <PropertyDef name='tests.store.service' type='ClassDef'/>
+    <PropertyDef name='tests.topic'/>
+
+    <property name='tests.alerts.queue' def='tests.queue'
+            if='tests.alerts.queued'
+            value='TestsAlerts'/>
+
+    <properties name='tests.processor.receptionist.queue'
+            def='som.queue'>
+        <property name='name' value='TestsReceptionist'/>
+        <property name='keep.alive' value='60.0'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+    </properties>
+
+    <properties name='tests.publisher.topic' def='som.topic'>
+        <property name='name' value='TestsNotices'/>
+    </properties>
+
+    <property name='tests.command.java' validated='no'
+            value='java'/>
+
+    <properties name='traces'>
+        <property name='disabled' property='tests.traces.disabled'/>
+        <property name='compressed' property='tests.traces.compressed'/>
+    </properties>
+
+    <property name='tests.store.notices.filtered' validated='no'
+            value='yes'/>
+
+    <?include href='resource:rvpf-store-config.xml'?>
+
+    <properties name='tests.queue' def='som.queue'>
+        <property name='name' value='TestsForwarder'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' property='tests.queue.compressed'/>
+    </properties>
+
+    <property name='service.monitor.disabled'/>
+
+    <service name='org.rvpf:type=ForwarderService'>
+        <description>Used for base tests of Forwarder.</description>
+        <alias name='forwarder'/>
+        <property name='service.log.id' value='FORW'/>
+        <properties name='forwarder.module'>
+            <property name='module.class' classDef='ForwarderSOMReceiver'
+                    property='tests.forwarder.receiver'/>
+            <properties name='queue'
+                    extends='tests.processor.receptionist.queue'/>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderVerifyFilter'/>
+                <properties name='security'
+                        extends='tests.client.security'/>
+                <property name='verify.key'
+                        required='tests.server.private.key.1'/>
+                <property name='decrypt'/>
+                <property name='decrypt.key'
+                        required='tests.client.private.key.1'/>
+            </properties>
+            <property name='traces' value='received'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderStoreRequests'/>
+            <properties name='store'>
+                <property name='name' value='TestsStore'/>
+            </properties>
+            <property name='control.dir' value='tests/data/tmp'/>
+            <property name='traces' value='notified'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesPortServer'/>
+            <property name='address' required='tests.xml.port.address'/>
+            <property name='role' property='tests.role'/>
+            <properties name='security'
+                    extends='tests.server.security'>
+                <property name='secure'/>
+            </properties>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderPointValueFilter'/>
+            </properties>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderEncryptFilter'/>
+                <properties name='security'
+                        extends='tests.server.security'>
+                    <property name='secure'/>
+                </properties>
+                <property name='encrypt.key'
+                        required='tests.client.private.key.1'/>
+                <property name='encrypt.key'
+                        required='tests.client.private.key.2'/>
+                <property name='sign'/>
+                <property name='sign.key'
+                        required='tests.server.private.key.1'/>
+                <property name='sign.key'
+                        required='tests.server.private.key.2'/>
+            </properties>
+            <property name='traces' value='from-port'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesFiles'/>
+            <property name='input.dir' value='tests/data/tmp'/>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderPointValueFilter'/>
+            </properties>
+            <property name='traces' value='from-files'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class' classDef='ForwarderSOMSender'
+                    property='tests.forwarder.sender'/>
+            <properties name='queue'>
+                <property name='name' value='TestsForwarder'/>
+                <property name='server'/>
+                <property name='backup'/>
+                <property name='memory' property='tests.queue.memory'/>
+                <property name='compressed'
+                        property='tests.queue.compressed'/>
+            </properties>
+            <property name='traces' value='sent'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class' classDef='ForwarderSOMSender'
+                    property='tests.forwarder.sender'/>
+            <properties name='queue'
+                    extends='tests.store.notifier.queue'>
+                <property name='server'/>
+            </properties>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderVerifyFilter'/>
+                <properties name='security'
+                        extends='tests.client.security'/>
+                <property name='verify.key'
+                        required='tests.server.private.key.1'/>
+                <property name='decrypt'/>
+                <property name='decrypt.key'
+                        required='tests.client.private.key.1'/>
+            </properties>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderProcessorFilter'/>
+                <property name='processor' value='TestsProcessor'/>
+                <property name='confirm' value='marked'/>
+                <property name='confirm.value'/>
+            </properties>
+            <property name='traces' value='to-processor'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMPublisher'
+                    property='tests.forwarder.publisher'/>
+            <properties name='topic' extends='tests.publisher.topic'>
+                <property name='server'/>
+            </properties>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderVerifyFilter'/>
+                <properties name='security'
+                        extends='tests.client.security'/>
+                <property name='verify.key'
+                        required='tests.server.private.key.1'/>
+                <property name='decrypt'/>
+                <property name='decrypt.key'
+                        required='tests.client.private.key.1'/>
+            </properties>
+            <property name='traces' value='published'/>
+        </properties>
+        <property name='service.uuid'
+                value='803b6d32-8c03-8643-b10b-714e24770256'/>
+
+        <properties name='security' extends='tests.server.security'/>
+
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='forwarder'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=Alert'>
+        <description>Used for alert forwarding tests.</description>
+        <property name='service.log.id' value='ALFW'/>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderFromAlerter'/>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderAlertFilter'/>
+            </properties>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMReceiver'/>
+            <properties name='queue'>
+                <property name='name' value='TestsToAlerter'/>
+                <property name='server'/>
+                <property name='memory' property='tests.queue.memory'/>
+                <property name='compressed'
+                        property='tests.queue.compressed'/>
+            </properties>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderToAlerter'/>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderAlertFilter'/>
+            </properties>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue'>
+                <property name='name' value='TestsFromAlerter'/>
+                <property name='server'/>
+                <property name='memory' property='tests.queue.memory'/>
+                <property name='compressed'
+                        property='tests.queue.compressed'/>
+            </properties>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderClassFilter'/>
+                <property name='allowed.class'
+                        value='org.rvpf.tests.forwarder.AlertForwarderTests$TestAlert'/>
+            </properties>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=AlertsQueued'
+            if='tests.alerts.queued'>
+        <description>Used to queue alerts.</description>
+        <property name='service.log.id' value='ALQU'/>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSubscriber'/>
+            <properties name='topic'
+                    extends='tests.alerter.topic'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue'>
+                <property name='server'/>
+                <property name='name' required='tests.alerts.queue'/>
+                <property name='memory' property='tests.queue.memory'/>
+                <property name='compressed'
+                        property='tests.queue.compressed'/>
+            </properties>
+        </properties>
+        <properties name='service.alerter'>
+            <property name='alerter.class' classDef='NullAlerter'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=StoreUpdater'>
+        <description>Used for alert store updater tests.</description>
+        <property name='service.log.id' value='ALSU'/>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMReceiver'/>
+            <properties name='queue'>
+                <property name='name' value='TestsStoreUpdater'/>
+                <property name='server'/>
+                <property name='memory' property='tests.queue.memory'/>
+                <property name='compressed'
+                        property='tests.queue.compressed'/>
+            </properties>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderStoreUpdater'/>
+            <properties name='store'>
+                <property name='name' value='TestsProxyStore'/>
+            </properties>
+            <property name='user' value='$${tests.user}'/>
+            <property name='password' value='$${tests.password}'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=StreamedMessages'>
+        <description>Used for streamed messages tests.</description>
+        <property name='service.log.id' value='STME'/>
+        <property name='xstream.annotated.class'
+                value='org.rvpf.tests.example.MessageExample'/>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesFiles'/>
+            <property name='input.dir' value='tests/data/tmp'/>
+            <property name='input.prefix.data' value='test-data-'/>
+            <property name='input.prefix.done' value='test-done-'/>
+            <property name='sem.prefix' value='test-sem-'/>
+            <property name='sem.suffix' value='.sem'/>
+            <property name='sem.match.enabled'/>
+            <property name='sem.purge.enabled'/>
+            <property name='traces' value='messages'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class' classDef='ForwarderSOMSender'
+                    property='tests.forwarder.sender'/>
+            <properties name='queue'>
+                <property name='name' value='TestsStreamedMessages'/>
+                <property name='server'/>
+                <properties name= 'security'
+                        extends='tests.server.security'>
+                    <property name='certified'/>
+                </properties>
+                <property name='memory' property='tests.queue.memory'/>
+                <property name='compressed'
+                        property='tests.queue.compressed'/>
+            </properties>
+            <property name='traces' value='sent'/>
+        </properties>
+        <properties name='service.alerter'>
+            <property name='alerter.class' classDef='NullAlerter'/>
+        </properties>
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='streamed-messages'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProxyStoreService'>
+        <property name='service.log.id' value='PXST'/>
+        <property name='store.name' value='TestsProxyStore'/>
+        <properties name='store.server.proxy' extends='store.server'>
+            <properties name='stores'>
+                <property name='name' value='TestsStore'/>
+                <property name='name' value='TestsProxyStore'/>
+            </properties>
+            <properties name='updates.listener' overrides='yes'
+                    if='tests.store.updates.listener.enabled'>
+                <properties name='som.queue' extends='tests.queue'/>
+            </properties>
+            <property name='updates.listener.user'
+                    property='tests.user'/>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+    </service>
+
+    <?include href='resource:rvpf-som-config.xml'
+        unless='tests.include.crypted'?>
+    <?include href='resource:rvpf-som-config-protected.xml'
+        verify='true' decrypt='true' security='tests.server.security'
+        if='tests.include.crypted'?>
+
+</config>
+
+<!-- End. -->

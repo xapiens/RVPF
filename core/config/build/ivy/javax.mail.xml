@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: javax.mail.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='javax.mail'
+            revision='${mail.revision}'
+            organisation='com.sun.mail'
+            status='release'>
+        <license name='CDDL'/>
+        <description homepage='https://java.net/projects/javamail/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

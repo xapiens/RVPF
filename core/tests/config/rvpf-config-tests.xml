@@ -1,0 +1,107 @@
+﻿<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config-tests.xml 3321 2017-01-09 21:28:43Z SFB $
+ -->
+
+<config lang='en' title="Configuration tests">
+
+    <PropertyDef name='tests.config.property' multiple='yes'/>
+    <PropertyDef name='tests.config.property.values'>
+        <description>
+            Used to verify the content and order of the values returned
+            for the property 'tests.config.property'.
+        </description>
+    </PropertyDef>
+    <PropertyDef name='tests.service.property'/>
+    <PropertyDef name='tests.property' title="Generic definition."/>
+
+    <property name='tests.referenced.global' def='tests.property'
+            value='ReferenceTest1'/>
+    <properties>
+        <notes>Used for base tests of ConfigDocument.</notes>
+        <property name='tests.config.property' value='ConfigValue'>
+            <notes lang='en'>
+                The content and order of the values should not be modified
+                without a corresponding adjustment in the property
+                'tests.config.property.values'.
+            </notes>
+            <value value='ConfigValue1'/>
+            <value value='ConfigValue2'>
+                ConfigValue3
+            </value>
+            ConfigValue0
+        </property>
+        <property name='tests.config.property.values'
+            value='ConfigValue,ConfigValue0,ConfigValue1,ConfigValue2,ConfigValue3'>
+        </property>
+
+        <property name='tests.sys.property' def='tests.property'
+                value='TestsSysConfigValue'/>
+        <property name='tests.encoding' def='tests.property'
+                value="Vérification"/>
+
+        <property name='tests.referenced.local' def='tests.property'
+                value='ReferenceTest2'/>
+        <property name='tests.reference.global' def='tests.property'
+                property='tests.referenced.global'/>
+        <property name='tests.reference.local' def='tests.property'
+                property='tests.referenced.local'/>
+
+        <property name='tests.value.without.property'
+                def='tests.property' property='undefined.property'
+                value='PropertyWithoutPropertyTest'/>
+
+        <property name='tests.env.value' def='tests.property'
+                env='RVPF_TESTS_VALUE'/>
+
+        <property name='tests.eq' def='tests.property' eq='yes'
+                property='tests.encoding' value='${tests.encoding}'/>
+        <property name='tests.eq' def='tests.property' eq='no'
+                property='tests.encoding' value='${tests.encoding}'/>
+    </properties>
+    <?log unless='tests.eq' message="Failed 'eq' test" level='warn'?>
+
+    <property name='rvpf.tests.set.sys.property' system='yes'
+            value='OK' if='tests.sys.properties'/>
+    <properties system='yes' if='tests.sys.properties'>
+        <property name='rvpf.tests.set.sys.properties'
+                value='OK'/>
+    </properties>
+
+    <service name='Tests'>
+        <description>
+            Used for base tests of ConfigDocument.
+        </description>
+        <property name='tests.service.property'
+                value='TestsServiceValue'/>
+        <property name='tests.config.property.values' value=''/>
+        <properties name='Test' validated='no'/>
+    </service>
+
+    <?include href='resource:rvpf-common-config.xml'?>
+
+    <ClassLib location='file:///${tests.classes}/'>
+        <description>
+            Holds classes used for testing of customizing facilities.
+        </description>
+    </ClassLib>
+
+    <properties from='rvpf-config-tests-from.properties'
+            unless='tests.properties.crypted'/>
+    <properties from='rvpf-config-tests-from.properties.xml'
+            if='tests.properties.crypted'
+            verify='true' decrypt='true'
+            security='tests.server.security'/>
+    <?log unless='tests.properties.from.succeeded'
+            message="Failed 'from' test" level='warn'?>
+
+</config>
+
+<!-- End. -->

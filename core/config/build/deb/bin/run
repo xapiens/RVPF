@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# $Id: run 3103 2016-07-21 18:23:00Z SFB $
+
+if [ -z "$1" ]; then
+    echo
+    echo "Usage: run <filename> [args...]"
+    echo
+    exit 1
+fi
+
+shopt -s extglob
+run_file=$1.sh
+shift
+run_dir=/opt/rvpf/share/sh
+pushd $run_dir > /dev/null
+. setup/rvpf-env.sh
+popd > /dev/null
+
+exec $run_dir$run_file $@
+
+# End.

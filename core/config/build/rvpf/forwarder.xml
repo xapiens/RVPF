@@ -1,0 +1,57 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: forwarder.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='rvpf-forwarder'
+            revision='@REVISION@'
+            organisation='rvpf'
+            publication='@PUBLICATION@'>
+        <license name='LGPL-2.1'
+                url='http://rvpf.org/LICENSE.txt'/>
+        <description homepage='http://rvpf.org/'>
+            The Related Values Processing Framework (RVPF) is being
+            developed to help the integration of Process Control Data
+            Historian Systems.
+
+            The software is written in Java. All libraries needed to use
+            this software are available under an open source license.
+
+            RVPF is licensed under the GNU Lesser General Public License
+            (LGPL) version 2.1.
+        </description>
+    </info>
+
+    <dependencies>
+        <dependency name='rvpf-service' rev='@REVISION@' org='rvpf'/>
+    </dependencies>
+
+</ivy-module>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

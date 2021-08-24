@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='yes' ?>
+
+<langpack>
+
+    <str id='pack.distribution' txt="Fichiers de la distribution"/>
+    <str id='pack.distribution.description' txt="Cet item va copier les fichiers de la distribution dans le répertoire de destination pour l'installation."/>
+
+    <str id='pack.registration' txt="Mémorisation de l'installation"/>
+    <str id='pack.registration.description' txt="Cet item va mémoriser le répertoire de destination dans le registre des préférences de l'utilisateur.  Il devrait être sélectionné lors de la première installation de @NAME@ ou lorsque le répertoire de destination est différent."/>
+
+    <str id='pack.tests' txt="Tests du logiciel"/>
+    <str id='pack.tests.description' txt="Cet item va effectuer une batterie de tests sur le logiciel tel qu'installé."/>
+
+</langpack>

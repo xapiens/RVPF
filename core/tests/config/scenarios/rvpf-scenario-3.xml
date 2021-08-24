@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE scenario PUBLIC
+        "-//Serge Brisson//DTD RVPF Scenarios//EN"
+        "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-scenario-3.xml 3388 2017-03-14 16:36:04Z SFB $
+ -->
+
+<scenario title="Synchronization" time='2017-02-01'>
+
+    <casting director='tests.scenario.3'>
+        <cast role='BEGIN' actor='TESTS.BEGIN:TEXT'/>
+        <cast role='END' actor='TESTS.END:TEXT'/>
+        <cast role='QUARTER' actor='TESTS.QUARTER:CLOCK'/>
+        <cast role='SYNC-COPY' actor='TESTS.SYNC-COPY:NUMERIC'/>
+        <cast role='SYNC-ORIGINAL' actor='TESTS.SYNC-ORIGINAL:NUMERIC'/>
+    </casting>
+
+    <scene title="No data">
+        <entry line='A1' role='QUARTER' time='01:00' text='0'/>
+        <exit line='A2' role='SYNC-COPY' time='01:00'/>
+    </scene>
+
+    <scene title="Data retriggers">
+        <entry line='B1' role='SYNC-ORIGINAL' time='00:15' text='1.0'/>
+        <exit line='B2' role='SYNC-COPY' time='01:00' text='1.0'/>
+    </scene>
+
+    <scene title="Normal data">
+        <entry line='C1' role='SYNC-ORIGINAL' time='01:15' text='2.0'/>
+        <entry line='C2' role='QUARTER' time='01:15' text='0'/>
+        <exit line='C3' role='SYNC-COPY' time='01:15' text='2.0'/>
+        <entry line='C4' role='QUARTER' time='01:30' text='0'/>
+        <exit line='C5' role='SYNC-COPY' time='01:30' text='2.0'/>
+    </scene>
+
+    <scene title="Late data">
+        <entry line='D1' role='QUARTER' time='02:15' text='0'/>
+        <entry line='D2' role='QUARTER' time='02:30' text='0'/>
+        <entry line='D3' role='QUARTER' time='03:15' text='0'/>
+        <exit line='D4' role='SYNC-COPY' time='02:15'/>
+        <exit line='D5' role='SYNC-COPY' time='02:30'/>
+        <exit line='D6' role='SYNC-COPY' time='03:15'/>
+        <entry line='D7' role='SYNC-ORIGINAL' time='02:15' text='3.0'/>
+        <exit line='D8' role='SYNC-COPY' time='02:15' text='3.0'/>
+        <exit line='D9' role='SYNC-COPY' time='02:30' text='3.0'/>
+    </scene>
+
+    <scene title="End" time='+1'>
+        <!-- Ensures that there are no more results. -->
+        <entry line='Z1' role='BEGIN' time='01:00' state='Done' text='Z'/>
+        <exit line='Z2' role='END' time='01:00' state='Done' text='Z'/>
+    </scene>
+
+</scenario>
+
+<!-- End. -->

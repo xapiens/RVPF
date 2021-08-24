@@ -1,0 +1,97 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-query-info.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF query module 'requests' and
+ 'responses'  documents for point informations.
+
+ The DOCTYPE declarations are
+
+     <!DOCTYPE requests PUBLIC
+	 "-//Serge Brisson//DTD RVPF Query//EN"
+	 "http://rvpf.org/dtd/rvpf-query.dtd">
+
+ and
+
+     <!DOCTYPE responses PUBLIC
+	 "-//Serge Brisson//DTD RVPF Query//EN"
+	 "http://rvpf.org/dtd/rvpf-query.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+		Root elements.
+ -->
+
+<!--
+ A 'requests' document is sent by a Query client.
+ -->
+<!ELEMENT requests (points)*>
+<!ATTLIST requests
+	version CDATA %VERSION;>
+
+<!--
+ A 'responses' document is sent by the Query server.
+ -->
+<!ELEMENT responses (point)*>
+<!ATTLIST responses
+	version CDATA %VERSION;
+	stamp CDATA #REQUIRED>
+
+<!--
+		Main elements.
+ -->
+
+<!--
+ The 'points' element requests points informations.
+
+ The 'uuid' attribute selects a point by its UUID.
+
+ The 'name' attribute selects a point by its name.
+
+ The 'wild' attribute selects points using 'wild' characters.
+
+ The 'regexp' attribute selects points using a regular expression.
+
+ When no selection is specified, all names are accepted.
+
+ The 'group' attribute restricts the selection to points owned by that
+ group or one of its children.
+ -->
+<!ELEMENT points EMPTY>
+<!ATTLIST points
+	uuid CDATA #IMPLIED
+	name CDATA #IMPLIED
+	wild CDATA #IMPLIED
+	regexp CDATA #IMPLIED
+	group CDATA #IMPLIED>
+
+<!--
+ The 'point' element holds informations on a point.
+ -->
+<!ELEMENT point EMPTY>
+<!ATTLIST point
+	name CDATA #REQUIRED
+	uuid CDATA #REQUIRED>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

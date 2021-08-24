@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-contents.xml 2048 2013-12-16 20:21:15Z SFB $
+ -->
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<metadata lang='en' title="Content definitions">
+
+    <title lang='fr'>Définitions de contenu</title>
+
+    <Content name='CELCIUS' classDef='TemperatureContent'>
+        <param name='Ident' value='degree Celcius'/>
+        <param name='Abbrev' value='°C'/>
+        <param name='Constant' value='273.15'/>
+    </Content>
+
+    <Content name='DAY' classDef='UnitValueContent'>
+        <param name='Ident' value='day'/>
+        <param name='Abbrev' value='d'/>
+        <param name='Multiplier' value='86400'/>
+    </Content>
+    <Content name='FAHRENHEIT' classDef='TemperatureContent'>
+        <param name='Ident' value='Fahrenheit'/>
+        <param name='Abbrev' value='F'/>
+        <param name='Multiplier' value='0.5555555555555556'/>
+        <param name='Constant' value='255.3722222222222'/>
+    </Content>
+    <Content name='HOUR' classDef='UnitValueContent'>
+        <param name='Ident' value='hour'/>
+        <param name='Abbrev' value='hr'/>
+        <param name='Multiplier' value='3600'/>
+    </Content>
+    <Content name='MINUTE' classDef='UnitValueContent'>
+        <param name='Ident' value='minute'/>
+        <param name='Abbrev' value='min'/>
+        <param name='Multiplier' value='60'/>
+    </Content>
+    <Content name='RANKINE' classDef='TemperatureContent'>
+        <param name='Ident' value='Rankine'/>
+        <param name='Abbrev' value='R'/>
+        <param name='Multiplier' value='0.5555555555555556'/>
+    </Content>
+    <Content name='WEEK' classDef='UnitValueContent'>
+        <param name='Ident' value='week'/>
+        <param name='Abbrev' value='wk'/>
+        <param name='Multiplier' value='604800'/>
+    </Content>
+    <Content name='YEAR' classDef='UnitValueContent'>
+        <param name='Ident' value='year'/>
+        <param name='Abbrev' value='yr'/>
+        <param name='Multiplier' value='31556925.9747'/>
+    </Content>
+
+</metadata>
+
+<!-- End. -->

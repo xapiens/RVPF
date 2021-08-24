@@ -1,0 +1,32 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-som-config.xml 2775 2015-09-23 20:19:54Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <service name='org.rvpf:type=SOMContainerService'>
+        <property name='service.log.id' value='SOMS'/>
+
+        <properties name='som.queue'
+                if='tests.store.updates.listener.enabled'
+                extends='tests.store.updater.queue'/>
+
+        <properties name='service.alerter' extends='service.alerter'>
+            <property name='embedded'/>
+            <property name='stealth'/>
+        </properties>
+
+        <properties name='security' extends='tests.server.security'/>
+    </service>
+
+</config>
+
+<!-- End. -->

@@ -1,0 +1,35 @@
+To run the tests, the configured store must provide access to the
+following 20 points:
+
+    Tag 'RVPF-1' to 'RVPF-10': float.
+
+    Tag 'RVPF-01' to 'RVPF-09': integer.
+
+    Tag 'RVPF-11' to 'RVPF-15': integer.
+
+    Tag 'RVPF-16' to 'RVPF-18': state.
+
+    Tag 'RVPF-19' to 'RVPF-20': text.
+
+Some store can support custom types; they should provide access to
+each of the following 9 points whose type is supported:
+
+    Tag 'RVPF-21': big decimal.
+
+    Tag 'RVPF-22': big integer.
+
+    Tag 'RVPF-23': big rational.
+
+    Tag 'RVPF-24': boolean.
+
+    Tag 'RVPF-25': byte array.
+
+    Tag 'RVPF-26': collection.
+
+    Tag 'RVPF-27': complex.
+
+    Tag 'RVPF-28': map.
+
+    Tag 'RVPF-29': rational.
+
+---

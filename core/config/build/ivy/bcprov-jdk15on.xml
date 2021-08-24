@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: bcprov-jdk15on.xml 4106 2019-07-11 15:58:34Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='bcprov-jdk15on'
+            revision='${bc.revision}'
+            organisation='org.bouncycastle'
+            status='release'>
+        <license name='Bouncy Castle Licence'
+                url='http://www.bouncycastle.org/licence.html'/>
+        <description homepage='http://www.bouncycastle.org/java.html'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

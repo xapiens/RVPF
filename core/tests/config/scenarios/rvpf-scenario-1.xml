@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE scenario PUBLIC
+        "-//Serge Brisson//DTD RVPF Scenarios//EN"
+        "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-scenario-1.xml 3388 2017-03-14 16:36:04Z SFB $
+ -->
+
+<scenario title="Miscellany" time='2017-02-01'>
+
+    <casting director='tests.scenario.1'>
+        <cast role='BEGIN' actor='TESTS.BEGIN:TEXT'/>
+        <cast role='CONTROLLED' actor='TESTS.CONTROLLED:NUMERIC'/>
+        <cast role='CUTOFF' actor='TESTS.CUTOFF:CLOCK'/>
+        <cast role='END' actor='TESTS.END:TEXT'/>
+        <cast role='FILTER-CONTROL' actor='TESTS.FILTER-CONTROL:LOGICAL'/>
+        <cast role='HOUR' actor='TESTS.HOUR:CLOCK'/>
+        <cast role='LOAD' actor='TESTS.LOAD:NUMERIC'/>
+        <cast role='OVERLOAD' actor='TESTS.OVERLOAD:NUMERIC'/>
+        <cast role='SLOPE' actor='TESTS.SLOPE:NUMERIC'/>
+        <cast role='SWITCH' actor='TESTS.SWITCH:STATE'/>
+        <cast role='TRAFFIC-1' actor='TESTS.TRAFFIC-1:STATE'/>
+        <cast role='TRAFFIC-2' actor='TESTS.TRAFFIC-2:STATE'/>
+        <cast role='X' actor='TESTS.X:NUMERIC'/>
+        <cast role='X-CLONE' actor='TESTS.X.CLONE:NUMERIC'/>
+        <cast role='Y' actor='TESTS.Y:NUMERIC'/>
+    </casting>
+
+    <scene title="Initial values">
+        <set line='A1' role='SWITCH' time='00:00' state='Set' text='Off'/>
+        <set line='A2' role='HOUR' time='00:00' state='Set' text='0'/>
+        <set line='A3' role='LOAD' time='00:30' state='Set' text='80.0'/>
+        <set line='A4' role='X' time='00:30' state='Set' text='1.0'/>
+        <entry line='A5' role='FILTER-CONTROL' time='00:00' text='1'/>
+        <silence line='A6'/>
+    </scene>
+
+    <scene title="First hour">
+        <entry line='B1' role='HOUR' time='01:00' text='0'/>
+        <entry line='B2' role='Y' time='01:00' text='10.0'/>
+        <entry line='B3' role='LOAD' time='01:10' text='90.0'/>
+        <entry line='B4' role='LOAD' time='01:25' text='100.0'/>
+        <entry line='B5' role='LOAD' time='01:45' text='110.0'/>
+        <action line='B6' role='SLOPE' time='01:00'/>
+        <entry line='B7' role='X' time='01:30' text='2.0'/>
+        <entry line='B8' role='SWITCH' time='01:00' text='1'/>
+    </scene>
+
+    <scene title="Second hour">
+        <entry line='C1' role='HOUR' time='02:00' text='0'/>
+        <entry line='C2' role='Y' time='02:00' text='20.0'/>
+        <action line='C3' role='X-CLONE' time='01:30' text='2.0'/>
+        <action line='C4' role='OVERLOAD' time='02:00' text='25.0'/>
+        <action line='C5' role='TRAFFIC-1' time='02:00' text='Red'/>
+        <action line='C6' role='SLOPE' time='02:00' text='10.0'/>
+        <entry line='C7' role='LOAD' time='02:15' text='95.0'/>
+        <entry line='C8' role='LOAD' time='02:30' text='105.0'/>
+        <entry line='C9' role='LOAD' time='02:45' text='80.0'/>
+        <entry line='C10' role='X' time='02:30' text='3.0'/>
+        <silence line='C11'/>
+        <action line='C12' role='TRAFFIC-2' time='02:00' text='Red'/>
+        <action line='C13' role='X-CLONE' time='02:30' text='3.0'/>
+    </scene>
+
+    <scene title="Third hour">
+        <entry line='D1' role='HOUR' time='03:00' text='0'/>
+        <entry line='D2' role='Y' time='03:00' text='30.0'/>
+        <action line='D3' role='OVERLOAD' time='03:00' text='50.0'/>
+        <action line='D4' role='TRAFFIC-1' time='03:00' text='Green'/>
+        <action line='D5' role='SLOPE' time='03:00' text='10.0'/>
+        <silence line='D6'/>
+        <action line='D7' role='TRAFFIC-2' time='03:00' text='Green'/>
+    </scene>
+
+    <scene title="Corrections">
+        <entry line='E1' role='X' time='02:00' text='0.0'/>
+        <entry line='E2' role='Y' time='02:00' text='25.0'/>
+        <action line='E3' role='SLOPE' time='02:00' text='15.0'/>
+        <action line='E4' role='SLOPE' time='03:00' text='5.0'/>
+        <entry line='E5' role='BEGIN' time='2:00' text='A'/>
+        <action line='E6' role='END' time='2:00' text='A'/>
+        <repeat line='E7' role='OVERLOAD' time='02:00'/>
+        <silence line='E8'/>
+        <exit line='E9' role='CONTROLLED' time='2:00' text='15.0'/>
+    </scene>
+
+    <scene title="Cutoff control">
+        <entry line='F1' role='BEGIN' time='11:00' text='B'/>
+        <exit line='F2' role='END' time='11:00' text='B'/>
+        <entry line='F3' role='CUTOFF' time='12:00' text='0'/>
+        <silence line='F4'/>
+        <entry line='F5' role='BEGIN' time='11:00' text='B'/>
+        <entry line='F6' role='BEGIN' time='12:00' text='C'/>
+        <action line='F7' role='END' time='12:00' text='C'/>
+    </scene>
+
+    <scene title="End" time='+1'>
+        <!-- Ensures that there are no more results. -->
+        <entry line='G1' role='BEGIN' time='01:00' state='Done' text='D'/>
+        <exit line='G2' role='END' time='01:00' state='Done' text='D' note="No more results"/>
+    </scene>
+
+</scenario>
+
+<!-- End. -->

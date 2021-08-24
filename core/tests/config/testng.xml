@@ -1,0 +1,340 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE suite SYSTEM 'http://beust.com/testng/testng-1.0.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: testng.xml 4108 2019-07-14 18:56:08Z SFB $
+ -->
+
+<suite name='RVPF-Core'>
+
+    <test name='Time'>
+        <classes>
+            <class name='org.rvpf.tests.base.DateTimeTests'/>
+            <class name='org.rvpf.tests.base.ElapsedTimeTests'/>
+            <class name='org.rvpf.tests.base.TimeIntervalTests'/>
+        </classes>
+    </test>
+
+    <test name='UUID'>
+        <classes>
+            <class name='org.rvpf.tests.base.UUIDTests'/>
+        </classes>
+    </test>
+
+    <test name='ValueConverter'>
+        <classes>
+            <class name='org.rvpf.tests.base.ValueConverterTests'/>
+        </classes>
+    </test>
+
+    <test name='Rational'>
+        <classes>
+            <class name='org.rvpf.tests.base.value.RationalTests'/>
+        </classes>
+    </test>
+
+    <test name='Big-rational'>
+        <classes>
+            <class name='org.rvpf.tests.base.value.BigRationalTests'/>
+        </classes>
+    </test>
+
+    <test name='Complex'>
+        <classes>
+            <class name='org.rvpf.tests.base.value.ComplexTests'/>
+        </classes>
+    </test>
+
+    <test name='Sync'>
+        <classes>
+            <class name='org.rvpf.tests.base.sync.CrontabTests'/>
+            <class name='org.rvpf.tests.base.sync.CrontabSyncTests'/>
+            <class name='org.rvpf.tests.base.sync.ElapsedSyncTests'/>
+            <class name='org.rvpf.tests.base.sync.StampSyncTests'/>
+        </classes>
+    </test>
+
+    <test name='Value-filter'>
+        <classes>
+            <class name='org.rvpf.tests.base.value.filter.DeadbandFilterTests'/>
+            <class name='org.rvpf.tests.base.value.filter.StepFilterTests'/>
+            <class name='org.rvpf.tests.base.value.filter.InterpolatorFilterTests'/>
+            <class name='org.rvpf.tests.base.value.filter.LinearFilterTests'/>
+        </classes>
+    </test>
+
+    <test name='XML'>
+        <classes>
+            <class name='org.rvpf.tests.base.xml.XMLElementTests'/>
+            <class name='org.rvpf.tests.base.xml.XMLDocumentTests'/>
+            <class name='org.rvpf.tests.base.xml.JSONSupportTests'/>
+        </classes>
+    </test>
+
+    <test name='Registry-entry'>
+        <classes>
+            <class name='org.rvpf.tests.base.rmi.RegistryEntryTests'/>
+        </classes>
+    </test>
+
+    <test name='Storage-monitor'>
+        <classes>
+            <class name='org.rvpf.tests.base.util.StorageMonitorTests'/>
+        </classes>
+    </test>
+
+    <test name='Document-class-loader'>
+        <classes>
+            <class name='org.rvpf.tests.document.ServiceClassLoaderTests'/>
+        </classes>
+    </test>
+
+    <test name='Document-config'>
+        <classes>
+            <class name='org.rvpf.tests.document.ConfigDocumentTests'/>
+        </classes>
+    </test>
+
+    <test name='Document-metadata'>
+        <classes>
+            <class name='org.rvpf.tests.document.MetadataDocumentTests'/>
+        </classes>
+    </test>
+
+    <test name='Document-exporter'>
+        <classes>
+            <class name='org.rvpf.tests.document.exporter.DocumentExporterTests'/>
+        </classes>
+    </test>
+
+    <test name='Streamed-messages'>
+        <classes>
+            <class name='org.rvpf.tests.base.xml.streamer.StreamedMessagesTests'/>
+        </classes>
+    </test>
+
+    <test name='Crypt'>
+        <classes>
+            <class name='org.rvpf.tests.base.security.CryptTests'/>
+        </classes>
+    </test>
+
+    <test name='Service-app-holder'>
+        <classes>
+            <class name='org.rvpf.tests.service.ServiceAppHolderTests'/>
+        </classes>
+    </test>
+
+    <test name='SOM-objects'>
+        <classes>
+            <class name='org.rvpf.tests.som.SOMObjectsTests'/>
+        </classes>
+    </test>
+
+    <test name='SOM-container-service'>
+        <classes>
+            <class name='org.rvpf.tests.som.SOMContainerServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='Store-service'>
+        <classes>
+            <class name='org.rvpf.tests.store.StoreServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='Store-proxy'>
+        <classes>
+            <class name='org.rvpf.tests.store.ProxyStoreTests'/>
+        </classes>
+    </test>
+
+    <test name='Store-sink'>
+        <classes>
+            <class name='org.rvpf.tests.store.SinkServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='Store-C'>
+        <classes>
+            <class name='org.rvpf.tests.store.CStoreServiceTestsFactory'/>
+        </classes>
+    </test>
+
+    <test name='Store-polation'>
+        <classes>
+            <class name='org.rvpf.tests.store.PolationTests'/>
+        </classes>
+    </test>
+
+    <test name='Store-archiver'>
+        <classes>
+            <class name='org.rvpf.tests.store.StoreArchiverTests'/>
+        </classes>
+    </test>
+
+    <test name='Clean-up-archiver'>
+        <classes>
+            <class name='org.rvpf.tests.store.CleanUpArchiverTests'/>
+        </classes>
+    </test>
+
+    <test name='Store-snapshot'>
+        <classes>
+            <class name='org.rvpf.tests.store.SnapshotServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='Store-load-archive'>
+        <classes>
+            <class name='org.rvpf.tests.store.StoreLoadTests'/>
+        </classes>
+    </test>
+
+    <test name='Store-load-snapshot'>
+        <parameter name='snapshot' value='yes'/>
+        <classes>
+            <class name='org.rvpf.tests.store.StoreLoadTests'/>
+        </classes>
+    </test>
+
+    <test name='Forwarder-streamed-messages'>
+        <classes>
+            <class name='org.rvpf.tests.forwarder.StreamedMessagesTests'/>
+        </classes>
+    </test>
+
+    <test name='Forwarder'>
+        <classes>
+            <class name='org.rvpf.tests.forwarder.ForwarderTests'/>
+        </classes>
+    </test>
+
+    <test name='Forwarder-alert'>
+        <classes>
+            <class name='org.rvpf.tests.forwarder.AlertForwarderTests'/>
+        </classes>
+    </test>
+
+    <test name='Forwarder-store-updater'>
+        <classes>
+            <class name='org.rvpf.tests.forwarder.StoreUpdaterTests'/>
+        </classes>
+    </test>
+
+    <test name='Clock-service'>
+        <classes>
+            <class name='org.rvpf.tests.clock.ClockServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='Processor-RPN'>
+        <classes>
+            <class name='org.rvpf.tests.processor.engine.rpn.RPNEngineTests'/>
+        </classes>
+    </test>
+
+    <test name='Processor-summarizer'>
+        <classes>
+            <class name='org.rvpf.tests.processor.engine.rpn.summarizer.SummarizerEngineTests'/>
+        </classes>
+    </test>
+
+    <test name='Processor-step-filter'>
+        <classes>
+            <class name='org.rvpf.tests.processor.engine.filter.StepFilterEngineTests'/>
+        </classes>
+    </test>
+
+    <test name='Processor-remote'>
+        <classes>
+            <class name='org.rvpf.tests.processor.engine.remote.RemoteEngineTests'/>
+        </classes>
+    </test>
+
+    <test name='Processor-service'>
+        <classes>
+            <class name='org.rvpf.tests.processor.ProcessorServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='Processor-scenarios'>
+        <classes>
+            <class name='org.rvpf.tests.processor.TestScenarioFactory'/>
+        </classes>
+    </test>
+
+    <test name='Document-version-control'>
+        <classes>
+            <class name='org.rvpf.tests.document.version.DocumentVersionTestsFactory'/>
+        </classes>
+    </test>
+
+    <test name='HTTP-alerter'>
+        <classes>
+            <class name='org.rvpf.tests.http.AlerterModuleTests'/>
+        </classes>
+    </test>
+
+    <test name='HTTP-RPN'>
+        <classes>
+            <class name='org.rvpf.tests.http.RPNModuleTests'/>
+        </classes>
+    </test>
+
+    <test name='HTTP-query'>
+        <classes>
+            <class name='org.rvpf.tests.http.QueryModuleTests'/>
+        </classes>
+    </test>
+
+    <test name='HTTP-update'>
+        <classes>
+            <class name='org.rvpf.tests.http.UpdateModuleTests'/>
+        </classes>
+    </test>
+
+    <test name='HTTP-notice'>
+        <classes>
+            <class name='org.rvpf.tests.http.NoticeModuleTests'/>
+        </classes>
+    </test>
+
+    <test name='HTTP-metadata'>
+        <classes>
+            <class name='org.rvpf.tests.http.MetadataModuleTests'/>
+        </classes>
+    </test>
+
+    <test name='Logger'>
+        <classes>
+            <class name='org.rvpf.tests.base.logger.LoggerTests'/>
+            <class name='org.rvpf.tests.base.logger.log4j.Log4jAppendersTests'/>
+            <class name='org.rvpf.tests.service.log4j.LoggerTests'/>
+        </classes>
+    </test>
+
+    <test name='Script-service'>
+        <classes>
+            <class name='org.rvpf.tests.core.ScriptServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='Database-service'>
+        <classes>
+            <class name='org.rvpf.tests.store.DatabaseServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='RLP'>
+        <classes>
+            <class name='org.rvpf.tests.rlp.RLPServiceTests'/>
+        </classes>
+    </test>
+
+</suite>
+
+<!-- End. -->

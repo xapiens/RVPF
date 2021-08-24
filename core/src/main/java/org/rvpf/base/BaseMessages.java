@@ -1,0 +1,247 @@
+/** Related Values Processing Framework.
+ *
+ * Copyright (c) 2003-2019 Serge Brisson.
+ *
+ * This software is distributable under the LGPL license.
+ * See details at the bottom of this file.
+ *
+ * $Id: BaseMessages.java 4102 2019-06-30 15:41:17Z SFB $
+ */
+
+package org.rvpf.base;
+
+import org.rvpf.base.logger.Messages;
+
+/**
+ * Base messages.
+ */
+public enum BaseMessages
+    implements Messages.Entry
+{
+    ALERT,
+    ANNOTATIONS_REGISTRATION,
+    ATTRIBUTE_TYPE,
+    BAD_ADDRESS,
+    BAD_CRONTAB_ENTRY,
+    BAD_MESSAGE,
+    BAD_VALUE_NULLED,
+    BASE_DIRECTORY,
+    BOOT_CLASS_PATH,
+    BOOT_LIBRARY_PATH,
+    CERTIFIED,
+    CLASS_NOT_COMPATIBLE,
+    CLASS_NOT_FOUND,
+    CLASS_PATH,
+    CLIENT_CONTEXT,
+    CLIENT_CONTEXT_CACHED,
+    CLIENT_CONTEXT_GONE,
+    CLIENT_CONTEXT_WARNINGS,
+    CONNECTION_CERTIFIED,
+    CONNECTION_LOCAL,
+    CONNECTION_PRIVATE,
+    CONNECTION_SECURE,
+    CONNECTION_SET_UP_FAILED,
+    CONTEXT_REGISTER_FAILED,
+    CONTEXT_REGISTERED,
+    CONTEXT_UNREGISTER_FAILED,
+    CONTEXT_UNREGISTERED,
+    CONVERT_BOOLEAN,
+    CONVERT_DOUBLE,
+    CONVERT_INTEGER,
+    CONVERT_LONG,
+    COUNTRY_ETC,
+    CRYPT_ENGINE_WRAPPER,
+    DECRYPTED,
+    DECRYPTING,
+    DECRYPTION_FAILED_,
+    DEFAULT_LOCALE,
+    DISCONNECT_FAILED,
+    DUPLICATE_STATE_CODE,
+    DUPLICATE_STATE_NAME,
+    ELAPSED_FORMAT,
+    ELAPSED_TOO_SMALL,
+    ELLIPSIS,
+    EMPTY_KEY,
+    ENCRYPTED,
+    ENCRYPTING,
+    ERROR_TYPE,
+    EVENT_TYPE,
+    FAILED,
+    FATAL_TYPE,
+    FILE_ALREADY_CREATED,
+    FILE_DELETE_FAILED,
+    FILE_NOT_FOUND,
+    FILE_READ_FAILED,
+    FILE_RENAME_FAILED,
+    FROZEN,
+    GROUP_TYPE,
+    HEAP_LIMIT,
+    HOST_NOT_LOCAL,
+    ILLEGAL_ARGUMENT,
+    IMPLEMENTATION,
+    INFO_TYPE,
+    INSTANTIATION_FAILED,
+    INTERVAL_FORMAT,
+    JAVA_HOME,
+    JAVA_VERSION,
+    JAVA_VM,
+    JSON_PARSE_FAILED,
+    LIBRARY_PATH,
+    LOADED_MESSAGES,
+    LOGGER_BACK_END,
+    MAC_ADDRESS,
+    MEMORY,
+    MESSAGE_KEY_NOT_FOUND,
+    MISMATCHED_REF,
+    MISSING_BINDING,
+    MISSING_NAME,
+    MISSING_PARAMETER,
+    MISSING_PROPERTY,
+    MISSING_PROPERTY_IN,
+    MISSING_SERVER_IDENT,
+    MULTIPLE_VALUES,
+    NO_CERTIFIED,
+    NO_KEYSTORE_PASSWORD,
+    NO_POINT,
+    NO_SECURE,
+    NO_STAMP,
+    NOT_BEFORE,
+    NOTHING_RECOGNIZABLE,
+    OFFSET_TOO_LARGE,
+    OPERATING_SYSTEM,
+    PARAMETER_TYPE,
+    PENDING_MESSAGES,
+    POINT_SUBSCRIBE_FAILED,
+    POINT_SUBSCRIBES_SUCCEEDED,
+    POINT_UNSUBSCRIBE_FAILED,
+    POINT_UNSUBSCRIBES_SUCCEEDED,
+    POINT_UPDATE_FAILED,
+    POINT_UPDATES_SUCCEEDED,
+    PRIVATE_PATH,
+    PROTOCOL_NOT_SUPPORTED,
+    PROXY_NOT_SET_UP,
+    PUBLIC_PATH,
+    PUBLISH_MODE,
+    PULL_QUERIES_NOT_SUPPORTED,
+    REALM_RESOURCE,
+    RECEIVE_MODE,
+    REGISTERED_ANNOTATIONS,
+    REGISTERED_CONVERTER,
+    RESOURCE_NOT_FOUND,
+    RMI_REGISTRY_CONFLICT,
+    SAMPLE_AT,
+    SAMPLE_COUNT,
+    SAMPLE_MILLIS,
+    SCHEME_NOT_SUPPORTED,
+    SECURE,
+    SEND_MODE,
+    SENDING_POINT_SUBSCRIBE,
+    SENDING_POINT_UNSUBSCRIBE,
+    SENDING_POINT_UPDATE,
+    SESSION_SERVER,
+    SIGNAL_TYPE,
+    SIGNED,
+    SIGNING,
+    SINGLE_SNAPSHOT,
+    SNAPSHOT_COUNT,
+    SNAPSHOT_DEPTH,
+    SNAPSHOT_MILLIS,
+    SNOOZE_TIME_LOW,
+    SOM_PROXY_CONNECTED,
+    SOM_PROXY_DISCONNECTED,
+    SSL_INITIALIZE_FAILED,
+    START_MILLIS,
+    STARTING_SAMPLING,
+    STARTING_SNAPSHOTS,
+    STATS_SINCE,
+    STOP_IGNORED,
+    STOPPED_SAMPLING,
+    STOPPED_SNAPSHOTS,
+    STORAGE_NOT_UNDER_ALERT,
+    STORAGE_NOT_UNDER_WARN,
+    STORAGE_UNDER_ALERT,
+    STORAGE_UNDER_WARN,
+    STORE_PATH,
+    STORE_PROVIDER,
+    STORE_TYPE,
+    SUBSCRIBE_MODE,
+    SYSTEM_INFO,
+    SYSTEM_TYPE,
+    THREAD_EXCEPTION,
+    THREAD_GROUP,
+    THREAD_SAMPLES,
+    THREAD_STATE,
+    TIME_FORMAT,
+    TIME_INTERVAL,
+    TIME_RAW_STRING,
+    TIME_VALUE,
+    TIME_YEAR,
+    TIMEOUT,
+    TRACE_ELEMENT,
+    TRACE_THREAD,
+    TRACES_BASE_CREATED,
+    TRACES_BASE_FAILED,
+    TRACES_DIR_CREATED,
+    TRACES_DIR_FAILED,
+    UNEXPECTED_RESPONSE,
+    UNEXPECTED_VALUE_CLASS,
+    UNKNOWN_BUNDLE,
+    UNKNOWN_HOST,
+    UNKNOWN_TIME_ZONE,
+    UNRESOLVED_STATE,
+    UNRESOLVED_VALUE,
+    USER_HOME,
+    UUID_BYTES_LENGTH,
+    UUID_NAME_BAD,
+    UUID_NAME_LENGTH,
+    UUID_SEED_INVALID,
+    UUID_STRING_INVALID,
+    VALUE_TYPE,
+    VERBATIM,
+    VERIFICATION_FAILED,
+    VERIFICATION_FAILED_,
+    VERIFIED,
+    VERIFYING,
+    WARNING_TYPE,
+    XML_PARSE_FAILED,
+    XSTREAM_VERSION;
+
+    /** {@inheritDoc}
+     */
+    @Override
+    public String getBundleName()
+    {
+        return _BUNDLE_NAME;
+    }
+
+    /** {@inheritDoc}
+     */
+    @Override
+    public synchronized String toString()
+    {
+        if (_string == null) {
+            _string = Messages.getString(this);
+        }
+
+        return _string;
+    }
+
+    private static final String _BUNDLE_NAME = "org.rvpf.messages.base";
+
+    private String _string;
+}
+
+/* This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA
+ */

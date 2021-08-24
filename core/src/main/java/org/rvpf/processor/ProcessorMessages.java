@@ -1,0 +1,246 @@
+/** Related Values Processing Framework.
+ *
+ * Copyright (c) 2003-2019 Serge Brisson.
+ *
+ * This software is distributable under the LGPL license.
+ * See details at the bottom of this file.
+ *
+ * $Id: ProcessorMessages.java 3961 2019-05-06 20:14:59Z SFB $
+ */
+
+package org.rvpf.processor;
+
+import org.rvpf.base.logger.Messages;
+
+/**
+ * Processor messages.
+ */
+public enum ProcessorMessages
+    implements Messages.Entry
+{
+    ADDED,
+    ADDITION_ERROR,
+    BAD_RESPONSE_VALUE,
+    BATCH_LIMIT,
+    BATCH_LIMIT_INCREASED,
+    BATCH_LIMIT_REDUCED,
+    BATCHES_PROCESSED,
+    BEHAVIOR_GE_2_INPUTS,
+    BEHAVIOR_INCOMPATIBLE,
+    BEHAVIOR_INCOMPATIBLE_ANY,
+    BEHAVIOR_INCOMPATIBLE_SYNC,
+    BEHAVIOR_NEEDS_SELECTOR,
+    BEHAVIOR_NEEDS_SYNC,
+    BEHAVIOR_TRANSFORM,
+    CACHE_BOOST,
+    CACHE_DISABLED,
+    CACHE_ENTRIES_STATS,
+    CACHE_HIT,
+    CACHE_SIZE,
+    CACHE_VALUES_STATS,
+    CANCELLED_QUERY,
+    CHECK_AFTER_BEFORE,
+    CHECK_PREVIOUS_VALUE,
+    CHECK_QUERY,
+    CHECK_RESPONSE_VALUE,
+    COMPUTATIONS_DROPPED,
+    COMPUTED,
+    COMPUTING_VALUE,
+    CONTROL_LOGICAL,
+    CONVERT_FAILED,
+    CUTOFF_CANCELLED,
+    CUTOFF_CONTROL_OVERRIDE,
+    CUTOFF_CONTROL_POINT,
+    CUTOFF_DROP,
+    CUTOFF_TIME,
+    CUTOFF_VALUE_ERROR,
+    DATE_TIME_FORMAT,
+    DEBUG,
+    DELETING_OUT_OF_SYNC,
+    DIVISION_ERROR,
+    DROPPED_NOTICE,
+    DUPLICATE_QUERIES_IGNORED,
+    ELLIPSIS_LAST,
+    EMPTY_MACRO,
+    EMPTY_MACRO_PARAM_NAME,
+    EMPTY_WORD,
+    ENGINE_CLASS,
+    ENGINE_NOT_FOUND,
+    ERROR,
+    ESCAPE_USE,
+    EXTRAPOLATION_NOT_SUPPORTED,
+    FILTER_CONTROL_CONTENT,
+    FILTER_CONTROL_OVERRIDE,
+    FILTER_CONTROL_POINT,
+    FIRST_INPUT_SELECTS,
+    FORMAT_FAILED,
+    GOT_VALUES,
+    IMMEDIATE_PROCESSING,
+    INFO,
+    INPUT_BEHAVIOR_NOT_FOUND,
+    INPUTS_PREPARED,
+    INSUFFICIENT_MEMORY,
+    INTERPOLATION_NOT_SUPPORTED,
+    INVALID_INPUT_DROPPED,
+    INVALID_SELECTION_INTERVAL,
+    KEEP_PROCESS,
+    LAST_INPUT_SELECTED,
+    MACRO_ARG,
+    MACRO_ARGS,
+    MACRO_EXPANSION,
+    MACRO_RECURSION,
+    MACRO_SOURCE,
+    MEMORY_LIMIT,
+    MISPLACED_END_WORD,
+    MISSING_2_INSTRUCTIONS,
+    MISSING_BLOCK_END,
+    MISSING_COMMENT_END,
+    MISSING_INSTRUCTION,
+    MISSING_POINT_PARAM,
+    MISSING_QUOTE,
+    MISSING_WORD_NAME,
+    MULTIPLE_DEF_RPN_WORD,
+    MULTIPLICATION_ERROR,
+    MUTUALLY_EXCLUSIVE_PARAMS,
+    NO_TRANSFORM_OR_INPUT,
+    NOTICE_ACCEPTED,
+    NOTICE_OUT_OF_SYNC,
+    NOTICE_UNEXPECTED,
+    NOTICE_UPDATED,
+    NOTICES_KEPT,
+    NOTICES_RECEIVED,
+    NOTICES_RECEPTION_TIME,
+    NOTICES_STATS,
+    OPERATION_ARGS,
+    OUT_RESYNC_RANGE,
+    POINT_EQ_1_INPUT,
+    POINT_GE_1_INPUT,
+    POINT_GE_2_INPUTS,
+    POINT_INPUT_2_NOT_0,
+    POINT_INPUT_2_PRESENT,
+    POINT_INPUT_2_SYNC,
+    POINT_LE_2_INPUTS,
+    POINT_MISCONFIGURED,
+    POINT_NOT_INPUT,
+    POINT_SYNC,
+    POINT_UNKNOWN,
+    POSITIVE_NOT_SUPPORTED,
+    PROCESSING_TIME,
+    PROCESSOR_RESYNCHRONIZES,
+    PROTECTED_DROP,
+    QUERIED_VALUES_RECEIVED,
+    QUERIED_VALUES_STATS,
+    QUERIES_SENT,
+    QUERIES_STATS,
+    REDUNDANT_UPDATE,
+    REFRESHED,
+    REGISTERED_WORD_NAME,
+    REMOVED,
+    REQUIRED_MISSING,
+    RESULT_POSITION,
+    RESULT_SET_UP,
+    RESULT_SET_UP_CONFLICT,
+    RESULT_VALUE_CONFLICT,
+    RESULTS_READY,
+    RESULTS_SET_UP,
+    RESULTS_STATS,
+    RESYNCHRONIZED_VALUE,
+    REVERSE_INTERVAL,
+    REVERSE_INTERVAL_POSITION,
+    RIGHT_PARENTHESIS,
+    RPN_STACK,
+    RUNNING_INTERVAL_POSITION,
+    SCALE_OVERFLOW,
+    SCRIPT_APPLY_TEXT_MISSING,
+    SCRIPT_START_FILE_FAILED,
+    SCRIPT_START_TEXT_FAILED,
+    SELF_TRIGGER_BLOCKED,
+    SET_UP_FOR_POINTS,
+    SET_UP_NOT_COMPLETED,
+    STACK_CAST,
+    STACK_LIMITS,
+    START_STOP_INCOMPATIBLE,
+    STEP_FILTER_DISABLED,
+    STEPS_POSITION,
+    STEPS_SYNCED,
+    SUBSTRING_INDEX_OUT_OF_BOUNDS,
+    SUBTRACTION_ERROR,
+    SYNC_INPUT_NEEDED,
+    SYNC_RESULT_NEEDED,
+    SYNCHRONIZED_BEHAVIOR,
+    TIME_LIMIT,
+    TRANSFORM_BEHAVIOR_1,
+    TRANSFORM_BEHAVIOR_2,
+    TRANSFORM_GE_1_INPUT,
+    TRANSFORM_GE_2_ARGS,
+    TRANSFORM_INCOMPATIBLE,
+    TRANSFORM_SINGLE_INPUT,
+    TRIGGER_LOOP,
+    TRIMMED,
+    TUPLE_INDEX_OUT_OF_BOUNDS,
+    UNBALANCED_PARENTHESIS,
+    UNEXPECTED_OPERATION,
+    UNEXPECTED_RESULT_SET_UP,
+    UNEXPECTED_TRIGGER,
+    UNKNOWN_ACTION,
+    UNKNOWN_CONTEXT,
+    UNKNOWN_MACRO,
+    UNKNOWN_RPN_WORD,
+    UPDATE_CANCELLED,
+    UPDATE_DUE,
+    UPDATE_SCHEDULED,
+    UPDATE_TIME,
+    UPDATED,
+    UPDATES_DROPPED,
+    UPDATES_FILTERED,
+    UPDATES_FILTERED_STATE,
+    UPDATES_SENT,
+    UPDATES_STATS,
+    VALUES_ON_STACK,
+    VARIABLE_FORM,
+    WAIT,
+    WAIT_TEXT,
+    WARN,
+    WILL_RETRY_SMALLER,
+    WORD_COMPILATION_FAILED,
+    ZERO_NOT_SUPPORTED;
+
+    /** {@inheritDoc}
+     */
+    @Override
+    public String getBundleName()
+    {
+        return _BUNDLE_NAME;
+    }
+
+    /** {@inheritDoc}
+     */
+    @Override
+    public synchronized String toString()
+    {
+        if (_string == null) {
+            _string = Messages.getString(this);
+        }
+
+        return _string;
+    }
+
+    private static final String _BUNDLE_NAME = "org.rvpf.messages.processor";
+
+    private String _string;
+}
+
+/* This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA
+ */

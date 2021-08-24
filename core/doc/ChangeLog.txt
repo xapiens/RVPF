@@ -1,0 +1,491 @@
+
+0.8.2
+
+- Renamed MyStore to TheStore.
+- Replaced MySQL by MariaDB.
+- Converted som scripts from Groovy to JavaScript (Nashorn).
+- Replaced 'assert' statements and 'AssertJ' class by a 'Require' class.
+- Replaced many use of 'null' by 'Optional'.
+- Modified many classes to use the 'Builder' pattern.
+- Dropped the Rules subproject.
+- Added a just-in-time store archiver.
+- Added a clean-up store archiver.
+- Allowed point value stamps to be trimmed.
+- Added 'purge' request support in stores.
+- Updated Java version requirement to 8.
+- Added support for Tomcat.
+- Added the messages port client forwarder module.
+- Completed the 080-082 bridge.
+- Allowed 'private' SOM servers.
+- Added a memory back-end to MyStore.
+- Added a memory queue to SOM.
+- Implemented SOM queues transaction merge.
+- Added 'drop.deleted' to my-store server properties.
+- Improved control of the RMI listening address.
+- Allowed selective archiving of values removed by the store archiver.
+- Added 'subscribeAndCheck' to StoreSessionProxy.
+- Modified store 'subscribe' to return last values.
+- Enabled validation by default.
+- Allowed mutual replication for points.
+- Simplified RVPF services set up for Linux.
+- Dropped use of Wrapper for portability reasons.
+- Added the store updater forwarder module.
+- Added to/from alerter forwarder modules.
+- Added a 'snapshot' mode to MyStore.
+- Allowed store replicator to be point specific.
+- Add 'compressed' option to SOM queues.
+- Added autocommit threshold to SOM queues.
+- Improved metadata security.
+- Added service application support.
+- Refactored shell scripts.
+- Implemented a keep-alive protocol for SOM objects.
+- Grouped many service properties.
+- Redesigned the store state sets as state groups.
+- Added lock files to SOM queues.
+- Added support for BigInteger and BigDecimal values.
+- Added support for Rational and BigRational values.
+- Added support for Complex values.
+- Implemented 'extended' properties groups.
+- Refactored Simple and renamed to SOM.
+- Added 'required' attribute to 'property' and 'param' elements.
+- Improved the ListMap interface and implementations.
+- Added the Bag interface and implementations.
+- Redesigned the Logger.LogListener.
+- Refactored service activation.
+
+0.8.1
+
+- Added a count service for store requests.
+- Replaced file copy by a mark file in Simple queues.
+- Added the ListMap interface and implementations.
+- Updated Java version requirement to 6.0.
+- Replaced the pipe and script engines by the LocalExecutorEngine.
+- Added a Log4j appender to generate alerts.
+- Added the RVPF080XMLPortClient forwarder module.
+- Made KeyedValues respect their definition order.
+- Replaced HSQLDB by H2 as default database engine.
+- Replaced Jython by JavaScript as default script language.
+- Made embedded alerters generate Midnight events.
+- Added inter/extra-polation support to stores.
+- Dropped Simple Outline XML (SOX) support.
+- Moved Tracer under 'base' package.
+- Added a Berkeley DB Java Edition back-end to MyStore.
+- Refactored MyStore to allow alternative back-ends.
+- Added streamed messages validation.
+- Moved the RVPF jars under the 'lib' directory.
+- Removed direct dependency on dom4j.
+- Allowed backup of queue messages.
+- Allowed specification of service traces base directory.
+- Added the StreamedMessagesFiles forwarder module.
+- Renamed XMLPortClient to XMLPointValuesPortClient.
+- Renamed the XMLInput forwarder modules.
+- Changed Simple queues file names convention.
+- Updated Jython version requirement to 2.5.1.
+- Added a lib/opt archive to the distribution.
+- Allowed custom Streamer converters.
+- Added the RemoteExecutor and the RemoteExecutorEngine.
+- Added DatabaseServer with support for HSQLDB, H2 and Derby.
+- Renamed MyStore 'db' to 'sql'.
+- Dropped the native UUID generator.
+- Added a 'test' Ant target.
+- Added 'system' attribute to 'properties' element.
+- Allowed wild jar names in ClassLib locations.
+- Made the RPN engine case-insensitive.
+- Made the forwarder restart on store access exception.
+- Added container values support.
+- Added word definitions in metadata to the RPN engine.
+- Improved deleted values handling.
+- Improved NullRemoves handling.
+- Improved the XMLInputPort forwarder module performance.
+- Improved compressed traces robustness.
+- Added traces support in forwarder.
+- Reduced default log output.
+- Added the 'Sync' entity.
+- Added support for H2 database (1.2.135) to MyStore.
+- Fixed null messages from the Injector forwarder module.
+- Allowed end-of-month specification in Crontab.
+- Improved logging flexibility to allow localization.
+- Moved shared XML files into jars.
+- Added Java Logging API interception to log4j.
+- Dropped Preferences support in Config.
+- Improved synchronization for XML port client.
+- Added a 'Volatile' param to Point.
+- Made cutoff and filter control points self-registering.
+- Dropped computation postponement.
+- Added SSL support to the XPC C API.
+- Added Pipe process start synchronization.
+- Modified DateTime raw string format to be non ambiguous.
+- Dropped SVNKit from standard installation.
+- Added a 'RunningInterval' Point param for Summarizer.
+- Improved processor scenarios test.
+- Added 'confirm' mode to the Dispatcher forwarder module.
+- Bundled Ivy to simplify use of 'ant setup'.
+- Added Mac OS X support.
+- Improved point aliases support.
+- Added generic state sets support to stores.
+- Dropped store purge.
+- Added 'pull' to StoreServer.
+- Allowed service dependency by name.
+- Added dynamic store binding.
+- Allowed the Processor to stay alive on store access exception.
+- Added the ScriptEngine and the ScriptSink.
+- Modified distribution files name to include Subversion revision.
+- Added PointValue state support to PipeEngine and PipeSink.
+- Added the Script service.
+- Split rvpf-config-shared.xml.
+- Renamed rvpf-server.jar to rvpf-core.jar and split.
+- Added wait on pipe engine when KeepProcess is 0.
+- Made pipe engine/sink process start failure critical.
+- Added State content.
+- Added a 'sync' attribute to point input and transform arg.
+- Added the CStore service.
+- Added subscriptions to store sessions.
+- Allowed any service to serve the Alerter topic.
+- Simplified Alerter by using a single topic as transport.
+- Avoided restart on RefreshMetadata for most stores.
+- Dropped notifier journal.
+- Updated JavaSVN to SVNKit.
+
+0.8.0
+
+- Added requirement, for Sun JVM, of version 1.5.0_06 or later.
+- Changed DateTime string format to include UTC offset.
+- Allowed Summarizer to adjust Result stamp to Sync Point.
+- Fixed a RMI distributed garbage collector loop on OpenVMS.
+- Added a simple internal Profiler.
+- Modified stores update loop to encode values.
+- Reorganized MyStore relational indexes.
+- Fixed a RMISocketFactory set up race condition in ServiceThread.
+- Changed Simple queue files format to XML fragment.
+- Refactored XML streaming.
+- Improved service stats time resolution.
+- Added Dumper / Loader with reference scripts.
+- Added support for point permissions.
+- Moved 'Config' specific classes from 'metadata' to 'config'.
+- Allowed query on pull support and fixed pull handling.
+- Allowed setting of JDBC driver (MyStore) custom properties.
+- Improved distribution revision identification.
+- Added 'format' and 'dump' to RPN operations.
+- Added access to RPN input and result point names.
+- Added helper classes for PipeEngine and PipeSink requests.
+- Removed missing result inputs anonymity.
+- Added support of environment variables in ProcessMonitor.
+- Added pipe request format version.
+- Replaced millis in config files by elapsed time.
+- Allowed engine interruption on processor service stop.
+- Added a TimeLimit param to the Pipe engine.
+- Allowed deferred substitution.
+- Added support for the 'NullRemoves' transform param.
+- Added the 'validate' script.
+- Added input Sync param.
+- Dropped the use of XDoclet.
+- Reduced dependency on commons-logging.
+- Added macros expansion to the RPN engine.
+- Fixed Crontab processing of DST skip in spring.
+- Added stats to Simple messaging objects.
+- Allowed contained services to register with JMX agent.
+- Implemented the XMLPortClient C API.
+- Added DocumentVersionControl startup update trigger file.
+- Renamed 'store.server.sink.pipe.program' property to '...command'.
+- Relocated pipe process control from Transform to Engine.
+- Renamed MJD and MJD.Elapsed to DateTime and ElapsedTime.
+- Added a remote Logger service.
+- Improved the log entries identification.
+- Fixed the Processor Control engine result values.
+- Fixed points set up in the Dispatcher forwarder module.
+- Fixed the PropertiesExporter.
+- Added the 'reference' XML PI.
+- Deferred generation of control signals to end of processing.
+- Made UUID require a system property to use native generator.
+- Fixed some start up failures deadlock conditions.
+- Improved uncaught exception handling.
+- Added OpenVMS support.
+- Fixed the store updates listener.
+- Fixed a stack trace in AgentSessionProxy.
+- Fixed object name propagation in MainServices.
+- Allowed the DatedFileAppender to use subdirectories.
+- Added loop protection to Simple publishing.
+- Added loop protection to Alert forwarding.
+- Added the 'metadata' checkout / update script.
+- Refactored RMI sessions implementation.
+- Added security role support to JMX agent.
+- Added service.Stopper.
+- Added support for automatic JMX registration.
+- Added service aliases.
+- Made 'org.rvpf' the default JMX domain.
+- Added the Injector and XML Input forwarder modules.
+- Consolidated security properties.
+- Changed domain from 'rvpf.sf.net' to 'rvpf.org'.
+
+0.7.4
+
+- Fixed postponed results selection.
+- Dropped redundant results elimination.
+- Added support for point aliases.
+- Improved self-referencing results processing behaviors.
+- Allowed use of 'Synchronized' behavior as non primary.
+- Added the 'DefaultBehavior' param to engines.
+- Fixed generation of out-of-sync results by AlwaysTriggers.
+- Made results stored value available to transforms.
+- Added the Null and the Clone engines.
+- Added support for XML properties files.
+- Allowed value substitution in properties files.
+- Required that scripts execution be done from RVPF root.
+- Added a connection retry mode to the Valve controller.
+- Fixed many Metadata Server defects.
+- Modified the Resynchronizer engine to subclass the Replicator.
+- Made backend limit default to response limit.
+- Fixed an InvalidIntervalException in StoreCursor.
+- Revised the RPN MJD operations word list.
+- Allowed the Metadata Server to export properties and select Engines.
+- Added the 'trigger' script.
+- Added missing logging informations when auto-restarting.
+- Fixed signal / event handling by the Metadata Server.
+- Added the 'UpdateDocument' action to the Control Engine.
+
+0.7.3
+
+- Added support for a store backend single read size protection.
+- Added Simple Outline XML (SOX) support.
+- Added mixed stores compatibility to the Replicator engine.
+- Improved security configuration problems handling.
+- Completed entity name case insensitivity.
+- Improved forwarder connection failure recovery.
+- Refactored Midnight logging for services without alerter.
+- Added the Step Filter Engine.
+- Added the PointValueConverter.
+- Dropped the 'Convert' param.
+- Added 'FloorInterval' and 'CeilingInterval' to Resynchronizer.
+- Added events request to HTTP Alert module.
+- Fixed batch memory limits computation.
+- Made text informations available in exported Metadata.
+- Added the 'signal' script.
+- Added the Null Alerter.
+- Made integer contents round floats on decode.
+- Split physical / logical processing in Content entities.
+- Fixed some race conditions in forwarder input.
+- Factored out Thread inheritance.
+- Improved Receptionist protocol.
+- Improved ClassLibs support.
+- Added 'classLib' elements to 'ClassLib' and 'service' in rvpf.dtd.
+- Reorganized the project directory hierarchy.
+
+0.7.2
+
+- Added cache support to the ServiceClassLoader.
+- Renamed ClassLib 'url' to 'location' in rvpf.dtd.
+- Added support for automatic loading of metadata from HTTP server.
+- Replaced JUnit by TestNG.
+- Updated the source language level to Java 5.
+- Added the Rules subproject.
+
+0.7.1
+
+- Added the 'RecalcLatest' param to points and transforms.
+- Implemented the HTTP Metadata server module.
+- Added 'stamp' and 'domain' attributes to metadata in rvpf.dtd.
+- Fixed missed notifications when filtered and multiple stores.
+- Added a 'validated' attribute to PropertiesDef in rvpf.dtd.
+- Added a DocumentVersionControl service.
+- Added an 'info' property to signals and events.
+- Removed the Serializable interface from MetadataFilter.
+- Generalized the 'uuid' attribute for all entity definitions.
+- Added support of ParamDef to MetadataExporter.
+- Fixed a NPE on store related misconfigurations.
+- Fixed a stack overflow in DatedFileAppender.
+- Added signature files in the new '-asc.tgz' bundle.
+- Improved deleted values processing.
+- Added the 'Group' entity.
+- Replaced the '-lib.tgz' bundle by the 'Ivy' mechanism.
+- Allowed tests scenarios to run in relative time.
+- Added the 'env' and 'eq' attributes to property assignments.
+- Added the ProxyStore service.
+
+0.7.0
+
+- Dropped use of rmic in favor of dynamic stub classes.
+- Improved exception handling in the HTTP Query module.
+- Simplified store queries processing.
+- Added the 'post' script.
+- Assigned default paths to HTTP modules.
+- Added the 'break' and 'continue' RPN operations.
+- Moved the JythonScript MBean into the JMS subproject.
+- Detached the Valve into its own subproject.
+- Added result recalc trigger notice.
+- Added audit traces.
+- Added the HTTP Notice module.
+- Added the generalized forwarder service.
+- Added support of Apache Derby (10.0.2.1) to MyStore.
+- Improved logging of Simple client connections.
+- Added the Resynchronizer engine.
+- Added a 'target' parameter to the HTTP server TriggerServlet.
+- Allowed incremental PropertiesDef entries.
+- Added an 'attribute' child to the rvpf.dtd 'attributes' element.
+- Added SafeFileAppender for use with log4j.
+- Added MainServices.
+- Refactored the build.xml files.
+- Detached JMS support into its own subproject.
+
+0.6.0
+
+- Set 'simple' as the default messaging protocol.
+- Added Simple Messaging Objects (simple) implementation and support.
+- Removed the points order constraint.
+- Dropped JMS support for store requests and updates.
+- Added a values cache for the processor.
+- Added basic run stats.
+- Allowed the use of a notifier journal by appropriate stores.
+- Allowed updates and notices batching.
+- Allowed a limit on the backward search for sync values.
+- Allowed Synchronized Behavior on offset Sync schedule.
+- Extended start up time for each module of the HTTP server.
+- Allowed Queue and Topic look up to wait for inscription in JNDI.
+- Made Store rejections more explicit.
+- Enabled assertions.
+- Fixed a NPE on inputs with SelectSyncPosition and on zombie services.
+- The 'rvpf.object.name' system property allows standalone reuse.
+- Added ActiveMQ (1.5) to the verified JMS implementations.
+- Fixed a resource problem in HTTP tests.
+- Added a time stamp to HTTP servlets responses.
+- Improved valve error handling.
+- Improved messaging topics lifecycle control.
+- Added generation of the 'config.dir' property.
+- Made selection of configuration directory more flexible.
+- Added DatedFileAppender for use with log4j.
+- Added the 'MIDNIGHT' event to help roll log files.
+- Added an 'info' servlet to the HTTP Query module.
+- Removed an ambiguity in StoreRequest method names.
+- Dropped the 'rvpf-' prefix from the DOCTYPE names.
+
+0.5.2
+
+- Changed alert logging format.
+- Improved responsiveness to service events.
+- Replaced startup delay by restraint period for the HTTP Alerter module.
+- Added a 'status' servlet to the HTTP Alerter module.
+- Implemented a 'zombie' state for failed services.
+- Allowed more than one Behavior reference for a Transform 'arg'.
+- Implemented support of limit for responses to requests.
+- Added memory limits protection to the Processor.
+- Dropped the Filter entity.
+- Added MJD operations to the Summarizer engine.
+- Cleaned up RPN aliases.
+
+0.5.1
+
+- Added MJD operations to the RPN engine.
+- Added 'control' attribute to the rvpf.dtd 'input' element.
+- Implemented support for 'SelectSyncPosition' and 'SelectPreviousValue'.
+- Integrated use of Transform 'arg'.
+- Simplified Behavior chain set up.
+- Improved entity identification in XMLDocument log messages.
+- Added 'arg' element to the rvpf.dtd 'Transform' element.
+- Improved service startup synchronization.
+- Fixed Summarizer normalization/denormalization.
+- Implemented 'sync' support.
+- Implemented client side processing of some store requests.
+- Migrated from CVS to Subversion.
+- Dropped store filters.
+- Added 'sync' attribute to the rvpf.dtd 'Point' element.
+- Split rvpf.jar to rvpf-base.jar and rvpf-server.jar.
+- Reorganized the base classes.
+- Fixed dynamic properties processing.
+- Improved PIFilter integration.
+- Fixed a few NPE in 'tearDown' methods when startup fails.
+- Added a service ping limit before activating self-restart.
+- Closed a NPE window in Clock service on RefreshMetadata.
+- Added 'optional' attribute to 'properties' element in rvpf.dtd.
+
+0.5.0
+
+- Modified to ignore redundant include PI.
+- Protected RPN against infinite loop operations.
+- Added the Valve service.
+- Fixed a NPE when stopping while waiting for a Store.
+- Simplified Store server Request processing.
+- Added the HTTP Update module.
+- Improved JMS security support.
+- Allowed selection of KeyStore and TrustStore for RMI and HTTP.
+- Fixed the entities transfer from Config to Metadata.
+- Implemented properties validation from PropertyDef and PropertiesDef.
+- Simplified mandatory system properties set up.
+- Fixed a method override error in XMLDocument.Entry.
+- Implemented role based access for RMI.
+- Added secure sockets support for RMI access.
+- Refactored RMI access to use session objects.
+- Added authentication to client certificate support.
+- Implemented client certificate support in HTTP server.
+- Implemented https support in HTTP server.
+- Implemented role based access for HTTP.
+- Redesigned the PointInput relation with its Behaviors.
+- Simplified Proxy entity role.
+- Redesigned substitutions processing.
+- Added 'element' attribute to the rvpf.dtd 'other' element.
+- Added the HTTP Query module.
+- Added the Pipe Sink.
+- Refactored store.server notification.
+- Added JMSSinkClient.
+- Added Sink server.
+- Changed NullStore attitude from strict to lenient.
+- Added the HTTP RPN Executor module.
+- Added 'UnitValue' and 'SI' contents.
+- Added many convenience words to RPN.
+- Redesigned failure handling in RPN.
+- Modified rvpf-rpn.dtd to include both request and response.
+- Added control of result time position in intervals.
+- Renamed Behavior.
+- Added 'fail', 'try' and 'required' to RPN operations.
+- Added start/stop Content to Summarizer.
+- Added 'stored' to RPN operations and Pipe Engine.
+- Reorganized Engine classes.
+- Added logging of context informations.
+- Refactored the Behavior and Transform protocol.
+
+0.4.3
+
+- Added the Pipe engine.
+- Added 'min' and 'max' to RPN operations.
+- Modified rvpf.dtd to allow textual informations on root elements.
+- Made ClassDef available in Config.
+- Allowed KeyedValues to contain non String values.
+- Added a required 'usage' attribute to the 'attributes' element.
+- Added rvpf-config-shared.xml to hold PropertyDef and PropertiesDef elements.
+- Added 'PropertyDef' and 'PropertiesDef' elements.
+- Renamed ParamDef 'type' to 'holder'.
+- Renamed the 'Property', 'Properties' and 'Service' elements.
+
+0.4.2
+
+- Added rvpf-rpn.dtd.
+- Modified to skip processing of elements with a 'lang' attribute.
+- Fixed a NPE on missing 'Program' param for RPN transform.
+- Added support for property marker substitution.
+- Dropped use of ident attributes by services.
+- Added value deletion support.
+- Allowed config and metadata to be found as resources on the classpath.
+- Allowed multiple rvpf.properties resource files.
+- Redesigned and rewrote the http package.
+- Added rvpf-data.dtd.
+- Reorganized the project directory.
+
+0.4.1
+
+- Added the RMIJMSStoreClient.
+- Fixed the RMI StoreClient.
+- Added 'required' value operators to the RPN Engine.
+- Added Ping Pong protocol for service availability.
+- Added the Alerter Service.
+- Added the Synchronized Behavior.
+- Added self restart capability to service threads.
+- Introduced alerts and signals.
+
+0.4.0
+
+- Many improvements have been made regarding stability, testing and
+  configuration.
+
+0.1.0
+
+- First public distribution (2003-11-12).
+
+---

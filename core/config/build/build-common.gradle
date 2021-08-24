@@ -1,0 +1,587 @@
+/** Related Values Processing Framework.
+ *
+ * Copyright (c) 2003-2019 Serge Brisson.
+ *
+ * This software is distributable under the LGPL license.
+ * See details at the bottom of this file.
+ *
+ * $Id: build-common.gradle 3961 2019-05-06 20:14:59Z SFB $
+ */
+
+ant.lifecycleLogLevel = 'INFO'
+ant.importBuild "${projectDir}/build.xml"
+
+// Properties.
+
+ant.property(file: 'config/build/version.properties',
+    prefix: 'version')
+ant.property(file: '${rvpf.core}/config/build/version.properties',
+    prefix: 'version')
+
+ant.tstamp {
+    ant.format(property: 'version.timestamp',
+        pattern: 'yyyy-MM-dd HH:mm')
+}
+
+ext {
+    versionTimestamp = ant.properties['version.timestamp']
+    versionMajor = ant.properties['version.major'] ?: 'x'
+    versionMinor = ant.properties['version.minor'] ?: 'x'
+    versionMicro = ant.properties['version.micro'] ?: 'x'
+    versionRevision = null 
+    versionString = null 
+    revision = 98 
+    revisionString = null 
+    debPackage = null
+    debVersion = null
+    debDir = null
+
+    styleGroups = []
+}
+
+def getRevision() {
+    if (!ext.revision) {
+        if (ant.properties['vcs.svn']) {
+            ant.svnversion()
+            ext.revision =
+                ant.properties['svnversion.output'].replace('M', '~')
+        }
+    }
+
+    ext.revision
+}
+
+def getRevisionString() {
+    if (!ext.revisionString) {
+        ext.revisionString = revision
+        ant.echo(taskname: 'info', level: 'info',
+            message: "Revision ${ext.revisionString}")
+    }
+
+    ext.revisionString
+}
+
+def getVersionBase() {
+    versionMajor + versionMinor + versionMicro
+}
+
+def getVersionString() {
+    if (!ext.versionString) {
+        ext.versionString = versionBase + '-' + versionRevision
+        ant.echo(taskname: 'info', level: 'info',
+            message: "Version ${ext.versionString}")
+        ant.echo(file: 'VERSION',
+            message: '${project.name} ${version.major}.${version.minor}.${version.micro}-'
+                + versionRevision)
+    }
+
+    ext.versionString
+}
+
+def getVersionRevision() {
+    if (!ext.versionRevision) {
+        if (ant.properties['vcs.svn']) {
+            ant.svn(action: 'info') {
+                ant.arg(line: "--xml")
+            }
+            ant.xmlproperty(prefix: 'svn.info', keeproot: 'no',
+                    collapseattributes: 'yes') {
+                ant.propertyresource(name: 'svn.info.output')
+            }
+            ext.versionRevision =
+                ant.properties['svn.info.entry.revision']
+        } else if (ant.properties['vcs.git']) {
+            ant.gitsvn(action: 'info')
+
+            def pattern = java.util.regex.Pattern.compile(
+                "^Revision: (\\d+)\$",
+                java.util.regex.Pattern.MULTILINE)
+            def matcher = pattern.matcher(
+                ant.properties['gitsvn.info.output'])
+
+            if (matcher.find()) {
+                ext.versionRevision = matcher.group(1)
+            }
+        }
+    }
+
+    ext.versionRevision
+}
+
+// Tasks.
+
+task deb(description: "Generates the dpkg file.") {
+    doLast {
+        doDeb()
+    }
+}
+
+task deploy(description: "Deploys the distribution files.") {
+    doLast {
+        doDeploy()
+    }
+}
+
+task dist(description: "Generates the distribution files.") {
+    doLast {
+        doDist()
+    }
+}
+
+task noop(description: "No operations.") {
+    doLast {}
+}
+
+task redist(description: "Generates the distribution from fresh files.") {
+    doLast {
+        ant.project.executeTarget 'update'
+        ant.project.executeTarget 'clean'
+        doDist()
+    }
+}
+
+task revision(description: "Gets the revision.") {
+    doLast {
+        revisionString
+    }
+}
+
+task style(description: "Runs Checkstyle on the Java files.") {
+    def checkstyleHome = System.env.CS_HOME
+
+    enabled = checkstyleHome != null
+    if (enabled) {
+        dependsOn compile
+    }
+
+    doFirst {
+        ant.taskdef(resource: "checkstyletask.properties") {
+            ant.classpath {
+                ant.fileset(dir: checkstyleHome,
+                    includes: 'checkstyle-*-all.jar')
+            }
+        }
+
+        def checkstyleConfig = '${rvpf.core}/config/build/checkstyle.xml'
+
+        ant.macrodef(name: 'javastyle') {
+            ant.attribute(name: 'group')
+            ant.sequential {
+                ant.checkstyle(config: checkstyleConfig,
+                        classpathref: 'project.class.path') {
+                    ant.fileset(dir: 'src/@{group}/java',
+                        includes: '**/*.java')
+                }
+            }
+        }
+    }
+
+    doLast {
+        ant.javastyle(group: 'main')
+
+        styleGroups.each {ant.javastyle(group: it)}
+
+        ant.javastyle(group: 'test')
+    }
+}
+
+task version(description: "Gets the version.") {
+    doLast {
+        versionString
+    }
+}
+
+defaultTasks 'build'
+
+// Actions.
+
+ext.debStep = null
+
+def doDeb() {
+    def debRoot = "${projectDir}/build/deb"
+    def debPackage = ant.properties['version.name'].toLowerCase(Locale.ROOT)
+    def debVersion =
+        "${versionMajor}.${versionMinor}.${versionMicro}-${revision}"
+    def debDir = "${debRoot}/${debPackage}-${debVersion}"
+
+    ant.delete(dir: debRoot)
+    ant.mkdir(dir: "${debDir}/DEBIAN")
+
+    def writer = new PrintWriter("${debDir}/DEBIAN/control")
+
+    writer.println("Package: ${debPackage}")
+    writer.println("Version: ${debVersion}")
+    writer.println("Architecture: all")
+    writer.println("Section: contrib/java")
+    writer.println("Priority: extra")
+    writer.println("Maintainer: ${ant.properties['version.author']}"
+        + " <${ant.properties['version.support']}>")
+    writer.println("Depends: adduser")
+    writer.println("Description: ${ant.properties['version.title']}")
+
+    writer.close()
+
+    mkdirs "${debDir}/etc/opt/rvpf/script"
+    mkdirs "${debDir}/etc/opt/rvpf/service"
+    mkdirs "${debDir}/etc/opt/rvpf/wrap"
+    mkdirs "${debDir}/opt/rvpf/bin/local"
+    mkdirs "${debDir}/opt/rvpf/lib/local"
+    mkdirs "${debDir}/opt/rvpf/script"
+    mkdirs "${debDir}/srv/opt/rvpf"
+    mkdirs "${debDir}/var/opt/rvpf/log"
+    mkdirs "${debDir}/var/opt/rvpf/run"
+    mkdirs "${debDir}/var/opt/rvpf/tmp"
+
+    copy {
+        from 'lib'
+        into "${debDir}/opt/rvpf/lib"
+        include '*.jar'
+    }
+    copy {
+        from 'config/build/deb/bin'
+        into "${debDir}/opt/rvpf/bin"
+    }
+
+    if (debStep) debStep(debDir)
+
+    if (ant.properties['os.name'] == 'Linux') {
+        print system("fakeroot -- dpkg --build ${debDir}")
+    }
+}
+
+def doDeploy() {
+    ant.make(target: 'deploy')
+}
+
+ext.distStep = null
+
+def doDist() {
+    if (!JavaVersion.current().isJava8()) {
+        throw new GradleException("Please distribute with Java 8!")
+    }
+
+    ant.project.executeTarget 'cleanup'
+    ant.project.executeTarget 'setup-report'
+    ant.project.executeTarget 'build'
+    ant.project.executeTarget 'doc'
+    ant.project.executeTarget 'validate'
+
+    doTag()
+    doUpdateWebDir()
+
+    ant.delete(dir: 'dist', quiet: 'true')
+    ant.mkdir(dir: 'dist')
+    ant.touch(file: 'log/build.log')
+    ant.mkdir(dir: 'tmp')
+    ant.touch(file: 'tmp/build.tmp')
+    ant.fixcrlf(srcdir: '.', eol: 'lf', eof: 'remove',
+        includes: 'debug,repeat,run,wrap')
+    ant.fixcrlf(srcdir: 'bin', eol: 'lf', eof: 'remove',
+        includes: '**/*.sh')
+    ant.make(target: 'dist') {
+        ant.arg(value: 'VERSION=${version.string}')
+    }
+
+    doTars()
+    doIzpack()
+
+    if (distStep) distStep()
+
+    doSign()
+
+    ant.delete(quiet: 'true', verbose: 'false') {
+        ant.fileset(dir: '.') {
+            ant.include(name: 'log/build.log')
+            ant.include(name: 'tmp/build.tmp')
+            ant.include(name: 'build/tmp')
+        }
+    }
+}
+
+ext {
+    izpackSetupStep = null
+}
+
+def doIzpack() {
+    ant.property(name: 'version.string', value: versionString)
+    ant.property(name: 'tar.root.dir',
+        value: '${name.unix}-${version.string}')
+    ant.delete(dir: 'build/tmp')
+    ant.mkdir(dir: 'build/tmp')
+    ant.unzip(src: 'dist/${project.name.unix}-${version.string}.zip',
+        dest: 'build/tmp')
+    ant.project.executeTarget 'setup-default'
+    ant.copy(todir: 'build/tmp/${tar.root.dir}/lib') {
+        ant.fileset(dir: 'lib')
+    }
+
+    def izpackHome = System.env.IZPACK_HOME
+
+    if (izpackSetupStep) izpackSetupStep(izpackHome)
+
+    ant.mkdir(dir: 'build/config')
+    ant.copy(todir: 'build/config') {
+        ant.fileset(dir: 'config/build', includes: 'izpack-install.xml')
+        ant.filterset {
+            ant.filter(token: 'NAME', value: '${project.name}')
+            ant.filter(token: 'VERSION',
+                value: '${version.major}.${version.minor}.${version.micro}')
+            ant.filter(token: 'ROOT', value: '${rvpf.name}')
+            ant.filter(token: 'SUBDIR', value: '${name.unix}')
+        }
+    }
+
+    ant.copy(todir: 'build/tmp/${tar.root.dir}') {
+        ant.fileset(dir: 'config/build') {
+            ant.include(name: 'README*.txt')
+            ant.include(name: 'packsLang_*.xml')
+            ant.include(name: 'setup-exec.sh')
+            ant.include(name: 'setup-root.sh')
+            ant.include(name: 'setup-root.cmd')
+        }
+        ant.filterset {
+            ant.filter(token: 'NAME', value: '${project.name}')
+            ant.filter(token: 'VERSION',
+                value: '${version.major}.${version.minor}.${version.micro}')
+            ant.filter(token: 'REVISION', value: versionRevision)
+        }
+    }
+    ant.copy(todir: 'build/tmp/${tar.root.dir}') {
+        ant.fileset(dir: '.', includes: 'LICENSE*.txt')
+    }
+
+    ant.taskdef(name: 'izpack',
+        classname: 'com.izforge.izpack.ant.IzPackTask',
+        classpath: "${izpackHome}/lib/compiler.jar")
+    ant.izpack(input: "${projectDir}/" + 'build/config/izpack-install.xml',
+        output: "${projectDir}/" + 'dist/${project.name.unix}-${version.string}-install.jar',
+        basedir: "${projectDir}/" + 'build/tmp/${tar.root.dir}',
+        installertype: 'standard', izpackdir: izpackHome)
+
+    ant.delete(dir: 'build/tmp')
+}
+
+def doManifest() {
+    ant.property(name: 'version.string', value: versionString)
+    ant.manifest(file: 'build/MANIFEST.MF') {
+        ant.attribute(name: 'Specification-Title',
+            value: '${version.title}')
+        ant.attribute(name: 'Specification-Version',
+            value: '${version.major}.${version.minor}.${version.micro}')
+        ant.attribute(name: 'Specification-Vendor',
+            value: '${version.author}')
+        ant.attribute(name: 'Implementation-Title',
+            value: '${version.name} ${version.timestamp}')
+        ant.attribute(name: 'Implementation-Version',
+            value: '${version.string}')
+        ant.attribute(name: 'Implementation-Vendor',
+            value: '${version.author}')
+    }
+}
+
+def doSign() {
+    if (ant.properties['sign.jars']) {
+        ant.property(name: 'version.string', value: versionString)
+        ant.make(target: 'sign')
+        ant.tar(destfile: 'dist/${project.name.unix}-${version.string}-asc.tgz',
+            basedir: 'dist', includes: '${project.name.unix}-*.asc',
+            longfile: 'gnu', compression: 'gzip')
+        ant.delete(quiet: 'true', verbose: 'false') {
+            ant.fileset(dir: 'dist') {
+                ant.include(name: '${project.name.unix}-*.asc')
+            }
+        }
+    }
+}
+
+ext.tagTargets = null
+
+def doTag() {
+    doManifest()
+
+    ant.delete(dir: 'build/tmp')
+    ant.mkdir(dir: 'build/tmp')
+
+    if (!tagTargets) tagTargets = ['', '.tests']
+
+    tagTargets.each {tagTarget ->
+        def targetProperty = ant.properties["target${tagTarget}"]
+
+        ant.jar(jarfile: "lib/${targetProperty}.jar",
+            manifest: 'build/MANIFEST.MF', update: 'true',
+            basedir: 'build/tmp')
+    }
+
+    ant.delete(dir: 'build/tmp')
+}
+
+ext.tarsStepAdd = null
+ext.tarsStepRepl = null
+
+def doTars() {
+    ant.property(name: 'version.string', value: versionString)
+    ant.property(name: 'tar.root.dir',
+        value: '${name.unix}-${version.string}')
+
+    if (tarsStepRepl) tarsStepRepl()
+    else {
+        ant.zip(destfile: 'dist/${project.name.unix}-${version.string}.zip',
+                duplicate: 'fail', whenempty: 'fail') {
+            ant.zipfileset(dir: '.', prefix: '${tar.root.dir}') {
+                ant.include(name: 'LICENSE*.txt')
+                ant.include(name: 'VERSION')
+                ant.include(name: 'lib/${target}*.jar')
+                ant.include(name: 'lib/${rvpf.tools.jar}')
+                ant.include(name: 'config/build/ivy.xml')
+                ant.include(name: 'config/build/ivy/**')
+                ant.include(name: 'config/script/**')
+                ant.include(name: 'config/service/**')
+                ant.include(name: 'config/wrap/**')
+                ant.include(name: 'shared/**')
+                ant.include(name: 'script/**')
+                ant.include(name: 'log/build.log')
+                ant.include(name: 'tests/config/**')
+                ant.include(name: 'tests/*.py')
+                ant.include(name: 'build.xml')
+                ant.include(name: 'doc/**')
+                ant.exclude(name: '**/rvpf-wrap*')
+            }
+            ant.zipfileset(dir: '.', prefix: '${tar.root.dir}',
+                    filemode: '755') {
+                ant.include(name: 'bin/**')
+                ant.include(name: '*.cmd')
+                ant.exclude(name: '**/rvpf-wrap*')
+            }
+            ant.zipfileset(dir: '.', prefix: '${tar.root.dir}',
+                    filemode: '755') {
+                ant.and {
+                    ant.type(type: 'file')
+                    ant.filename(name: '*')
+                    ant.filename(name: '*.*', negate: 'true')
+                }
+                ant.exclude(name: 'VERSION')
+                ant.exclude(name: 'Makefile')
+            }
+        }
+        ant.tar(destfile: 'dist/${project.name.unix}-${version.string}-src.tgz',
+                longfile: 'gnu', compression: 'gzip') {
+            ant.tarfileset(dir: '.', prefix: '${tar.root.dir}') {
+                ant.include(name: 'src/LICENSE.txt')
+                ant.include(name: 'config/build/**')
+                ant.include(name: 'src/main/java/**')
+                ant.include(name: 'Makefile')
+                ant.include(name: 'src/main/docs/**')
+                ant.include(name: 'src/test/java/**')
+                ant.exclude(name: 'config/build/ivy.xml')
+                ant.exclude(name: 'config/build/ivy/**')
+                ant.exclude(name: '**/*.class')
+            }
+            ant.tarfileset(dir: '.', prefix: '${tar.root.dir}',
+                    defaultexcludes: 'no') {
+                ant.include(name: '.classpath')
+                ant.include(name: '.project')
+            }
+        }
+        if (tarsStepAdd) tarsStepAdd()
+    }
+}
+
+def doUpdate() {
+    if (ant.properties['vcs.svn']) {
+        ant.svn(action: 'update')
+        ant.echo(taskname: 'update', level: 'info',
+            message: '${svn.update.output}')
+    } else if (ant.properties['vcs.git']) {
+        ant.gitsvn(action: 'rebase')
+        ant.echo(taskname: 'rebase', level: 'info',
+            message: '${gitsvn.rebase.output}')
+    }
+}
+
+ext.updateWebDirStep = null
+
+def doUpdateWebDir() {
+    ant.property(name: 'version.string', value: versionString)
+
+    if (updateWebDirStep) updateWebDirStep()
+
+    ant.copy(todir: 'web') {
+        ant.fileset(file: 'LICENSE.txt')
+        ant.fileset(file: 'doc/ChangeLog.txt')
+        ant.fileset(dir: '${rvpf.core}/web', includes: 'style.css')
+    }
+
+    ant.mkdir(dir: '${rvpf.web.lib.rvpf}')
+    ant.delete {
+        ant.fileset(dir: '${rvpf.web.lib.rvpf}') {
+            ant.present(targetdir: 'config/build/rvpf') {
+                ant.mapper(type: 'regexp',
+                    from: "rvpf-(.+)-${versionBase}-[0-9]+\\..+",
+                    to: "\\1.xml")
+            }
+        }
+    }
+    ant.copy(todir: '${rvpf.web.lib.rvpf}') {
+        ant.mapper(type: 'glob', from: '*.jar',
+            to: '*-${version.string}.jar')
+        ant.fileset(dir: 'lib') {
+            ant.present(targetdir: 'config/build/rvpf') {
+                ant.mapper(type: 'glob',
+                    from: '${rvpf.name.unix}-*.jar', to: '*.xml')
+            }
+            ant.include(name: '${rvpf.name.unix}-*.jar')
+        }
+    }
+    ant.tstamp {
+        ant.format(property: 'deploy.time',
+            pattern: 'yyyyMMddHHmmss')
+    }
+
+    ant.copy(todir: '${rvpf.web.lib.rvpf}') {
+        ant.mapper(type: 'glob', from: '*.xml',
+            to: '${rvpf.name.unix}-*-${version.string}.xml')
+        ant.fileset(dir: 'config/build/rvpf') {
+            ant.present(targetdir: 'lib') {
+                ant.mapper(type: 'glob', from: '*.xml',
+                    to: '${rvpf.name.unix}-*.jar')
+            }
+        }
+        ant.filterset {
+            ant.filter(token: 'REVISION', value: '${version.string}')
+            ant.filter(token: 'PUBLICATION',
+                value: ant.properties['deploy.time'])
+        }
+    }
+}
+
+// Utilities.
+
+ext.mkdirs = {dir ->
+    (new File(dir)).mkdirs()
+}
+
+ext.system = {command ->
+    def process = command.execute()
+
+    process.waitFor()
+    if (process.exitValue()) {
+        throw new GradleException(process.err.text)
+    }
+
+    process.in.text
+}
+
+/* This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA
+ */

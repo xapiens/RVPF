@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: xstream.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='xstream'
+            revision='${xstream.revision}'
+            organisation='com.thoughtworks.xstream'
+            status='release'>
+        <license name='BSD-style'
+                url='http://x-stream.github.io/license.html'/>
+        <description homepage='http://x-stream.github.io/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

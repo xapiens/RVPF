@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-scenarios.xml 3241 2016-10-27 21:45:19Z SFB $
+ -->
+
+<metadata lang='en'>
+
+    <?log message="Scenarios Metadata"?>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <property name='tests.notice.timeout' value='5.0'/>
+
+    <Permissions name='DefaultPermissions'>
+        <permissions allow='read'/>
+        <permissions role='$${tests.role}'
+                allow='write,process,delete'/>
+    </Permissions>
+
+    <Store name='TestsStore'
+            permissions='DefaultPermissions'
+            uuid='6392efbe-9d47-4ac6-96b6-e2ef9fdcb1f5'>
+        <description>Used for base Store tests.</description>
+        <param name='User' value='$${tests.user}'/>
+        <param name='Password' value='$${tests.password}'/>
+    </Store>
+
+    <Processor name='TestsProcessor'
+            uuid='09606b86-ecfa-4147-b61b-1dc00cca5e14'>
+        <description>Used for base Processor tests.</description>
+    </Processor>
+
+    <Sync name='Hour' classDef='ElapsedSync'>
+        <param name='Elapsed' value="01:00"/>
+        <param name='TimeZone' value="GMT" if='tests.scenario'/>
+    </Sync>
+
+    <Sync name='Hour:15' classDef='ElapsedSync'>
+        <param name='Elapsed' value="01:00"/>
+        <param name='Offset' value="00:15"/>
+        <param name='TimeZone' value="GMT" if='tests.scenario'/>
+    </Sync>
+
+    <Sync name='Hour:30' classDef='CrontabSync'>
+        <param name='Crontab' value="30 * * * *"/>
+        <param name='TimeZone' value="GMT" if='tests.scenario'/>
+    </Sync>
+
+    <Sync name='Quarter' classDef='ElapsedSync'>
+        <param name='Elapsed' value="00:15"/>
+        <param name='TimeZone' value="GMT" if='tests.scenario'/>
+    </Sync>
+
+    <Sync name='Minute' classDef='ElapsedSync'>
+        <param name='Elapsed' value="00:01"/>
+        <param name='TimeZone' value="GMT" if='tests.scenario'/>
+    </Sync>
+
+    <Engine name='RPN+macros+words' clone='RPN'>
+        <param name='Macro'>
+            <value>add(...=0) { [ ... reduce + ] }</value>
+            <value>div(x!, ...!) { x mul(...) / }</value>
+            <value>if(cond!, true, false) { cond if { true } else { false } }</value>
+            <value>max(...!) { [ ... reduce max ] }</value>
+            <value>min(...!) { [ ... reduce min ] }</value>
+            <value>mul(...!) { [ ... reduce * ] }</value>
+            <value>sub(x!, ...) { x add(...) - }</value>
+            <value>try(action, failed) try { action } { failed }</value>
+        </param>
+        <param name='Word'>
+            <value>:deleted? ( x -- x b ) ; : deleted?</value>
+            <value>:! ( x -- x ) ; : !</value>
+            <value>:null? ( x -- x b ) ; : null?</value>
+            <value>count ( -- n ) depth</value>
+            <value>count* ( -- n ) depth*</value>
+            <value>pop ( x -- ) drop</value>
+            <value>echo ( x -- ) str info</value>
+            <value>:echo ( x -- x ) ; : echo</value>
+            <value>cond ( b -- ? ) ?:</value>
+            <value>no ( -- false ) false</value>
+            <value>off ( -- false ) false</value>
+            <value>on ( -- true ) true</value>
+            <value>yes ( -- true ) true</value>
+            <value>add ( a b -- a+b ) +</value>
+            <value>+? ( n -- b ) 0-? not</value>
+            <value>-? ( n -- b ) 0+? not</value>
+            <value>+-? ( n -- b ) 0? not</value>
+            <value>:+? ( n -- n b ) ; : +?</value>
+            <value>+! ( n -- ) +? true!</value>
+            <value>:+! ( n -- n ) ; : +!</value>
+            <value>:-? ( n -- n b ) ; : -?</value>
+            <value>-! ( n -- ) -? true!</value>
+            <value>:-! ( n -- n ) ; : -!</value>
+            <value>:+-? ( n -- n b ) ; : +-?</value>
+            <value>+-! ( n -- ) +-? true!</value>
+            <value>:+-! ( n -- n ) ; : +-!</value>
+            <value>:0? ( n -- n b ) ; : 0?</value>
+            <value>0! ( n -- ) 0? true!</value>
+            <value>:0! ( n -- n ) ; : 0!</value>
+            <value>:0+? ( n -- n b ) ; : 0+?</value>
+            <value>0+! ( n -- ) 0+? true!</value>
+            <value>:0+! ( n -- n ) ; : 0+!</value>
+            <value>:0-? ( n -- n b ) ; : 0-?</value>
+            <value>0-! ( n -- ) 0-? true!</value>
+            <value>:0-! ( n -- n ) ; : 0-!</value>
+            <value>:+ ( n -- n+n ) ; : +</value>
+            <value>:* ( n -- n*n ) ; : *</value>
+            <value>:++ ( n -- n n+1 ) ; : ++</value>
+            <value>:-- ( n -- n n-1 ) ; : --</value>
+            <value>eq! ( a b -- ) eq true!</value>
+            <value>ge! ( a b -- ) ge true!</value>
+            <value>gt! ( a b -- ) gt true!</value>
+            <value>le! ( a b -- ) le true!</value>
+            <value>lt! ( a b -- ) lt true!</value>
+            <value>ne! ( a b -- ) ne true!</value>
+            <value>inf! ( n -- ) inf? true!</value>
+            <value>nan! ( n -- ) nan? true!</value>
+            <value>:debug ( x -- x ) ; : debug</value>
+            <value>:info ( x -- x ) ; : info</value>
+            <value>:warn ( x -- x ) ; : warn</value>
+            <value>:str ( x -- x s ) ; : str</value>
+            <value>:empty? ( s -- s b ) ; : empty?</value>
+        </param>
+    </Engine>
+
+    <Engine name='Summarizer+macros+words' clone='RPN+macros+words'
+            classDef='SummarizerEngine'/>
+
+    <Transform name='Add' engine='RPN'>
+        <description>
+            Simple addition of any number of inputs.
+        </description>
+        <param name='Program' value='$*! reduce +'/>
+        <arg/>
+        <arg/>
+        <arg multiple='yes'/>
+    </Transform>
+
+    <Transform name='Average' engine='Summarizer+macros+words'>
+        <description>
+            Computes the average of the summarized input during the period.
+        </description>
+        <param name='InitialProgram' value='$# +! 0'/>
+        <param name='StepProgram' value='add($0, $)'/>
+        <param name='FinalProgram' value='div($0, $#)'/>
+        <arg ident='Interval' content='Clock'>
+            <param name='ResultPosition' value='middle'/>
+        </arg>
+        <arg ident='Steps' content='Numeric'/>
+    </Transform>
+
+    <Transform name='Copy' engine='RPN'>
+        <description>
+            Simple copy of the single input to the result.
+        </description>
+        <notes>
+            The action of content normalization / denormalization may result
+            in a value conversion.
+        </notes>
+        <param name='Program' value='$1$ $0$= $1'/>
+        <arg title="Original value"/>
+    </Transform>
+
+    <Transform name='Count' engine='Summarizer'>
+        <description>
+            Counts the occurences of the summarized input during the period.
+        </description>
+        <param name='InitialProgram' value='$#'/>
+    </Transform>
+
+    <Transform name='Divide' engine='RPN+macros+words'>
+        <description>
+            Simple division of two inputs.
+        </description>
+        <param name='Program' value='div($1!, $2!)'/>
+    </Transform>
+
+    <Transform name='Integrator-step' engine='RPN+macros+words'>
+        <description>
+            Computes the value between two steps.
+        </description>
+        <notes>
+            The Point's Param #1 must contain the integrator's
+            overflow value.
+        </notes>
+        <param name='Program'>
+            sub($1!, $2!) :-? if { @1 int + }
+        </param>
+        <param name='FailReturnsNull'/>
+        <arg content='Count'/>
+        <arg content='Count' behavior='Retriggers'>
+            <param name='SelectPreviousValue'/>
+        </arg>
+    </Transform>
+
+    <Transform name='Integrator-summary'
+            engine='Summarizer+macros+words'>
+        <description>
+            Extracts the value accumulated during the interval.
+        </description>
+        <notes>
+            The Point's Param #1 must contain the integrator's
+            overflow value.
+        </notes>
+        <param name='InitialProgram'>
+            @1 int #1= 0
+        </param>
+        <param name='StepProgram'>
+            1 step le if return
+            sub($, prev) :-? if { #1 + } $0 +
+        </param>
+        <param name='FinalProgram'>
+            1 $# le if { null return }
+        </param>
+        <arg ident='Interval' content='Clock'/>
+        <arg ident='Integrator' content='Count'>
+            <param name='FetchPreviousValue'/>
+        </arg>
+    </Transform>
+
+    <Transform name='Overload-time-pct'
+            engine='Summarizer+macros+words'>
+        <description>
+            Computes the time percentage the input is overload.
+        </description>
+        <notes>
+            The Point's Param #1 must contain the limit value.
+        </notes>
+        <param name='InitialProgram'>
+            1 $# gt assert @1 float #1= 0
+        </param>
+        <param name='StepProgram'>
+            1 step le if return
+            2 step eq if {
+                #1 prev gt if {
+                    sub($@ raw, start@ raw)
+                }
+            } else {
+                #1 prev gt if {
+                    add(sub($@ raw, prev@ raw), $0)
+                }
+            }
+        </param>
+        <param name='FinalProgram'>
+            #1 last gt if {
+                add(sub(stop@ raw, last@ raw), $0) $0=
+            }
+            mul(div($0, sub(stop@ raw, start@ raw) float), 100)
+        </param>
+        <arg ident='Interval' content='Clock'/>
+        <arg ident='Steps' content='Numeric'>
+            <param name='FetchPreviousEndValue'/>
+        </arg>
+    </Transform>
+
+    <Transform name='Multiply' engine='RPN'>
+        <description>
+            Simple multiplication of any number of inputs.
+        </description>
+        <param name='Program' value='values! reduce *'/>
+        <arg content='Numeric'/>
+        <arg content='Numeric'/>
+        <arg content='Numeric' multiple='yes'/>
+    </Transform>
+
+    <Transform name='Nop' engine='RPN'>
+        <description>
+            Do nothing.
+        </description>
+        <param name='Program' value=''/>
+        <arg multiple='yes'/>
+    </Transform>
+
+    <Transform name='Resync' engine='Resynchronizer'>
+        <description>
+            Resynchronize.
+        </description>
+        <param name='FloorRatio' value='0.25'/>
+        <param name='CeilingRatio' value='0.25'/>
+        <arg behavior='Required'/>
+        <arg content='Clock'/>
+    </Transform>
+
+    <Transform name='STDEV' engine='Summarizer+macros+words'
+            title="STandard DEViation">
+        <param name='InitialProgram'>
+            1 $# gt! 0.0 :#1= #2=
+        </param>
+        <param name='StepProgram'>
+            add($, #1) #1= add($ :*, #2) #2=
+        </param>
+        <param name='FinalProgram'>
+            #1 0? if 0.0 else {
+                div(sub(mul(#2, $#), #1 :*) abs, mul($#, :--)) sqrt
+            }
+        </param>
+    </Transform>
+
+    <Transform name='Substract' engine='RPN+macros+words'>
+        <description>
+            Simple substraction of two inputs.
+        </description>
+        <param name='Program' value='sub($1!, $2!)'/>
+        <arg content='Numeric'/>
+        <arg content='Numeric'/>
+    </Transform>
+
+    <Transform name='Sum' engine='Summarizer+macros+words'>
+        <param name='InitialProgram' value='0'/>
+        <param name='StepProgram' value='add($0, $)'/>
+        <arg content='Clock'/>
+        <arg/>
+    </Transform>
+
+    <?include href='resource:scenarios/rvpf-metadata-scenario-1.xml'
+        if='tests.scenario.1'?>
+
+    <?include href='resource:scenarios/rvpf-metadata-scenario-2.xml'
+        if='tests.scenario.2'?>
+
+    <?include href='resource:scenarios/rvpf-metadata-scenario-3.xml'
+        if='tests.scenario.3'?>
+
+    <?include href='resource:scenarios/rvpf-metadata-scenario-4.xml'
+        if='tests.scenario.4'?>
+
+    <?include href='resource:scenarios/rvpf-metadata-scenario-5.xml'
+        if='tests.scenario.5'?>
+
+</metadata>
+
+<!-- End. -->

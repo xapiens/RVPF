@@ -1,0 +1,102 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config-scenarios.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Tests scenarios configuration">
+
+    <?include href='resource:rvpf-common-config.xml'?>
+
+    <PropertyDef name='tests.messaging' type='ClassDef'
+            title="Tests messaging support"/>
+
+    <ClassDef name='TestsMessagingSupport'
+            package='org.rvpf.tests'
+            member='MessagingSupport'>
+        <description>
+            Provides messaging support for tests.
+        </description>
+    </ClassDef>
+
+    <ClassDef name='SOMTestsSupport'
+            package='org.rvpf.som'
+            member='SOMSupport'
+            notes="Default.">
+        <implements classDef='TestsMessagingSupport'/>
+    </ClassDef>
+
+    <property name='substitution.enabled'/>
+
+    <ClassLib location='file:///${tests.classes}/'>
+        <description>
+            Holds classes used for testing of customizing facilities.
+        </description>
+    </ClassLib>
+
+    <PropertyDef name='tests.notice.timeout' type='Elapsed'/>
+    <PropertyDef name='tests.scenarios'/>
+    <PropertyDef name='tests.store.service' type='ClassDef'/>
+
+    <property name='tests.scenarios' value='rvpf-scenarios.xml'/>
+
+    <properties name='tests.processor.receptionist.queue'
+            def='som.queue'>
+        <property name='name' value='TestsReceptionist'/>
+        <property name='keep.alive' value='60.0'/>
+        <property name='memory' property='tests.queue.memory'/>
+        <property name='compressed' if='tests.queue.compressed'/>
+    </properties>
+
+    <properties name='traces'>
+        <property name='disabled' property='traces.disabled'/>
+        <property name='compressed' property='tests.traces.compressed'/>
+    </properties>
+
+    <?include href='resource:rvpf-store-config.xml'?>
+
+    <properties name='processor'>
+        <properties name='receptionist.som.queue'
+                extends='tests.processor.receptionist.queue'/>
+    </properties>
+
+    <property name='service.monitor.disabled'/>
+
+    <service name='org.rvpf:type=ContainerService'>
+        <property name='service.log.id' value='CONT'/>
+
+        <properties name='service'>
+            <property name='service.class' classDef='TheStoreService'/>
+            <property name='wait'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService'>
+        <classLib classLib='ScriptJython' if='script.engine.jython'/>
+        <property name='service.log.id' value='PROC'/>
+        <properties name='processor' extends='processor'>
+            <property name='name' value='TestsProcessor'/>
+            <property name='receptionist.wait'
+                    value='15000'/>
+        </properties>
+        <property name='service.monitor.disabled' value='false'/>
+        <property name='service.dependency'
+                value='org.rvpf:type=ContainerService'/>
+        <property name='service.uuid'
+                value='cc5e3292-3a91-4478-9c27-817df41edd95'/>
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='processor'/>
+        </properties>
+    </service>
+
+    <?include href='resource:rvpf-som-config.xml'?>
+
+</config>
+
+<!-- End. -->

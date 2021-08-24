@@ -1,0 +1,27 @@
+﻿<?xml version="1.0"?>
+
+<!DOCTYPE scenarios PUBLIC
+        "-//Serge Brisson//DTD RVPF Scenarios//EN"
+        "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-scenarios.xml 1962 2013-10-27 14:59:15Z SFB $
+ -->
+
+<scenarios>
+
+    <scenario from="rvpf-scenario-1.xml"/>
+
+    <scenario from="rvpf-scenario-2.xml"/>
+
+    <scenario from="rvpf-scenario-3.xml"/>
+
+    <scenario from="rvpf-scenario-4.xml"/>
+
+    <scenario from="rvpf-scenario-5.xml"/>
+
+</scenarios>
+
+<!-- End. -->

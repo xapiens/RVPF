@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>RVPF-Core</name>
+	<comment>Related Values Processing Framework.</comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>net.sf.eclipsecs.core.CheckstyleBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>messages</name>
+			<type>2</type>
+			<location>/home/americas/projects/rvpf-code/trunk/core/src/main/resources/messages</location>
+		</link>
+		<link>
+			<name>rvpf-config</name>
+			<type>2</type>
+			<location>/home/americas/projects/RVPF/rvpf-config</location>
+		</link>
+		<link>
+			<name>src/java</name>
+			<type>2</type>
+			<locationURI>JAVA_INCLUDE</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

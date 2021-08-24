@@ -1,0 +1,1180 @@
+<!--
+ Related Values Processing Framework.
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf.dtd 3961 2019-05-06 20:14:59Z SFB $
+
+ This is the XML DTD for the RVPF 'config' and 'metadata' documents.
+
+ The DOCTYPE declarations are
+
+     <!DOCTYPE config PUBLIC
+         "-//Serge Brisson//DTD RVPF//EN"
+         "http://rvpf.org/dtd/rvpf.dtd">
+
+ and
+
+     <!DOCTYPE metadata PUBLIC
+         "-//Serge Brisson//DTD RVPF//EN"
+         "http://rvpf.org/dtd/rvpf.dtd">
+ -->
+
+<!ENTITY % VERSION '"0.8.2"'>
+
+<!--
+ Naming conventions.
+
+ The name of an element representing informations which may be referred
+ to by other elements starts with an upper case letter. For all other
+ elements, the name starts with a lower case letter. This convention
+ allows the use of a 'behavior' reference element distinct from a
+ 'Behavior' definition element.
+
+ The name of attributes starts with a lower case letter.
+
+ Both elements and attributes use camel case (the 'classDef' attribute
+ refers to a 'ClassDef' element).
+
+ In this DTD, the name of entities is qualified by suffixes: '.c' for a
+ content, '.a' for an attribute, '.t' for a type. -->
+
+<!--
+                Entities.
+ -->
+
+<!--
+ The BOOL.t entity specifies the values recognized by boolean
+ attributes. Note that although the DTD is case sensitive, the Java code
+ is not. These same values will also be recognized for properties and
+ params which expect boolean values.
+ -->
+<!ENTITY % BOOL.t '
+         (on | yes | y | true | t | 1
+        | off | no | n | false | f | 0) #IMPLIED'>
+
+<!--
+ The CONFIG_DEF.c and CONFIG_DEF.a entities define respectively common
+ content and attributes for most of the elements which are considered
+ configuration definitions.
+
+ The 'if' and 'unless' attributes allow the definition of the element to
+ be registered 'if' or 'unless' the property named by the attribute
+ exists.
+
+ The 'ifTrue' and 'ifFalse' attributes allow the definition of the
+ element to be registered if the property named by the attribute
+ represents a true ('ifTrue') or false ('ifFalse') value.
+
+ The 'name' attribute identifies an element within a context. Since this
+ name may be referenced by other elements or the framework, it is
+ expected to have stability and should not be seen by an ordinary user.
+ This will avoid requests to adapt or localize that name according to
+ whim.
+
+ The 'uuid' attribute uniquely identifies the entity definition. It must
+ be composed of either 32 hexadecimal digits, 36 '-' decorated
+ hexadecimal digits or 25 base 36 digits. The later form may not be used
+ in references.
+
+ The 'group' attribute associates the element with a definitions group.
+
+ The 'lang' attribute identifies the language for the textual
+ informations. Note: it should be used on a main configuration element
+ only to complete textual informations from a previous definition; other
+ attributes and child  elements will be ignored.
+
+ The 'ident' attribute is the identifier which should be presented to
+ ordinary users. It may default to the value of the 'name' attribute,
+ but it may change at will. It will stay in the configuration files but
+ will not be seen or used by the framework.
+
+ The 'title' attribute or element should be a one-liner identifying the
+ element.
+
+ The 'description' element should contain descriptive text for the
+ element. For short text, the 'description' attribute may be used
+ instead.
+
+ The 'notes' element should hold potentialy useful informations which
+ would not be considered part of a description. For short text, the
+ 'notes' attribute may be used instead.
+
+ The 'text' element hold textual informations in alternate languages.
+
+ The 'other' element can hold anything useful in the configuration tools
+ context.
+
+ Only the 'if', 'ifTrue', 'ifFalse', 'unless', 'name' and 'uuid'
+ attributes are seen by the framework; the other informations may be
+ used by utilities to help the configuration process.
+
+ Note: since it is often used as a reference, there are some
+ restrictions on the content of a 'name' attribute. It may not contain
+ spaces or control characters to avoid problems when communicating with
+ other programs. When starting with a '_' character, the following
+ characters must include at least one non-alphanumeric to avoid
+ ambiguity with the 'id' attribute. To avoid ambiguity with the 'uuid'
+ attribute, it must not match a raw (32 hexadecimal characters) or
+ decorated (36 characters including '-' separators) UUID. The '.' name
+ is reserved for self reference. While legal, the '*' and '?' characters
+ should be avoided since their presence may have unexpected effects on
+ name searches. The use of non ASCII characters requires a solid
+ understanding of character sets configuration.
+ -->
+<!ENTITY % CONFIG_DEF.c 'title | description | notes | text | other'>
+<!ENTITY % CONFIG_DEF.a '
+        id ID #IMPLIED
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        name CDATA #IMPLIED
+        uuid CDATA #IMPLIED
+        lang CDATA #IMPLIED
+        ident CDATA #IMPLIED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED'>
+
+<!--
+ The METADATA_DEF.c and METADATA_DEF.a entities define respectively
+ common content and attributes for all the elements which are considered
+ metadata definitions.
+
+ The 'attributes' element holds application specific attributes.
+
+ The 'group' attribute and elements associate the element with groups.
+ -->
+<!ENTITY % METADATA_DEF.c '%CONFIG_DEF.c; | attributes | group'>
+<!ENTITY % METADATA_DEF.a '
+        %CONFIG_DEF.a;
+        group CDATA #IMPLIED'>
+
+<!--
+ The TYPE.t entity specifies the type of values expected.
+ -->
+<!ENTITY % TYPE.t '
+         (Boolean
+        | ClassDef
+        | Elapsed
+        | Float
+        | Integer
+        | String) "String"'>
+
+<!--
+ The metadata accepts all the configuration elements and attributes.
+ These are thus declared in entities to be shared by both documents.
+
+ The 'stamp' attribute may be used to identify the time of the last
+ update to the XML files.
+ -->
+<!ENTITY % CONFIG.c '
+          %CONFIG_DEF.c;
+        | ClassLib
+        | ClassDef
+        | PropertiesDef
+        | properties
+        | PropertyDef
+        | property
+        | service'>
+<!ENTITY % CONFIG.a '
+        version CDATA %VERSION;
+        stamp CDATA #IMPLIED
+        %CONFIG_DEF.a;'>
+
+<!--
+                Root elements.
+ -->
+
+<!--
+ Important: both 'rvpf-config' and 'rvpf-metadata' documents are read in
+ a single pass. Except for references to points, forward references are
+ not allowed.
+ -->
+
+<!--
+ A 'rvpf-config' document should hold informations local to an
+ environment or even to a single process. There are some mechanisms to
+ help sharing such a configuration, but it is not required.
+ -->
+<!ELEMENT config (salt?, (%CONFIG.c;)*)>
+<!ATTLIST config
+        %CONFIG.a;>
+
+<!--
+ There should be one and only one 'rvpf-metadata' document for all the
+ related processes. This is important to ensure consistency.
+
+ Since such a document can become very large, the framework helps in two
+ ways. An 'INCLUDE' processing instruction is recognized when loading
+ the document. This allows partitioning the information in coherent and
+ manageable units. Also, a metadata server may be used to present to
+ requesting processes a 'view' of the document containing only the
+ informations pertinent to the requester. The framework maintains a
+ local cache of that view to reduce network traffic and avoid being
+ dependent on the metadata server on startup.
+
+ The 'domain' attribute associates the metadata with an application
+ domain.
+
+ The 'stamp' attribute is supplied by the metadata server to represent
+ the time stamp of the most recent file used to load the metadata.
+ -->
+<!ELEMENT metadata (salt?, (
+          %CONFIG.c;
+        | AttributesDef
+        | Group
+        | ParamDef
+        | Permissions
+        | Processor
+        | Origin
+        | Store
+        | Content
+        | Sync
+        | Behavior
+        | Engine
+        | Transform
+        | Point
+        | attributes)*)>
+<!ATTLIST metadata
+        %CONFIG.a;
+        domain CDATA #IMPLIED
+        stamp CDATA #IMPLIED>
+
+<!--
+                Main configuration elements.
+ -->
+
+<!--
+ Note: many of these elements accept an 'id' attribute. This attribute
+ may be used by a metadata server to create references within the
+ document.
+
+ The framework expects the value of this attribute to be a '_' followed
+ by alphanumeric (base 36) digits.
+ -->
+
+<!--
+ A 'ClassDef' element configures a specific class for reference by other
+ elements.
+
+ The 'package' attribute names the package in which the class will be
+ found.
+
+ The 'member' attribute specifies the name of the class in the package.
+
+ The 'classLib' attribute refers to a 'ClassLib' element describing the
+ library containing the class.
+
+ The 'supersede' attribute allows this element to supersede an other
+ with the same name.
+ -->
+<!ELEMENT ClassDef (%CONFIG_DEF.c; | implements)*>
+<!ATTLIST ClassDef
+        %CONFIG_DEF.a;
+        package CDATA #IMPLIED
+        member CDATA #IMPLIED
+        classLib CDATA #IMPLIED
+        supersede %BOOL.t;>
+
+<!--
+ A 'ClassLib' element may be seen as a way to add to the Java CLASSPATH
+ from within the configuration files. This allows a 'use-in', instead of
+ 'plug-in' approach for customization of the framework.
+
+ More than one location may be included for contingency. The framework
+ may be asked to locally cache the library content (it will do so by
+ default for remote libraries).
+
+ The 'classLib' elements refer to class libraries required by this
+ library.
+ -->
+<!ELEMENT ClassLib (%CONFIG_DEF.c; | location | classLib)*>
+<!ATTLIST ClassLib
+        %CONFIG_DEF.a;
+        location CDATA #IMPLIED
+        cached %BOOL.t;>
+
+<!--
+ A 'PropertiesDef' element acts as a definition for a named properties
+ group.
+
+ The 'extends' attribute builds from the definition of an other
+ 'PropertiesDef'.
+
+ The 'multiple' attribute allows more than one group with the same name.
+
+ The 'validated' attribute may be used to locally disable property
+ validation by supplying a boolean false value. This may be useful for
+ provider dependant properties.
+
+ Multiple 'PropertiesDef' entries with the same name will refer to the
+ same entity to allow incremental definition.
+ -->
+<!ELEMENT PropertiesDef (%CONFIG_DEF.c; | PropertiesDef | PropertyDef)*>
+<!ATTLIST PropertiesDef
+        %CONFIG_DEF.a;
+        extends CDATA #IMPLIED
+        hidden %BOOL.t;
+        multiple %BOOL.t;
+        validated %BOOL.t;>
+
+<!--
+ A 'properties' element forms a group for 'property' elements or even
+ other 'properties'.
+
+ The 'extends' attribute builds from the values of an other 'properties'
+ element. It also supplies a default value for the 'name' attribute.
+
+ The 'from' attribute contains the location (absolute or relative) of a
+ properties file. The loaded properties will override any property with
+ the same key in the current group.
+
+ The 'optional' attribute allows a properties file referenced by the
+ 'from' attribute to be considered optional: this will change the level
+ of the log message from ERROR to DEBUG.
+
+ If neither the 'name' nor the 'extends' attributes are specified, the
+ included groups and properties will be added to the current context.
+
+ If the 'name' attribute is specified, the group will have its own name
+ space and all the included groups and properties will be invisible
+ outside that group.
+
+ The 'def' attribute, when supplied for a named properties group,
+ specifies the 'PropertiesDef' element describing the group. When
+ absent, the 'name' attribute is used to locate the 'PropertiesDef'.
+
+ The 'overrides' attribute causes the replacement of any properties
+ group with the same name in the current context.
+
+ The 'validated' attribute may be used to disable validation for the
+ group. For this, it must be explicitly supplied with a false value.
+
+ The 'system' attribute, when enabled, sets system properties instead of
+ config properties.
+-->
+<!ELEMENT properties (
+          title
+        | description
+        | notes
+        | properties
+        | property
+        | verifyKey
+        | decryptKey)*>
+<!ATTLIST properties
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        name CDATA #IMPLIED
+        def CDATA #IMPLIED
+        lang CDATA #IMPLIED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        extends CDATA #IMPLIED
+        from CDATA #IMPLIED
+        verify %BOOL.t;
+        decrypt %BOOL.t;
+        security CDATA #IMPLIED
+        optional %BOOL.t;
+        overrides %BOOL.t;
+        hidden %BOOL.t;
+        validated %BOOL.t;
+        system %BOOL.t;>
+
+<!--
+ A 'PropertyDef' element acts as a definition for a property.
+
+ The 'multiple' attribute allows more than one property with the same
+ name.
+ -->
+<!ELEMENT PropertyDef (%CONFIG_DEF.c;)*>
+<!ATTLIST PropertyDef
+        %CONFIG_DEF.a;
+        type %TYPE.t;
+        hidden %BOOL.t;
+        multiple %BOOL.t;>
+
+<!--
+ A 'property' element associates one or more values with a name.
+
+ The values may be supplied by the 'value' attribute, the text of the
+ element and by child 'value' elements, in that order. If multiple
+ values are not expected by the framework for that property, a warning
+ will be logged each time it is referenced.
+
+ The value of the 'property' attribute is used at definition time to
+ look for a property with that name. If that property is found, its
+ value will be copied to this property; otherwise, the supplied values
+ will be used as default.
+
+ The 'required' attribute is similar to the 'property' attribute except
+ that the referenced property must be found and no other values may be
+ supplied.
+
+ The value of the 'env' attribute is used at definition time to look for
+ an environment variable with that name.
+
+ When more than one of 'property' and 'env' attributes are present and
+ supply values, the 'property' attribute has precedence, then 'env'. If
+ none are present, a property will be created with the supplied values
+ and default to an empty content. If any one is present and none of them
+ provide a value, the property will not be created in the absence of
+ default values.
+
+ If a property exists in that context with the same name, the values
+ generated by this element will be added. Otherwise a new property will
+ be created.
+
+ The 'eq' attribute is used to control the assignment of the value
+ provided by the 'property' or 'env' attributes. When true, the value
+ must be identical with the content of the 'value' attribute; when
+ false, it must be different.
+
+ The 'def' attribute, when supplied for a property, specifies the
+ 'PropertyDef' element describing the property. When absent, the 'name'
+ attribute is used to locate the 'PropertyDef'.
+
+ The 'classDef' attribute references a 'ClassDef' as value for the
+ property.
+
+ The 'overrides' attribute causes the replacement of any property with
+ the same name in the current context.
+
+ The 'validated' attribute may be used to disable validation for the
+ property. For this, it must be explicitly supplied with a false value.
+
+ The 'system' attribute, when enabled, sets a system property instead of
+ a config property.
+ -->
+<!ELEMENT property (#PCDATA | title | description | notes | value)*>
+<!ATTLIST property
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        name CDATA #REQUIRED
+        def CDATA #IMPLIED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        property CDATA #IMPLIED
+        required CDATA #IMPLIED
+        env CDATA #IMPLIED
+        eq %BOOL.t;
+        value CDATA #IMPLIED
+        classDef CDATA #IMPLIED
+        overrides %BOOL.t;
+        hidden %BOOL.t;
+        validated %BOOL.t;
+        system %BOOL.t;>
+
+<!--
+ A 'service' element forms a group, like the 'properties' element. The
+ difference is in the visibility: only the service created with the same
+ name will see that group. Also, the definitions included in this
+ element will override those at the common level. An other difference is
+ that this element can not be enclosed inside an other element.
+
+ The value of the 'name' attribute follows the JMX object name syntax.
+
+ The 'classLib' elements refer to class libraries required by the
+ service.
+ -->
+<!ELEMENT service (
+          alias
+        | title
+        | description
+        | notes
+        | property
+        | properties
+        | classLib)*>
+<!ATTLIST service
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        hidden %BOOL.t;
+        name CDATA #REQUIRED
+        lang CDATA #IMPLIED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED>
+
+<!--
+                Main metadata elements.
+ -->
+
+<!--
+ An 'AttributeDef' element acts as a definition for an attribute.
+ -->
+<!ELEMENT AttributeDef (
+          title
+          | description
+          | notes
+          | text)*>
+<!ATTLIST AttributeDef
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        name CDATA #REQUIRED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        type %TYPE.t;
+        hidden %BOOL.t;
+        multiple %BOOL.t;>
+
+<!--
+ An 'AttributesDef' element acts as a definition for an attributes usage.
+
+ The 'usage' attribute identifies the usage for the attributes.
+
+ The 'extends' attribute builds from the definition of an other
+ 'AttributesDef'.
+ -->
+<!ELEMENT AttributesDef (
+          title
+          | description
+          | notes
+          | text
+          | AttributeDef)*>
+<!ATTLIST AttributesDef
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        usage CDATA #REQUIRED
+        extends CDATA #IMPLIED
+        lang CDATA #IMPLIED
+        ident CDATA #IMPLIED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        hidden %BOOL.t;
+        multiple %BOOL.t;>
+
+<!--
+ The 'Behavior' element represents the behavior of an input value on a
+ result dependent on that value.
+
+ The 'classDef' attribute refers to the 'ClassDef' element describing
+ the class of objects implementing the behavior.
+ -->
+<!ELEMENT Behavior (%METADATA_DEF.c; | param)*>
+<!ATTLIST Behavior
+        %METADATA_DEF.a;
+        classDef CDATA #REQUIRED>
+
+<!--
+ A 'Content' element provides logic for the content of a point's values.
+
+ The 'classDef' attribute refers to the 'ClassDef' element describing
+ the class of objects implementing the content processing.
+
+ The 'anchored' attribute, when true, anchors the element in the
+ metadata even if it is not referenced by an other element.
+ -->
+<!ELEMENT Content (%METADATA_DEF.c; | param)*>
+<!ATTLIST Content
+        %METADATA_DEF.a;
+        classDef CDATA #REQUIRED
+        anchored %BOOL.t;>
+
+<!--
+ An 'Engine' element specifies a class whose instances provide the
+ processing support for a 'Transform' element.
+
+ The 'classDef' attribute refers to the 'ClassDef' element describing
+ the class of objects implementing the engine.
+
+ The 'clone' attribute initializes the entity definition with a copy of
+ an other.
+ -->
+<!ELEMENT Engine (%METADATA_DEF.c; | param)*>
+<!ATTLIST Engine
+        %METADATA_DEF.a;
+        classDef CDATA #IMPLIED
+        clone CDATA #IMPLIED>
+
+<!--
+ A 'Group' element is used to anchor a group of definitions.
+
+ Since it is itself a definition, it is possible to create a simple
+ hierarchy of element groups, each group being allowed to have one
+ parent.
+
+ The 'anchored' attribute, when true, anchors the element in the
+ metadata even if it is not referenced by an other element.
+
+ By using 'member' elements, complementary relationships may be added.
+ -->
+<!ELEMENT Group (%METADATA_DEF.c; | member)*>
+<!ATTLIST Group
+        %METADATA_DEF.a;
+        anchored %BOOL.t;>
+
+<!--
+ An 'Origin' element represents the origin of a point's values. It may
+ be from within the framework, like the Clock service, or from outside.
+
+ The 'anchored' attribute, when true, anchors the element in the
+ metadata even if it is not referenced by an other element.
+ -->
+<!ELEMENT Origin (%METADATA_DEF.c; | param)*>
+<!ATTLIST Origin
+        %METADATA_DEF.a;
+        anchored %BOOL.t;>
+
+<!--
+ A 'ParamDef' element acts as a definition for the parameters (params)
+ of other elements.
+
+ The 'holder' attribute specifies which element expects params defined
+ by this.
+
+ The 'hidden' attribute asks to hide the associated params to insecure
+ destinations.
+
+ The 'multiple' attribute indicates if the associated params may have
+ more than one value.
+ -->
+<!ELEMENT ParamDef (%METADATA_DEF.c;)*>
+<!ATTLIST ParamDef
+        %METADATA_DEF.a;
+        holder (arg
+            | Behavior
+            | Content
+            | Engine
+            | input
+            | Origin
+            | Point
+            | Processor
+            | Store
+            | Sync
+            | Transform) #REQUIRED
+        type %TYPE.t;
+        hidden %BOOL.t;
+        multiple %BOOL.t;>
+
+<!--
+ A 'Permissions' element groups 'permissions' for reference by its
+ 'name' attribute.
+
+ The 'extends' attribute allows hierarchical permissions specifications.
+ -->
+<!ELEMENT Permissions (%METADATA_DEF.c; | permissions)*>
+<!ATTLIST Permissions
+        %METADATA_DEF.a;
+        extends CDATA #IMPLIED>
+
+<!--
+ A 'Point' element holds the informations for the processing of a
+ point's values, either as input or result of computation, or for the
+ generation or storage of these values.
+
+ For a point definition, the 'uuid' attribute is required, even if this
+ is not enforced by the DTD.
+
+ The 'store' attribute refers to the Store holding the point's values.
+
+ The 'content' attribute refers to a content definition for the point's
+ values.
+
+ The 'sync' attribute refers to a 'Sync' element for synchronization.
+
+ The 'origin' or 'processor' attribute refers to the point's values
+ source.
+
+ The 'transform' attribute refers to the definition of a transform which
+ must be applied to the point's inputs to produce a value for this
+ point.
+
+ The 'permissions' attribute specifies a point specific 'Permissions'
+ element.
+
+ The 'anchored' attribute, when true, anchors the element in the
+ metadata even if it is not referenced by an other element.
+ -->
+<!ELEMENT Point (%METADATA_DEF.c; | alias | param | input | replicate)*>
+<!ATTLIST Point
+        %METADATA_DEF.a;
+        store CDATA #IMPLIED
+        content CDATA #IMPLIED
+        sync CDATA #IMPLIED
+        origin CDATA #IMPLIED
+        processor CDATA #IMPLIED
+        transform CDATA #IMPLIED
+        permissions CDATA #IMPLIED
+        anchored %BOOL.t;>
+
+<!--
+ A 'Processor' element is a synonym for an 'Origin' element. It exists
+ only for semantic convenience.
+
+ The 'anchored' attribute, when true, anchors the element in the
+ metadata even if it is not referenced by an other element.
+ -->
+<!ELEMENT Processor (%METADATA_DEF.c; | param)*>
+<!ATTLIST Processor
+        %METADATA_DEF.a;
+        anchored %BOOL.t;>
+
+<!--
+ A 'Store' element supply the informations for access to the storage
+ facilities of a point's values.
+
+ The 'classDef' attribute refers to the 'ClassDef' element describing
+ the class of objects implementing the store client.
+
+ The 'permissions' attribute specifies a store wide default
+ 'Permissions' element.
+
+ The 'anchored' attribute, when true, anchors the element in the
+ metadata even if it is not referenced by an other element.
+ -->
+<!ELEMENT Store (%METADATA_DEF.c; | param)*>
+<!ATTLIST Store
+        %METADATA_DEF.a;
+        classDef CDATA #IMPLIED
+        permissions CDATA #IMPLIED
+        anchored %BOOL.t;>
+
+<!--
+ A 'Sync' element provides sync.
+
+ The 'classDef' attribute refers to the 'ClassDef' element describing
+ the class of objects implementing the sync logic.
+
+ The 'anchored' attribute, when true, anchors the element in the
+ metadata even if it is not referenced by an other element.
+ -->
+<!ELEMENT Sync (%METADATA_DEF.c; | param)*>
+<!ATTLIST Sync
+        %METADATA_DEF.a;
+        classDef CDATA #REQUIRED
+        anchored %BOOL.t;>
+
+<!--
+ A 'Transform' element keeps the informations for the usage of an
+ 'Engine' for a specific computation process.
+
+ The 'engine' attribute refers to the 'Engine' element describing the
+ engine for the transform.
+ -->
+<!ELEMENT Transform (%METADATA_DEF.c; | param | arg)*>
+<!ATTLIST Transform
+        %METADATA_DEF.a;
+        engine CDATA #REQUIRED>
+
+<!--
+                Child elements.
+ -->
+
+<!--
+ An 'alias' element holds an alternate name for its owner.
+
+ Note: an alias is not available as a reference target within the
+ metadata. It will become visible only when the metadata is complely
+ loaded.
+ -->
+<!ELEMENT alias (notes)*>
+<!ATTLIST alias
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        name CDATA #REQUIRED
+        notes CDATA #IMPLIED>
+
+<!--
+ An 'arg' element specifies an item of the signature of a 'Transform'
+ element.
+
+ The 'content' attribute refers to a 'Content' element.
+
+ The element may reference 'Behavior' elements with its 'behavior'
+ attribute and / or with 'behavior' child elements.
+
+ The 'sync' attribute refers to a 'Sync' element for synchronization.
+
+ The 'multiple' attribute is allowed on the last 'arg' element to
+ indicate that it represents multiple occurences.
+ -->
+<!ELEMENT arg (title | description | notes | behavior | param)*>
+<!ATTLIST arg
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        ident CDATA #IMPLIED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        content CDATA #IMPLIED
+        behavior CDATA #IMPLIED
+        sync CDATA #IMPLIED
+        multiple %BOOL.t;>
+
+<!--
+ An 'attribute' element holds an application specific attribute for its
+ owner.
+
+ The 'name' attribute references an 'AttributeDef' element.
+
+ The referenced 'AttributeDef' may allow multiple values of that
+ parameter for the same owner.
+
+ When the 'property' attribute is supplied, its value will be used at
+ definition time to look for a property with that name. If that property
+ is found, its value will be copied to this attribute; otherwise, the
+ supplied values will be used as default. When only the 'property'
+ attribute is present, the attribute will not be created if the
+ referenced property is not found.
+
+ If the 'property' attribute is absent, the supplied values will be used
+ and default to an empty content. An attribute value will always be
+ created.
+
+ The 'required' attribute is similar to the 'property' attribute except
+ that the referenced property must be found and no other values may be
+ supplied.
+
+ The 'classDef' attribute references a 'ClassDef' as value for the
+ attribute.
+-->
+<!ELEMENT attribute (#PCDATA | title | description | notes | value)*>
+<!ATTLIST attribute
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        name CDATA #REQUIRED
+        def CDATA #IMPLIED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        property CDATA #IMPLIED
+        hidden %BOOL.t;
+        required CDATA #IMPLIED
+        env CDATA #IMPLIED
+        eq %BOOL.t;
+        value CDATA #IMPLIED
+        classDef CDATA #IMPLIED
+        validated %BOOL.t;
+        overrides %BOOL.t;>
+
+<!--
+ An 'attributes' element holds application specific attributes for its
+ owner.
+
+ The 'usage' attribute identifies the attributes usage.
+ -->
+<!ELEMENT attributes (title | description | notes | attribute)*>
+<!ATTLIST attributes
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        hidden %BOOL.t;
+        validated %BOOL.t;
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        def CDATA #IMPLIED
+        usage CDATA #REQUIRED>
+
+<!--
+ A 'behavior' element (note the lower case 'b') keeps a reference to a
+ 'Behavior' element (upper case 'B') for a point's input.
+ -->
+<!ELEMENT behavior (notes)*>
+<!ATTLIST behavior
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        behavior CDATA #REQUIRED>
+
+<!--
+ A 'classLib' element (note the lower case 'c') keeps a reference to a
+ 'ClassLib' element (upper case 'C').
+ -->
+<!ELEMENT classLib (notes)*>
+<!ATTLIST classLib
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        classLib CDATA #REQUIRED>
+
+<!--
+ A 'decryptKey' element holds a key identification for decryption.
+ -->
+<!ELEMENT decryptKey (#PCDATA)>
+
+<!--
+ A 'description' element holds descriptive text.
+ -->
+<!ELEMENT description (#PCDATA)>
+<!ATTLIST description
+        lang CDATA #IMPLIED>
+
+<!--
+ A 'group' element (note the lower case 'g') keeps a reference to a
+ 'Group' element (upper case 'G') for an entity definition.
+ -->
+<!ELEMENT group (notes)*>
+<!ATTLIST group
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        group CDATA #REQUIRED>
+
+<!--
+ A 'implements' element is used to express a relationship between
+ 'ClassDef' elements.
+ -->
+<!ELEMENT implements (notes)*>
+<!ATTLIST implements
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        classDef CDATA #REQUIRED>
+
+<!--
+ An 'input' element expresses the relationship between a 'Point' as
+ input and an other as result.
+
+ The 'point' attribute references the 'Point' element whose values act
+ as input for the owner of the 'input' element.
+
+ The 'sync' attribute refers to a 'Sync' element for synchronization.
+
+ The 'control' attribute indicates that this input is not expected by
+ the transform's signature but is used to control the triggering of the
+ result's computation.
+
+ The relationship may reference 'Behavior' elements with its 'behavior'
+ attribute and / or with 'behavior' child elements. These 'Behavior'
+ elements have access to the relationship's 'param' elements.
+ -->
+<!ELEMENT input (notes | behavior | param)*>
+<!ATTLIST input
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        point CDATA #REQUIRED
+        behavior CDATA #IMPLIED
+        sync CDATA #IMPLIED
+        control %BOOL.t;>
+
+<!--
+ A 'location' element hold a URI for a 'ClassLib' element in its
+ attribute or its text or both (in this case, two values will be
+ generated).
+ -->
+<!ELEMENT location (#PCDATA | notes)*>
+<!ATTLIST location
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        location CDATA #IMPLIED>
+
+<!--
+ A 'member' element keeps a reference to a definition element.
+ -->
+<!ELEMENT member (notes)*>
+<!ATTLIST member
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        point CDATA #IMPLIED
+        origin CDATA #IMPLIED
+        store CDATA #IMPLIED
+        content CDATA #IMPLIED
+        transform CDATA #IMPLIED
+        group CDATA #IMPLIED>
+
+<!--
+ A 'notes' element holds miscellaneous informations pertinent in a given
+ context.
+ -->
+<!ELEMENT notes (#PCDATA)>
+<!ATTLIST notes
+        lang CDATA #IMPLIED>
+
+<!--
+ An 'other' element can hold anything useful in the configuration tools
+ context.
+
+ The 'element' attribute may be used to identify the content of the
+ 'other' element.
+ -->
+<!ELEMENT other (#PCDATA)>
+<!ATTLIST other
+        element CDATA #IMPLIED
+        lang CDATA #IMPLIED>
+
+<!--
+ A 'param' element holds a value for its holder.
+
+ The 'name' attribute references a 'ParamDef' element whose type must be
+ the same as the holder of the param.
+
+ The 'def' attribute may be used instead of the 'name' attribute to
+ reference a 'ParamDef' by its ID or UUID.
+
+ The referenced 'ParamDef' may allow multiple values of that parameter
+ for the same holder.
+
+ When the 'property' attribute is supplied, its value will be used at
+ definition time to look for a property with that name. If that property
+ is found, its value will be copied to this param; otherwise, the
+ supplied values will be used as default. When only the 'property'
+ attribute is present, the param will not be created if the referenced
+ property is not found.
+
+ If the 'property' attribute is absent, the supplied values will be used
+ and default to an empty content. A param value will always be created.
+
+ The 'required' attribute is similar to the 'property' attribute except
+ that the referenced property must be found and no other values may be
+ supplied.
+
+ The 'classDef' attribute references a 'ClassDef' as value for the
+ parameter.
+ -->
+<!ELEMENT param (#PCDATA | notes | value)*>
+<!ATTLIST param
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        name CDATA #IMPLIED
+        def CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        property CDATA #IMPLIED
+        hidden %BOOL.t;
+        required CDATA #IMPLIED
+        env CDATA #IMPLIED
+        eq %BOOL.t;
+        value CDATA #IMPLIED
+        classDef CDATA #IMPLIED
+        overrides %BOOL.t;>
+
+<!--
+ A 'permissions' element holds permissions specification.
+
+ The 'role' attribute specifies the role which will receive the
+ permissions. When empty or not specified, it specifies the default
+ permissions.
+
+ The 'allow' and 'deny' attributes specify the actual permissions for
+ the role.
+ -->
+<!ELEMENT permissions (notes)*>
+<!ATTLIST permissions
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        role CDATA #IMPLIED
+        allow CDATA #IMPLIED
+        deny CDATA #IMPLIED
+        notes CDATA #IMPLIED>
+
+<!--
+ A 'replicate' element refers to an other point as a replicate.
+
+ The 'point' attribute references the 'Point' element.
+ -->
+<!ELEMENT replicate (notes)*>
+<!ATTLIST replicate
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        point CDATA #REQUIRED
+        convert %BOOL.t;>
+
+<!--
+ A 'salt' element holds random data for cryptographic purpose.
+ -->
+<!ELEMENT salt (#PCDATA)>
+
+<!--
+ A 'text' element holds descriptive informations.
+
+ It may be used to supply these informations in more than one language.
+ -->
+<!ELEMENT text (title | description | notes)*>
+<!ATTLIST text
+        lang CDATA #IMPLIED
+        ident CDATA #IMPLIED
+        title CDATA #IMPLIED
+        description CDATA #IMPLIED
+        notes CDATA #IMPLIED>
+
+<!--
+ A 'title' element holds a short descriptive text for its owner.
+ -->
+<!ELEMENT title (#PCDATA)>
+<!ATTLIST title
+        lang CDATA #IMPLIED>
+
+<!--
+ A 'value' element hold a value for a 'property', 'param' or 'attribute'
+ element in its attribute or its text or both (in this case, two values
+ will be generated).
+ -->
+<!ELEMENT value (#PCDATA | notes)*>
+<!ATTLIST value
+        if CDATA #IMPLIED
+        ifTrue CDATA #IMPLIED
+        ifFalse CDATA #IMPLIED
+        unless CDATA #IMPLIED
+        notes CDATA #IMPLIED
+        value CDATA #IMPLIED
+        classDef CDATA #IMPLIED>
+
+<!--
+ A 'verifyKey' element holds a key identification for verification.
+ -->
+<!ELEMENT verifyKey (#PCDATA)>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ 02111-1307  USA
+ -->

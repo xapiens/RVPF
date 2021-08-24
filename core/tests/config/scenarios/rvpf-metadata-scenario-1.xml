@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-scenario-1.xml 2297 2014-07-08 13:09:12Z SFB $
+ -->
+
+<metadata lang='en' title="Scenario 1 metadata">
+
+    <?log message="Scenario 1"?>
+
+    <Transform name='Slope' engine='RPN+macros+words'>
+        <description>
+            Computes current slope.
+        </description>
+        <param name='Program' value='$2! $4! - $1! $3! - :+-! /'/>
+        <param name='FailReturnsNull'/>
+        <arg ident='X'/>
+        <arg ident='Y'/>
+        <arg ident='X_1'>
+            <param name='SelectSyncPosition' value='-1'/>
+        </arg>
+        <arg ident='Y_1'>
+            <param name='SelectSyncPosition' value='-1'/>
+        </arg>
+    </Transform>
+
+    <Transform name='CutoffControl' engine='Control'>
+        <param name='Action' value='UpdateCutoffControl'/>
+    </Transform>
+
+    <Transform name='TrafficControl' engine='RPN'>
+        <description>
+            Updates a traffic light.
+        </description>
+        <param name='Program'>
+            $2 str 'On' eq if {
+                $3 null? if 'Red' else { $3 1 + 3 % }
+            } else { $3 ! null }
+        </param>
+        <arg ident='Clock' behavior='TriggersNew'/>
+        <arg ident='Switch' behavior='NeverTriggers'/>
+        <arg ident='Previous' behavior='NeverTriggers'/>
+    </Transform>
+
+    <Point name='TESTS.HOUR:CLOCK'
+            store='TestsStore' content='Clock' sync='Hour'
+            uuid='f074f594-6fe2-42f8-baca-696c51e7f374'>
+        <param name='Tag' value='RVPF-11'/>
+    </Point>
+
+    <Point name='TESTS.CUTOFF:CLOCK'
+            store='TestsStore' content='Clock'
+            transform='CutoffControl' processor='TestsProcessor'
+            uuid='3df6193b-d9e6-4b17-ae18-5b2bcacdef95'>
+        <param name='Tag' value='RVPF-12'/>
+        <input point='.'/>
+    </Point>
+
+    <Point name='TESTS.HOUR:30:CLOCK'
+            store='TestsStore' content='Clock' sync='Hour:30'
+            uuid='265f212a-893a-41f9-8acb-f3e5543631a7'>
+        <param name='Tag' value='RVPF-13'/>
+    </Point>
+
+    <Point name='TESTS.X:NUMERIC'
+            store='TestsStore' content='Numeric' sync='Hour:30'
+            uuid='778e81cd-805c-4e0b-b5a3-21e90890cbb2'>
+        <param name='Tag' value='RVPF-1'/>
+        <param name='Resynchronized'/>
+    </Point>
+
+    <Point name='TESTS.Y:NUMERIC'
+            store='TestsStore' content='Numeric' sync='Hour'
+            uuid='dfa61f04-54a0-43fa-b2bf-fe72c52d2e0d'>
+        <param name='Tag' value='RVPF-2'/>
+    </Point>
+
+    <Point name='TESTS.SLOPE:NUMERIC'
+            store='TestsStore' content='Numeric' sync='Hour'
+            transform='Slope' processor='TestsProcessor'
+            uuid='6632b415-bfad-4b82-8ee0-59137f049aec'>
+        <param name='Tag' value='RVPF-3'/>
+        <input point='TESTS.X:NUMERIC'/>
+        <input point='TESTS.Y:NUMERIC'/>
+        <input point='TESTS.X:NUMERIC'/>
+        <input point='TESTS.Y:NUMERIC'/>
+    </Point>
+
+    <Point name='TESTS.CONTROLLED:NUMERIC'
+            store='TestsStore' content='Numeric'
+            transform='Copy' processor='TestsProcessor'
+            uuid='f6672a48-ae59-44f0-a052-7e2234da3b8b'>
+        <param name='Tag' value='RVPF-4'/>
+        <input point='TESTS.SLOPE:NUMERIC' behavior='Required'/>
+        <input point='TESTS.END:TEXT' behavior='Required' control='yes'/>
+    </Point>
+
+    <Point name='TESTS.LOAD:NUMERIC'
+            store='TestsStore' content='Numeric'
+            uuid='fc931e70-16e9-4847-ba9e-bcbeb7ebaf2e'>
+        <param name='Tag' value='RVPF-5'/>
+    </Point>
+
+    <Point name='TESTS.OVERLOAD:NUMERIC'
+            store='TestsStore' content='Numeric' sync='Hour'
+            transform='Overload-time-pct' processor='TestsProcessor'
+            uuid='5927f5ee-d90b-43ca-a478-3b1d6e6d48f3'>
+        <param name='Tag' value='RVPF-6'/>
+        <param name='Param' value='100.0'/>
+        <input point='TESTS.HOUR:CLOCK'/>
+        <input point='TESTS.LOAD:NUMERIC'/>
+    </Point>
+
+    <Point name='TESTS.X.CLONE:NUMERIC'
+            store='TestsStore' content='Numeric'
+            transform='Clone' processor='TestsProcessor'
+            uuid='0c3a6890-169d-4a01-82d5-e1aaae0dddb2'>
+        <param name='Tag' value='RVPF-7'/>
+        <input point='TESTS.X:NUMERIC'/>
+    </Point>
+
+    <Point name='TESTS.FILTER-CONTROL:LOGICAL'
+            store='TestsStore' content='Logical'
+            processor='TestsProcessor' transform='UpdateFilterControl'
+            uuid='6934ca7f-b73b-4a6b-8fe9-bff92d63f99b'>
+        <param name='Tag' value='RVPF-15'/>
+        <input point='.'/>
+    </Point>
+
+    <Point name='TESTS.SWITCH:STATE'
+            store='TestsStore' content='State'
+            uuid='a74c7b12-ac12-1a46-97ad-a879f0765299'>
+        <param name='Tag' value='RVPF-16'/>
+        <param name='States' value='On'/>
+    </Point>
+
+    <Point name='TESTS.TRAFFIC-1:STATE'
+            store='TestsStore' content='State'
+            transform='TrafficControl' processor='TestsProcessor'
+            uuid='561ca57c-2fad-ad49-b1fa-927c88d1a5b7'>
+        <param name='Tag' value='RVPF-16'/>
+        <param name='States' value='Traffic'/>
+        <input point='TESTS.HOUR:CLOCK'/>
+        <input point='TESTS.SWITCH:STATE'/>
+        <input point='.'/>
+    </Point>
+
+    <Point name='TESTS.TRAFFIC-2:STATE'
+            store='TestsStore' content='State'
+            transform='Replicate' processor='TestsProcessor'
+            uuid='b437a953-5d12-a04d-8400-eedff3a5afd4'>
+        <param name='Tag' value='RVPF-16'/>
+        <param name='States' value='Traffic'/>
+        <input point='TESTS.TRAFFIC-1:STATE'/>
+    </Point>
+
+    <Point name='TESTS.BEGIN:TEXT'
+            store='TestsStore' content='Text'
+            uuid='ab91269f-7ac6-4ef2-bade-ae59b94538be'>
+        <param name='Tag' value='RVPF-19'/>
+    </Point>
+
+    <Point name='TESTS.END:TEXT'
+            store='TestsStore' content='Text'
+            transform='Copy' processor='TestsProcessor'
+            uuid='8319a0f8-92fa-49bc-a5de-efeb9408f314'>
+        <param name='Tag' value='RVPF-20'/>
+        <input point='TESTS.BEGIN:TEXT'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

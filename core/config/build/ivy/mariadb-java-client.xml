@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: mariadb-java-client.xml 4114 2019-08-03 15:53:43Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='mariadb-java-client'
+            revision='${mariadb.revision}'
+            organisation='org.mariadb.jdbc'
+            status='release'>
+        <license name='CC'
+                url='https://creativecommons.org/licenses/by-sa/3.0/'/>
+        <description homepage='https://mariadb.com/kb/en/library/about-mariadb-connector-j/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

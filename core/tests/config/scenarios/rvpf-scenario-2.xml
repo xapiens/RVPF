@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE scenario PUBLIC
+        "-//Serge Brisson//DTD RVPF Scenarios//EN"
+        "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-scenario-2.xml 3388 2017-03-14 16:36:04Z SFB $
+ -->
+
+<scenario title="Integrator and STDEV" time='2017-02-01'>
+
+    <casting director='tests.scenario.2'>
+        <cast role='AVERAGE' actor='TESTS.AVERAGE:NUMERIC'/>
+        <cast role='BEGIN' actor='TESTS.BEGIN:TEXT'/>
+        <cast role='END' actor='TESTS.END:TEXT'/>
+        <cast role='HOUR-VALUE' actor='TESTS.HOUR-VALUE:G'/>
+        <cast role='INTEGRATOR' actor='TESTS.INTEGRATOR:COUNT'/>
+        <cast role='INTEGRATOR-STEP' actor='TESTS.INTEGRATOR-STEP:COUNT'/>
+        <cast role='INTEGRATOR-TOTAL' actor='TESTS.INTEGRATOR-TOTAL:NUMERIC'/>
+        <cast role='RESYNCED' actor='TESTS.RESYNCED:G'/>
+        <cast role='SHIFT' actor='TESTS.SHIFT:CLOCK'/>
+        <cast role='SHIFT-SUM' actor='TESTS.SHIFT-SUM:NUMERIC'/>
+        <cast role='SHIFT-VALUE' actor='TESTS.SHIFT-VALUE:G'/>
+        <cast role='SNAP-SUM' actor='TESTS.SNAP-SUM:KG'/>
+        <cast role='START-STOP' actor='TESTS.START-STOP'/>
+        <cast role='STDEV' actor='TESTS.STDEV:NUMERIC'/>
+        <cast role='VALUE' actor='TESTS.VALUE:NUMERIC'/>
+    </casting>
+
+    <scene title="Initial values">
+        <set line='A1' role='SHIFT' time='00:00' state='Set' text='0'/>
+    </scene>
+
+    <scene title="First shift">
+        <entry line='B1' role='START-STOP' time='02:00' text='0'/>
+        <entry line='B2' role='INTEGRATOR' time='03:00' text='200'/>
+        <entry line='B3' role='INTEGRATOR' time='06:00' text='300'/>
+        <entry line='B4' role='INTEGRATOR' time='07:00'/>
+        <entry line='B5' role='SHIFT' time='08:00' text='0'/>
+        <action line='B6' role='INTEGRATOR-STEP' time='03:00'/>
+        <action line='B7' role='INTEGRATOR-STEP' time='06:00' text='100'/>
+        <action line='B8' role='INTEGRATOR-STEP' time='07:00'/>
+        <action line='B9' role='HOUR-VALUE' time='08:00'/>
+        <action line='B10' role='SHIFT-VALUE' time='08:00'/>
+    </scene>
+
+    <scene title="Second shift">
+        <entry line='C1' role='VALUE' time='08:30' text='3.0'/>
+        <entry line='C2' role='INTEGRATOR' time='09:00' text='500'/>
+        <entry line='C3' role='START-STOP' time='09:45' text='1'/>
+        <entry line='C4' role='VALUE' time='10:00' state='Resynced' text='6.0'/>
+        <entry line='C5' role='VALUE' time='10:15' text='7.0'/>
+        <entry line='C6' role='VALUE' time='10:30' text='8.0'/>
+        <entry line='C7' role='START-STOP' time='10:45' text='1'/>
+        <entry line='C8' role='VALUE' time='11:00' text='9.0'/>
+        <entry line='C9' role='VALUE' time='11:30' text='10.0'/>
+        <entry line='C10' role='INTEGRATOR' time='12:00' text='600'/>
+        <entry line='C11' role='VALUE' time='13:00' text='11.0'/>
+        <entry line='C12' role='START-STOP' time='13:30' text='0'/>
+        <entry line='C13' role='VALUE' time='14:00' state='Resynced' text='7.0'/>
+        <entry line='C14' role='START-STOP' time='14:30' text='0'/>
+        <entry line='C15' role='INTEGRATOR' time='15:00' text='700'/>
+        <entry line='C16' role='SHIFT' time='16:00' text='0'/>
+        <action line='C17' role='INTEGRATOR-TOTAL' time='03:00'/>
+        <action line='C18' role='INTEGRATOR-TOTAL' time='06:00' text='100.0'/>
+        <action line='C19' role='INTEGRATOR-TOTAL' time='07:00'/>
+        <action line='C20' role='AVERAGE' time='13:00' text='7.714285714285714'/>
+        <action line='C21' role='STDEV' time='16:00' text='2.690371E-4'/>
+        <action line='C22' role='INTEGRATOR-STEP' time='09:00'/>
+        <action line='C23' role='SHIFT-SUM' time='16:00' text='400'/>
+        <action line='C24' role='RESYNCED' time='08:00' state='Resynced' text='6.0'/>
+        <action line='C25' role='SNAP-SUM' time='13:30' text='0.0030'/>
+        <action line='C26' role='INTEGRATOR-STEP' time='12:00' text='100'/>
+        <action line='C27' role='RESYNCED' time='16:00' state='Resynced' text='7.0'/>
+        <action line='C28' role='INTEGRATOR-STEP' time='15:00' text='100'/>
+        <action line='C29' role='HOUR-VALUE' time='16:00'/>
+        <action line='C30' role='SHIFT-VALUE' time='16:00' state='Resynced' text='7.0'/>
+    </scene>
+
+    <scene title="Third shift">
+        <entry line='D1' role='INTEGRATOR' time='18:00' text='900'/>
+        <entry line='D2' role='INTEGRATOR' time='21:00' text='100'/>
+        <entry line='D3' role='INTEGRATOR' time='23:00' text='300'/>
+        <entry line='D4' role='SHIFT' time='+1 00:00' text='0'/>
+        <action line='D5' role='INTEGRATOR-TOTAL' time='06:00' text='100.0'/>
+        <action line='D6' role='INTEGRATOR-TOTAL' time='07:00'/>
+        <action line='D7' role='INTEGRATOR-TOTAL' time='09:00'/>
+        <action line='D8' role='INTEGRATOR-TOTAL' time='12:00' text='100.0'/>
+        <action line='D9' role='INTEGRATOR-TOTAL' time='15:00' text='100.0'/>
+        <action line='D10' role='INTEGRATOR-STEP' time='18:00' text='200'/>
+        <action line='D11' role='SHIFT-SUM' time='+1 00:00' text='600'/>
+        <action line='D12' role='INTEGRATOR-STEP' time='21:00' text='200'/>
+        <action line='D13' role='INTEGRATOR-STEP' time='23:00' text='200'/>
+        <action line='D14' role='HOUR-VALUE' time='+1 00:00'/>
+        <action line='D15' role='SHIFT-VALUE' time='+1 00:00'/>
+    </scene>
+
+    <scene title="Corrections">
+        <entry line='E1' role='INTEGRATOR' time='22:00' text='200'/>
+        <action line='E2' role='INTEGRATOR-TOTAL' time='07:00'/>
+        <action line='E3' role='INTEGRATOR-TOTAL' time='09:00'/>
+        <action line='E4' role='INTEGRATOR-TOTAL' time='12:00' text='100.0'/>
+        <action line='E5' role='INTEGRATOR-TOTAL' time='15:00' text='200.0'/>
+        <action line='E6' role='INTEGRATOR-TOTAL' time='18:00' text='300.0'/>
+        <action line='E7' role='INTEGRATOR-TOTAL' time='21:00' text='300.0'/>
+        <action line='E8' role='INTEGRATOR-TOTAL' time='23:00' text='300.0'/>
+        <action line='E9' role='INTEGRATOR-STEP' time='22:00' text='100'/>
+        <action line='E10' role='INTEGRATOR-STEP' time='23:00' text='100'/>
+        <action line='E11' role='SHIFT-SUM' time='+1 00:00' text='600'/>
+        <entry line='E12' role='VALUE' time='14:00' text='9.0'/>
+        <entry line='E13' role='VALUE' time='15:00' state='Resynced' text='8.0'/>
+        <action line='E14' role='INTEGRATOR-TOTAL' time='09:00'/>
+        <action line='E15' role='INTEGRATOR-TOTAL' time='12:00' text='100.0'/>
+        <action line='E16' role='INTEGRATOR-TOTAL' time='15:00' text='200.0'/>
+        <action line='E17' role='INTEGRATOR-TOTAL' time='18:00' text='400.0'/>
+        <action line='E18' role='INTEGRATOR-TOTAL' time='21:00' text='500.0'/>
+        <action line='E19' role='INTEGRATOR-TOTAL' time='23:00' text='400.0'/>
+        <action line='E20' role='INTEGRATOR-TOTAL' time='22:00' text='400.0'/>
+        <action line='E21' role='AVERAGE' time='13:00' text='8.0'/>
+        <action line='E22' role='STDEV' time='16:00' text='2.5071326E-4'/>
+        <action line='E23' role='HOUR-VALUE' time='16:00' state='Resynced' text='8.0'/>
+        <action line='E24' role='SHIFT-VALUE' time='16:00' state='Resynced' text='8.0'/>
+        <action line='E25' role='RESYNCED' time='16:00' state='Resynced' text='8.0'/>
+        <entry line='E26' role='INTEGRATOR' time='07:00' text='400'/>
+        <action line='E27' role='INTEGRATOR-TOTAL' time='12:00' text='100.0'/>
+        <action line='E28' role='INTEGRATOR-TOTAL' time='15:00' text='200.0'/>
+        <action line='E29' role='INTEGRATOR-TOTAL' time='18:00' text='400.0'/>
+        <action line='E30' role='INTEGRATOR-TOTAL' time='21:00' text='600.0'/>
+        <action line='E31' role='INTEGRATOR-TOTAL' time='22:00' text='600.0'/>
+        <action line='E32' role='INTEGRATOR-TOTAL' time='23:00' text='500.0'/>
+        <action line='E33' role='INTEGRATOR-STEP' time='7:00' text='100'/>
+        <action line='E34' role='INTEGRATOR-STEP' time='9:00' text='100'/>
+        <action line='E35' role='SHIFT-SUM' time='16:00' text='300'/>
+        <action line='E36' role='SHIFT-SUM' time='+1 00:00' text='600'/>
+        <silence line='E37'/>
+        <action line='E38' role='INTEGRATOR-TOTAL' time='15:00' text='200.0'/>
+        <action line='E39' role='INTEGRATOR-TOTAL' time='18:00' text='400.0'/>
+        <action line='E40' role='INTEGRATOR-TOTAL' time='21:00' text='600.0'/>
+        <action line='E41' role='INTEGRATOR-TOTAL' time='22:00' text='700.0'/>
+        <action line='E42' role='INTEGRATOR-TOTAL' time='23:00' text='700.0'/>
+        <action line='E43' role='INTEGRATOR-TOTAL' time='07:00' text='200.0'/>
+        <action line='E44' role='INTEGRATOR-TOTAL' time='09:00' text='100.0'/>
+        <silence line='E45'/>
+        <action line='E46' role='INTEGRATOR-TOTAL' time='18:00' text='400.0'/>
+        <action line='E47' role='INTEGRATOR-TOTAL' time='21:00' text='600.0'/>
+        <action line='E48' role='INTEGRATOR-TOTAL' time='22:00' text='700.0'/>
+        <action line='E49' role='INTEGRATOR-TOTAL' time='23:00' text='800.0'/>
+        <action line='E50' role='INTEGRATOR-TOTAL' time='09:00' text='300.0'/>
+        <action line='E51' role='INTEGRATOR-TOTAL' time='12:00' text='200.0'/>
+        <silence line='E52'/>
+        <action line='E53' role='INTEGRATOR-TOTAL' time='21:00' text='600.0'/>
+        <action line='E54' role='INTEGRATOR-TOTAL' time='22:00' text='700.0'/>
+        <action line='E55' role='INTEGRATOR-TOTAL' time='23:00' text='800.0'/>
+        <action line='E56' role='INTEGRATOR-TOTAL' time='12:00' text='400.0'/>
+        <action line='E57' role='INTEGRATOR-TOTAL' time='15:00' text='300.0'/>
+        <silence line='E58'/>
+        <action line='E59' role='INTEGRATOR-TOTAL' time='22:00' text='700.0'/>
+        <action line='E60' role='INTEGRATOR-TOTAL' time='23:00' text='800.0'/>
+        <action line='E61' role='INTEGRATOR-TOTAL' time='15:00' text='500.0'/>
+        <action line='E62' role='INTEGRATOR-TOTAL' time='18:00' text='500.0'/>
+        <silence line='E63'/>
+        <action line='E64' role='INTEGRATOR-TOTAL' time='23:00' text='800.0'/>
+        <action line='E65' role='INTEGRATOR-TOTAL' time='18:00' text='700.0'/>
+        <action line='E66' role='INTEGRATOR-TOTAL' time='21:00' text='700.0'/>
+        <silence line='E67'/>
+        <action line='E68' role='INTEGRATOR-TOTAL' time='21:00' text='900.0'/>
+        <action line='E69' role='INTEGRATOR-TOTAL' time='22:00' text='800.0'/>
+        <silence line='E70'/>
+        <action line='E71' role='INTEGRATOR-TOTAL' time='22:00' text='1000.0'/>
+        <action line='E72' role='INTEGRATOR-TOTAL' time='23:00' text='900.0'/>
+        <silence line='E73'/>
+        <action line='E74' role='INTEGRATOR-TOTAL' time='23:00' text='1100.0'/>
+    </scene>
+
+    <scene title="End" time='+1'>
+        <!-- Ensures that there are no more results. -->
+        <entry line='F1' role='BEGIN' time='01:00' state='Done' text='Z'/>
+        <exit line='F2' role='END' time='01:00' state='Done' text='Z'/>
+    </scene>
+
+</scenario>
+
+<!-- End. -->

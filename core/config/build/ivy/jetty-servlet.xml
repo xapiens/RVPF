@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: jetty-servlet.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='jetty-servlet'
+            revision='${jetty.revision}'
+            organisation='org.eclipse.jetty.aggregate'
+            status='release'>
+        <license name='ASL-2.0'
+                url='http://www.apache.org/licenses/LICENSE-2.0'/>
+        <description homepage='http://www.eclipse.org/jetty'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

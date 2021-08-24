@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# $Id$
+
+set -e
+
+case "$1" in
+
+    configure)
+        if ! $(id -u rvpf >/dev/null 2>&1); then
+            adduser --quiet --disabled-password --gecos RVPF rvpf
+        fi
+        chown -R rvpf: /srv/opt/rvpf
+        chown -R rvpf: /var/opt/rvpf
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+        exit 0
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+
+esac
+
+# End.

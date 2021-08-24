@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: javax.json.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='javax.json-api'
+            revision='${json.revision}'
+            organisation='javax.json'
+            status='release'>
+        <license name='CDDL'
+                url='https://jsonp.java.net/license.html#cddl'/>
+        <description homepage='https://jsonp.java.net/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

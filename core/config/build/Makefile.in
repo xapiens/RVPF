@@ -1,0 +1,79 @@
+# Related Values Processing Framework (Included by child projects).
+#
+# Copyright (C) 2003-2019 Serge Brisson.
+#
+# This software is distributable under the LGPL license.
+# See details at the bottom of this file.
+#
+# $Id: Makefile.in 3961 2019-05-06 20:14:59Z SFB $
+
+VER := 082
+
+WEB_DIR := web
+WEB_DIST_DIR := ../$(WEB_DIR)/dist/$(VER)
+MEDIA_DIST_DIR := $(DIST_MEDIA)/RVPF/dist/$(VER)
+NAME_PREFIX := rvpf-$(NAME)
+
+VERSION := $(VER)-x
+
+.SUFFIXES :
+
+.PHONY : clean deploy dist distclean help refresh sign
+
+help :
+	@echo "Please specify a target:"
+	@echo "	clean -- Removes generated files."
+	@echo "	deploy -- Deploys distribution files."
+	@echo "	dist -- Builds distribution files."
+	@echo "	help -- Displays this."
+	@echo "	refresh -- Cleans, then builds everything."
+	@echo "	sign -- Signs distribution files."
+
+deploy :
+ifdef DEPLOY
+	rsync -rt --chmod=go-w,go+rX --delete \
+	    --exclude='/dist/' \
+	    --exclude='.svn' $(WEB_DIR)/ ../$(WEB_DIR)/$(NAME)/
+ifeq "$(wildcard dist/*)" ""
+	@echo "The 'dist' subdirectory is empty!"
+	@false
+endif
+	@mkdir -p $(WEB_DIST_DIR)
+	rm -f $(WEB_DIST_DIR)/$(NAME_PREFIX)-*
+	mv dist/$(NAME_PREFIX)-* $(WEB_DIST_DIR)/
+	./run js index $(WEB_DIST_DIR)
+	@chmod -x $(WEB_DIST_DIR)/$(NAME_PREFIX)-*.tgz
+	@chmod go-w,go+r $(WEB_DIST_DIR)/$(NAME_PREFIX)-*
+ifdef DIST_MEDIA
+	@mkdir -p $(MEDIA_DIST_DIR)
+	rm -f $(MEDIA_DIST_DIR)/$(NAME_PREFIX)-*
+	cp $(WEB_DIST_DIR)/$(NAME_PREFIX)-* $(MEDIA_DIST_DIR)/
+endif
+endif
+
+dist :
+	@mkdir -p dist
+	echo "$(VERSION)" >VERSION
+
+refresh : clean all
+
+sign :
+	@mkdir -p dist
+	@rm -f dist/rvpf-*.asc dist/rvpf-*-asc.tgz
+	@find dist -name 'rvpf-*' -exec gpg --homedir ~/.gnupg/rvpf -b -u RVPF '{}' \;
+
+clean :
+	rm -f VERSION
+
+# This is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License
+# version 2.1 as published by the Free Software Foundation.
+#
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this software; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA

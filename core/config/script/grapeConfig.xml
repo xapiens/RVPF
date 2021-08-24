@@ -1,0 +1,47 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivysettings>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: grapeConfig.xml 3050 2016-06-04 19:56:35Z SFB $
+ -->
+
+<ivysettings>
+
+    <caches default='RVPF'>
+        <cache name='RVPF' useOrigin='yes'/>
+    </caches>
+
+    <resolvers>
+
+        <chain name='downloadGrapes' returnFirst='yes'>
+
+            <filesystem name='Root' checkmodified='yes' descriptor='required'>
+                <ivy pattern="${rvpf.home}/config/script/ivy/[module].xml"/>
+                <artifact pattern="${rvpf.home}/lib/[artifact].[ext]"/>
+            </filesystem>
+
+            <filesystem name='Core' checkmodified='yes' descriptor='required'>
+                <ivy pattern="${rvpf.home}/core/config/script/ivy/[module].xml"/>
+                <artifact pattern="${rvpf.home}/core/lib/[artifact].[ext]"/>
+            </filesystem>
+
+            <filesystem name='PAP' checkmodified='yes' descriptor='required'>
+                <ivy pattern="${rvpf.home}/pap/config/script/ivy/[module].xml"/>
+                <artifact pattern="${rvpf.home}/pap/lib/[artifact].[ext]"/>
+            </filesystem>
+
+            <filesystem name='JDBC' checkmodified='yes' descriptor='required'>
+                <ivy pattern="${rvpf.home}/jdbc/config/script/ivy/[module].xml"/>
+                <artifact pattern="${rvpf.home}/jdbc/lib/[artifact].[ext]"/>
+            </filesystem>
+
+        </chain>
+
+    </resolvers>
+
+</ivysettings>
+
+<!-- End. -->

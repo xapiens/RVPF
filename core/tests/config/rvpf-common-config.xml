@@ -1,0 +1,155 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-common-config.xml 3072 2016-06-23 20:03:21Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <properties from='resource:local.properties'/>
+
+    <?include href='resource:rvpf-config-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <property name='rmi.registry.address' validated='no'
+            property='tests.rmi.registry.address' value='127.0.0.1'/>
+    <properties name='rmi.registry'>
+        <property name='address' required='rmi.registry.address'/>
+        <property name='port' property='rmi.registry.port'/>
+        <property name='protected'/>
+        <property name='private' property='tests.rmi.registry.private'/>
+    </properties>
+
+    <property name='java.rmi.server.hostname' system='yes'
+        property='tests.rmi.server.hostname'/>
+
+    <property name='service.data.dir' unless='service.data.dir'
+            env='RVPF_TESTS_DATA'/>
+
+    <properties name='security.realm'>
+        <property name='path'
+                value='resource:rvpf-realm.properties'/>
+        <property name='verify' if='tests.realm.crypted'/>
+        <property name='decrypt' if='tests.realm.crypted'/>
+    </properties>
+
+    <properties name='tests.alerter.topic' def='som.topic'>
+        <property name='name' value='TestsAlerts'/>
+    </properties>
+
+    <property name='tests.classes' validated='no'
+            env='RVPF_TESTS_CLASSES'/>
+
+    <properties name='service.alerter'>
+        <property name='alerter.class' if='tests.alerter.null'
+                classDef='NullAlerter'/>
+        <properties name='som.topic' unless='tests.alerter.null'
+                extends='tests.alerter.topic'/>
+        <property name='shared' property='tests.alerter.shared'/>
+    </properties>
+
+    <properties name='tests.server.security' def='security'>
+        <properties name='keystore'>
+            <property name='path' value='resource:server.keystore'/>
+            <property name='password'
+                    required='tests.server.keystore.password'/>
+            <property name='verify' if='tests.key.store.crypted'/>
+            <property name='decrypt' if='tests.key.store.crypted'/>
+        </properties>
+        <properties name='truststore'>
+            <property name='path' value='resource:server.truststore'/>
+            <property name='verify' if='tests.key.store.crypted'/>
+            <property name='decrypt' if='tests.key.store.crypted'/>
+        </properties>
+
+        <properties name='crypt'>
+            <property name='class' if='tests.crypt.class'
+                    classDef='${tests.crypt.class}'/>
+            <properties name='private'>
+                <property name='path'
+                        value='resource:server-private.gpg'/>
+                <properties name='key'>
+                    <property name='ident'
+                            required='tests.server.private.key.1'/>
+                    <property name='password'
+                            required='tests.server.private.key.1.password'/>
+                </properties>
+                <properties name='key'>
+                    <property name='ident'
+                            required='tests.server.private.key.2'/>
+                    <property name='password'
+                            required='tests.server.private.key.2.password'/>
+                </properties>
+            </properties>
+            <properties name='public'>
+                <property name='path'
+                        value='resource:server-public.gpg'/>
+            </properties>
+        </properties>
+
+        <properties name='realm' extends='security.realm'/>
+    </properties>
+
+    <properties name='tests.client.security' def='security'>
+        <property name='secure'/>
+        <properties name='keystore'>
+            <property name='path' value='resource:client.keystore'/>
+            <property name='password' value='rvpf-tests'/>
+            <property name='verify' if='tests.key.store.crypted'/>
+            <property name='decrypt' if='tests.key.store.crypted'/>
+        </properties>
+        <properties name='truststore'>
+            <property name='path' value='resource:client.truststore'/>
+            <property name='verify' if='tests.key.store.crypted'/>
+            <property name='decrypt' if='tests.key.store.crypted'/>
+        </properties>
+
+        <properties name='crypt'>
+            <property name='class' if='tests.crypt.class'
+                    classDef='${tests.crypt.class}'/>
+            <properties name='private'>
+                <property name='path'
+                        value='resource:client-private.gpg'/>
+                <properties name='key'>
+                    <property name='ident'
+                            required='tests.client.private.key.1'/>
+                    <property name='password'
+                            required='tests.client.private.key.1.password'/>
+                </properties>
+                <properties name='key'>
+                    <property name='ident'
+                            required='tests.client.private.key.2'/>
+                    <property name='password'
+                            required='tests.client.private.key.2.password'/>
+                </properties>
+            </properties>
+            <properties name='public'>
+                <property name='path'
+                        value='resource:client-public.gpg'/>
+            </properties>
+        </properties>
+    </properties>
+
+    <properties name='metadata'>
+        <property name='path' property='metadata'/>
+        <properties if='metadata.server'>
+            <property name='server' property='metadata.server'/>
+            <properties if='tests.metadata.crypted'>
+                <properties name='security'
+                        extends='tests.client.security'/>
+                <property name='verify'/>
+                <property name='decrypt'/>
+            </properties>
+        </properties>
+    </properties>
+
+</config>
+
+<!-- End. -->

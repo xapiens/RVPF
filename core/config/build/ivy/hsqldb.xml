@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: hsqldb.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='hsqldb'
+            revision='${hsqldb.revision}'
+            organisation='org.hsqldb'
+            status='release'>
+        <license name='BSD-style'
+                url='http://hsqldb.org/web/hsqlLicense.html'/>
+        <description homepage='http://hsqldb.sourceforge.net/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->

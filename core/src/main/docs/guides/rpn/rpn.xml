@@ -1,0 +1,2480 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This document was created with Syntext Serna Free. --><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<!-- $Id: rpn.xml 1654 2012-04-22 17:39:51Z SFB $ -->
+<article>
+  <title>RPN Engine Guide</title>
+  <subtitle>
+    <phrase role="revised-date">Revised: 2011-04-09.</phrase>
+  </subtitle>
+  <articleinfo>
+    <copyright>
+      <year>2008</year>
+      <year>2009</year>
+      <year>2010</year>
+      <holder>Serge Brisson.</holder>
+    </copyright>
+  </articleinfo>
+  <section>
+    <title>Introduction</title>
+    <para>The RPN engine implements a mini language to help transform some
+    input values into a result value. It is inspired by the
+    <application>Forth</application> language.</para>
+    <para>A <acronym>RPN</acronym> (Reverse Polish Notation, also known as
+    Postfix notation) program makes operators follow their operands.</para>
+    <para>Example:</para>
+    <programlisting>2 3 +</programlisting>
+    <para>produces <code>5</code>.</para>
+    <para>Most <application>Forth</application> implementations use a stack to
+    hold operands and results; so does the <acronym>RPN</acronym>
+    engine.</para>
+    <para>In the previous example, the words &apos;2&apos; and &apos;3&apos; put their values on
+    the stack; the &apos;+&apos; word then pops out the two top values from the stack
+    and pushes back their sum.</para>
+    <para>As an other example, to compute <code>((2 + 3) * 4)</code>, one can
+    use:</para>
+    <programlisting>2 3 + 4 *</programlisting>
+    <para>or</para>
+    <programlisting>4 2 3 + *</programlisting>
+    <para>to produce <code>20</code>.</para>
+  </section>
+  <section>
+    <title>Words</title>
+    <para>The following sections describe the <acronym>RPN</acronym> engine
+    words by module.</para>
+    <para>Since each module may overload a word definition implemented by a
+    previously registered module, their order is significant; here, they are
+    described in their usual registration order .</para>
+    <para>Each word description begins with a synopsis (inside parenthesis) of
+    its effect on the <acronym>RPN</acronym> stack: the items on the left of
+    the &apos;--&apos; mark represent the top of the stack before, those on the right
+    represent the top of the stack after.</para>
+    <section>
+      <title>Basic Operations</title>
+      <para>The <classname>BasicOperations</classname> module is not optional
+      and does not need to be configured.</para>
+      <section>
+        <title>
+          <code>&apos;<parameter>&lt;text&gt;</parameter>&apos;</code>
+          <remark> (string constant)</remark>
+        </title>
+        <synopsis>( -- string )</synopsis>
+        <para>Pushes the <parameter>&lt;text&gt;</parameter> as a String. The
+        usual escape conventions using backslash can be used.</para>
+      </section>
+      <section>
+        <title>
+          <code>&quot;<parameter>&lt;text&gt;</parameter>&quot;</code>
+          <remark> (string constant)</remark>
+        </title>
+        <synopsis>( -- string )</synopsis>
+        <para>Pushes the <parameter>&lt;text&gt;</parameter> as a String. The
+        usual escape conventions using backslash can be used.</para>
+      </section>
+      <section>
+        <title>
+          <parameter>
+            <code>
+              <parameter>&lt;number&gt;</parameter>
+            </code>
+          </parameter>
+          <remark> (numeric constant)</remark>
+        </title>
+        <synopsis>( -- number )</synopsis>
+        <para>Any word that can be decoded as a <classname>Long</classname>
+        according to Java conventions is taken as such; otherwise, a
+        conversion to <classname>Double</classname> is attempted; if it fails,
+        the word is looked up in the words registry. The result of the
+        conversion of <parameter>&lt;number&gt;</parameter> is pushed on the
+        stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$<parameter>&lt;position&gt;</parameter></code>
+          <remark> (input value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>The value of the input declared at the origin-1
+        <parameter>&lt;position&gt;</parameter> for the result point is pushed
+        on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$<parameter>&lt;position&gt;</parameter>!</code>
+          <remark> (required input value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>If present and not null, the value of the input declared at the
+        origin-1 <parameter>&lt;position&gt;</parameter> for the result point
+        is pushed on the stack; otherwise, the operation fails.</para>
+      </section>
+      <section>
+        <title>
+          <code>$<parameter>&lt;position&gt;</parameter>$</code>
+          <remark> (input state)</remark>
+        </title>
+        <synopsis>( -- state )</synopsis>
+        <para>The state of the input declared at the origin-1
+        <parameter>&lt;position&gt;</parameter> for the result point is pushed
+        on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$<parameter>&lt;position&gt;</parameter>@</code>
+          <remark> (input stamp)</remark>
+        </title>
+        <synopsis>( -- stamp )</synopsis>
+        <para>The time stamp of the input declared at the origin-1
+        <parameter>&lt;position&gt;</parameter> for the result point is pushed
+        on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$<parameter>&lt;position&gt;</parameter>.</code>
+          <remark> (input point name)</remark>
+        </title>
+        <synopsis>( -- name )</synopsis>
+        <para>The name of the point for the input declared at the origin-1
+        <parameter>&lt;position&gt;</parameter> for the result point is pushed
+        on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$<parameter>&lt;position&gt;</parameter>?</code>
+          <remark> (input value present?)</remark>
+        </title>
+        <synopsis>( -- boolean )</synopsis>
+        <para>The value of the input declared at the origin-1
+        <parameter>&lt;position&gt;</parameter> for the result point is pushed
+        on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$<parameter>&lt;position&gt;</parameter>=</code>
+          <remark> (input value replacement)</remark>
+        </title>
+        <synopsis>( value -- )</synopsis>
+        <para>Pops a value from the stack and stores it as a replacement for
+        the value for the input declared at the origin-1
+        <parameter>&lt;position&gt;</parameter> for the result point.</para>
+      </section>
+      <section>
+        <title>
+          <code>:$<parameter>&lt;position&gt;</parameter>=</code>
+          <remark> (input value replacement)</remark>
+        </title>
+        <synopsis>( value -- value )</synopsis>
+        <para>Stores the value at the top of the stack as a replacement for
+        the value for the input declared at the origin-1
+        <parameter>&lt;position&gt;</parameter> for the result point.</para>
+      </section>
+      <section>
+        <title>
+          <code>$*</code>
+          <remark> (all input values)</remark>
+        </title>
+        <synopsis>( -- ... )</synopsis>
+        <para>The value for all the inputs declared for the result point are
+        pushed on the stack (last on top).</para>
+      </section>
+      <section>
+        <title>
+          <code>$*!</code>
+          <remark> (all input values required)</remark>
+        </title>
+        <synopsis>( -- ... )</synopsis>
+        <para>The value for all the inputs declared for the result point are
+        pushed on the stack (last on top). If any of those inputs is absent or
+        null, the operation will fail.</para>
+      </section>
+      <section>
+        <title>
+          <code>$#</code>
+          <remark> (inputs count)</remark>
+        </title>
+        <synopsis>( -- count )</synopsis>
+        <para>Pushes the number of declared inputs on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$0</code>
+          <remark> (result value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>The value of the result is pushed on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$0!</code>
+          <remark> (required result value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>If not null, the value of the result is pushed on the stack;
+        otherwise, the operation fails.</para>
+      </section>
+      <section>
+        <title>
+          <code>$0=</code>
+          <remark> (result value replacement)</remark>
+        </title>
+        <synopsis>( value -- )</synopsis>
+        <para>Pops a value from the stack and stores it as a replacement for
+        the value of the result.</para>
+      </section>
+      <section>
+        <title>
+          <code>:$0=</code>
+          <remark> (result value replacement)</remark>
+        </title>
+        <synopsis>( value -- value )</synopsis>
+        <para>Stores the value at the top of the stack as a replacement for
+        the value of the result.</para>
+      </section>
+      <section>
+        <title>
+          <code>$0$</code>
+          <remark> (result state)</remark>
+        </title>
+        <synopsis>( -- state )</synopsis>
+        <para>The state of the result is pushed on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$0$=</code>
+          <remark> (result state replacement)</remark>
+        </title>
+        <synopsis>( value -- )</synopsis>
+        <para>Pops a value from the stack and stores it as a replacement for
+        the state of the result.</para>
+      </section>
+      <section>
+        <title>
+          <code>:$0$=</code>
+          <remark> (result state replacement)</remark>
+        </title>
+        <synopsis>( value -- value )</synopsis>
+        <para>Stores the value at the top of the stack as a replacement for
+        the state of the result.</para>
+      </section>
+      <section>
+        <title>
+          <code>$0@</code>
+          <remark> (result stamp)</remark>
+        </title>
+        <synopsis>( -- stamp )</synopsis>
+        <para>The time stamp of the result is pushed on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>$0.</code>
+          <remark> (result point name)</remark>
+        </title>
+        <synopsis>( -- name )</synopsis>
+        <para>The name of the result point is pushed on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>#<parameter>&lt;location&gt;</parameter></code>
+          <remark> (memory value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>The value of the origin-1 memory
+        <parameter>&lt;location&gt;</parameter> is pushed on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>#<parameter>&lt;location&gt;</parameter>=</code>
+          <remark> (memory value replacement)</remark>
+        </title>
+        <synopsis>( value -- )</synopsis>
+        <para>Pops a value from the stack and stores it as a replacement for
+        the value fof the origin-1 memory
+        <parameter>&lt;location&gt;</parameter>.</para>
+      </section>
+      <section>
+        <title>
+          <code>:$#<parameter>&lt;location&gt;</parameter>=</code>
+          <remark> (memory value replacement)</remark>
+        </title>
+        <synopsis>( value -- value )</synopsis>
+        <para>Stores the value at the top of the stack as a replacement for
+        the value of the origin-1 memory
+        <parameter>&lt;location&gt;</parameter>.</para>
+      </section>
+      <section>
+        <title>
+          <code>@<parameter>&lt;position&gt;</parameter></code>
+          <remark> (parameter value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>The value of the result point parameter at the origin-1
+        <parameter>&lt;position&gt;</parameter> is pushed on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>@<parameter>&lt;position&gt;</parameter><code>!</code></code>
+          <remark> (required parameter value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>If present and not null, the value of the result point parameter
+        at the origin-1 <parameter>&lt;position&gt;</parameter> is pushed on
+        the stack; otherwise, the operation fails.</para>
+      </section>
+      <section>
+        <title>
+          <code>bpt</code>
+          <remark> (breakpoint opportunity)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Does nothing but provides a breakpoint opportunity for debugging
+        the engine.</para>
+      </section>
+      <section>
+        <title>
+          <code>deleted?</code>
+          <remark> (deleted state?)</remark>
+        </title>
+        <synopsis>( state -- boolean )</synopsis>
+        <para>If the object popped from the stack is the deleted state object,
+        push true; otherwise, push false.</para>
+      </section>
+      <section>
+        <title>
+          <code>fail</code>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Fails.</para>
+      </section>
+      <section>
+        <title>
+          <code>nop</code>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Does nothing.</para>
+      </section>
+      <section>
+        <title>
+          <code>!</code>
+          <remark> (required value)</remark>
+        </title>
+        <synopsis>( value -- )</synopsis>
+        <para>Fails if the object popped from the stack is null.</para>
+      </section>
+      <section>
+        <title>
+          <code>return</code>
+          <remark> (program end)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Ends execution of operations for the current program.</para>
+      </section>
+      <section>
+        <title>
+          <code>stored</code>
+          <remark> (stored result value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>The stored value of the result is pushed on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>stored!</code>
+          <remark> (required stored result value)</remark>
+        </title>
+        <synopsis>( -- value )</synopsis>
+        <para>If available and not null, the stored value of the result is
+        pushed on the stack.; otherwise, the operation fails.</para>
+      </section>
+      <section>
+        <title>
+          <code>stored?</code>
+          <remark> (result value stored?)</remark>
+        </title>
+        <synopsis>( -- boolean )</synopsis>
+        <para>If the result value is stored, push true, otherwise, push
+        false.</para>
+      </section>
+      <section>
+        <title>
+          <code>type</code>
+          <remark> (object type)</remark>
+        </title>
+        <synopsis>( x -- type )</synopsis>
+        <para>Pushes the name of the class of the object popped from the
+        stack.</para>
+      </section>
+    </section>
+    <section>
+      <title>Stack Operations</title>
+      <para>The <classname>StackOperations</classname> module provides generic
+      stack operations.</para>
+      <para>This module supports transparent stack partitioning using
+      marks.</para>
+      <section>
+        <title>
+          <code>:</code>
+          <remark> or </remark>
+          <code>dup</code>
+          <remark> (duplicate top entry)</remark>
+        </title>
+        <synopsis>( x -- x x )</synopsis>
+        <para>Duplicates the top entry on the stack..</para>
+        <para>Example:</para>
+        <programlisting>1.0 2.0 dup</programlisting>
+        <para>leaves <code>1.0 2.0 2.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>[</code>
+          <remark> or </remark>
+          <code>mark</code>
+          <remark> (partition stack)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Starts a new stack partition.</para>
+      </section>
+      <section>
+        <title>
+          <code>]</code>
+          <remark> or </remark>
+          <code>unmark</code>
+          <remark> (join top stack partitions)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Joins the two top stack partitions. Does nothing if the stack is
+        not partitioned.</para>
+      </section>
+      <section>
+        <title>
+          <code>at <remark>(value from a stack position)</remark></code>
+        </title>
+        <synopsis>( ... position -- ... value )</synopsis>
+        <para>Pops from the stack a number representing an origin-0 position,
+        starting from the top of the stack. The object at this position is
+        pushed on the stack .</para>
+        <para>Example:</para>
+        <programlisting>1.0 2.0 3.0 4.0 2 at</programlisting>
+        <para>leaves <code>1.0 2.0 3.0 4.0 3.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>clear</code>
+          <remark> (clear stack)</remark>
+        </title>
+        <synopsis>( ... depth -- )</synopsis>
+        <para>Pops from the stack the number of stack locations to drop, then
+        drops them from the stack.</para>
+        <para>Example:</para>
+        <programlisting>1.0 2.0 3.0 2 clear</programlisting>
+        <para>leaves <code>1.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>copy</code>
+          <remark> (copy stack values)</remark>
+        </title>
+        <synopsis>( ... depth -- ... ... )</synopsis>
+        <para>Pops from the stack the number of stack locations to copy, then
+        pushes them on the stack.</para>
+        <para>Example:</para>
+        <programlisting>1.0 2.0 3.0 2 copy</programlisting>
+        <para>leaves <code>1.0 2.0 3.0 2.0 3.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>default</code>
+          <remark> (default value)</remark>
+        </title>
+        <synopsis>( value default -- )</synopsis>
+        <para>Pops a default value from the stack, then if the top of the
+        stack is null, replaces it by the default value.</para>
+        <para>Example:</para>
+        <programlisting>$1 0.0 default</programlisting>
+        <para>gets the first input if it is present and not null, otherwise
+        leaves 0.0 on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>depth</code>
+          <remark> (stack depth)</remark>
+        </title>
+        <synopsis>( -- depth )</synopsis>
+        <para>Pushes on the stack the number of entries in the top stack
+        partition.</para>
+        <para>Example:</para>
+        <programlisting>1.0 [ 2.0 3.0 depth copy</programlisting>
+        <para>leaves <code>1.0 2.0 3.0 2.0 3.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>depth*</code>
+          <remark> (whole stack depth)</remark>
+        </title>
+        <synopsis>( -- depth )</synopsis>
+        <para>Pushes on the stack the number of entries in the whole top
+        stack.</para>
+        <para>Example:</para>
+        <programlisting>1.0 [ 2.0 3.0 depth* clear</programlisting>
+        <para>leaves nothing on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>drop</code>
+          <remark> (stack item drop)</remark>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Drops the top item on the stack.</para>
+        <para>Example:</para>
+        <programlisting>1.0 2.0 drop</programlisting>
+        <para>leaves <code>1.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>dump</code>
+          <remark> (stack dump)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>List in the log the content of the top stack partition.</para>
+      </section>
+      <section>
+        <title>
+          <code>dump*</code>
+          <remark> (whole stack dump)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>List in the log the content of the whole stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>eq</code>
+          <remark> (equal)</remark>
+        </title>
+        <synopsis>( x y -- y==x )</synopsis>
+        <para>Replaces the two top stack entries with the boolean result of
+        the top one being equal to the next.</para>
+        <para>Example:</para>
+        <programlisting>1.0 2.0 eq</programlisting>
+        <para>leaves <code>false</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>ne</code>
+          <remark> (not equal)</remark>
+        </title>
+        <synopsis>( x y -- y!=x )</synopsis>
+        <para>Replaces the two top stack entries with the boolean result of
+        the top one not being equal to the next.</para>
+        <para>Example:</para>
+        <programlisting>1.0 2.0 ne</programlisting>
+        <para>leaves <code>true</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>nip</code>
+          <remark> (drop next)</remark>
+        </title>
+        <synopsis>( x y -- y )</synopsis>
+        <para>Drops the second entry from the top of the stack.</para>
+        <para>Example:</para>
+        <programlisting>1.0 2.0 nip</programlisting>
+        <para>leaves <code>2.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>null</code>
+          <remark> (push null)</remark>
+        </title>
+        <synopsis>( -- null )</synopsis>
+        <para>Places a null value on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>null?</code>
+          <remark> (top is null)</remark>
+        </title>
+        <synopsis>( x -- x==null )</synopsis>
+        <para>Replaces the top stack entry with the boolean result of its
+        comparison with <code>null</code>.</para>
+      </section>
+      <section>
+        <title>
+          <code>unmark*</code>
+          <remark> (join all stack partitions)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Joins all the stack partitions. Does nothing if the stack is not
+        partitioned.</para>
+      </section>
+    </section>
+    <section>
+      <title>DateTime Operations</title>
+      <para>The <classname>DateTimeOperations</classname> module provides
+      operations on <classname>DateTime</classname> objects and their
+      derivatives.</para>
+      <section>
+        <title>
+          <code>-</code>
+          <remark> (substraction)</remark>
+        </title>
+        <synopsis>( elapsed_1 elapsed_2 -- elapsed_1-elapsed_2:elapsed )</synopsis>
+        <synopsis>( date_time elapsed -- date_time-elapsed:date_time )</synopsis>
+        <synopsis>( date_time_1 date_time_2 -- date_time_1-date_time_2:elapsed )</synopsis>
+        <para>This operation is overloaded within the module. Depending on the
+        type of the top two objects on the stack, it will substract
+        <classname>Elapsed</classname> times and produce an Elapsed time,
+        substract an Elapsed time from a <classname>DateTime</classname> to
+        product a <classname>DateTime</classname> or substracts
+        <classname>DateTime</classname>s to produce an Elapsed time.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd 2 hours - str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T10:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>+</code>
+          <remark> (addition)</remark>
+        </title>
+        <synopsis>( elapsed_1 elapsed_2 -- elapsed_1+elapsed_2:elapsed )</synopsis>
+        <synopsis>( date_time elapsed -- date_time+elapsed:date_time )</synopsis>
+        <para>This operation is overloaded within the module. Depending on the
+        type of the top two objects on the stack, it will add Elapsed times
+        and produce an Elapsed time or add an Elapsed time to a
+        <classname>DateTime</classname> to product a
+        <classname>DateTime</classname>.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd 2 hours + str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T14:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>day</code>
+          <remark> (day of month)</remark>
+        </title>
+        <synopsis>( date_time -- day_of_month )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with its day of the
+        month origin-1 number.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd day</programlisting>
+        <para>leaves <code>1</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>--day</code>
+          <remark> (previous day)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time on the previous day.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd --day str</programlisting>
+        <para>leaves <code>&quot;2000-01-31T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>++day</code>
+          <remark> (next day)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time on the next day.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ++day str</programlisting>
+        <para>leaves <code>&quot;2000-02-02T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>-days</code>
+          <remark> (days substraction)</remark>
+        </title>
+        <synopsis>( date_time days -- date_time-days:date_time )</synopsis>
+        <para>Pops a number and use it to replace the
+        <classname>DateTime</classname> with a new one representing the same
+        time when going back this number of days.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd 2 -days str</programlisting>
+        <para>leaves <code>&quot;2000-01-30T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>+days</code>
+          <remark> (days addition)</remark>
+        </title>
+        <synopsis>( date_time days -- date_time+days:date_time )</synopsis>
+        <para>Pops a number and use it to replace the
+        <classname>DateTime</classname> with a new one representing the same
+        time when going forward this number of days.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd 2 +days str</programlisting>
+        <para>leaves <code>&quot;2000-02-03T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>dim</code>
+          <remark> (days in month)</remark>
+        </title>
+        <synopsis>( date_time -- days_in_month )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with the number of
+        days in its month.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd dim</programlisting>
+        <para>leaves <code>29</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>dow</code>
+          <remark> (day of week)</remark>
+        </title>
+        <synopsis>( date_time -- day_of_week )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with its origin-0
+        day of week.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd dow</programlisting>
+        <para>leaves <code>2</code> (Tuesday) on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>hour</code>
+          <remark> (hour of day)</remark>
+        </title>
+        <synopsis>( date_time -- hour_of_day )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with its hour of
+        day number.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd hour</programlisting>
+        <para>leaves <code>12</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>--hour</code>
+          <remark> (previous hour)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the previous hour.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd --hour str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T11:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>++hour</code>
+          <remark> (next hour)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the next hour.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ++hour str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T13:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>_hour</code>
+          <remark> (floor the hour)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time at the beginning of the hour.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd _hour str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:00-05&quot;</code> on the stack (in the
+        Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>~hour</code>
+          <remark> (round the hour)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time at a rounded value for the hour.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ~hour str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T13:00-05&quot;</code> on the stack (in the
+        Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>hours</code>
+          <remark> (convert hours)</remark>
+        </title>
+        <synopsis>( elapsed -- hours:double )</synopsis>
+        <synopsis>( hours:double -- elapsed )</synopsis>
+        <synopsis>( date_time -- hours:double )</synopsis>
+        <para>This operation is overloaded within the module. Depending on the
+        type of the top object on the stack, it will convert an
+        <classname>ElapsedTime</classname> to hours, convert hours to an
+        <classname>ElapsedTime</classname> or convert a
+        <classname>DateTime</classname> to hours since 1858-11-17 00:00
+        UTC.</para>
+        <para>Example:</para>
+        <programlisting>2 hours str</programlisting>
+        <para>leaves <code>&quot;0T02:00&quot;</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>join</code>
+          <remark> (join date_time fields)</remark>
+        </title>
+        <synopsis>( year month day hour minute second:double -- date_time )</synopsis>
+        <para>This operation will join year, month, day, hour, minute and second
+        (to the millisecond) into a <classname>DateTime</classname>.</para>
+        <para>Example:</para>
+        <programlisting>2000 02 01 12 30 10.5 join str</programlisting>
+        <para>leaves <code>&quot;2000-02-01 12:30:10.5&quot;</code> on the stack (in the
+        Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>midnight</code>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same day at midnight.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd midnight str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T00:00-05&quot;</code> on the stack (in the
+        Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>milli</code>
+          <remark> (millisecond of second)</remark>
+        </title>
+        <synopsis>( date_time -- milli_second )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with the
+        millisecond within the second.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd milli</programlisting>
+        <para>leaves <code>500</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>--milli</code>
+          <remark> (previous millisecond)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the previous millisecond.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd --milli str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T11:30:10.499-05&quot;</code> on the stack
+        (in the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>++milli</code>
+          <remark> (next millisecond)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the next millisecond.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ++milli str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T13:30:10.501-05&quot;</code> on the stack
+        (in the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>_milli</code>
+          <remark> (floor the millisecond)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time at the beginning of the millisecond.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5678&quot; mjd _milli str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:30:10.567-05&quot;</code> on the stack
+        (in the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>~milli</code>
+          <remark> (round the millisecond)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time at a rounded value for the
+        millisecond.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5678&quot; mjd ~milli str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T13:30.10.568-05&quot;</code> on the stack
+        (in the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>millis</code>
+          <remark> (convert milliseconds)</remark>
+        </title>
+        <synopsis>( elapsed -- millis:double )</synopsis>
+        <synopsis>( millis:double -- elapsed )</synopsis>
+        <synopsis>( date_time -- millis:double )</synopsis>
+        <para>This operation is overloaded within the module. Depending on the
+        type of the top object on the stack, it will convert an
+        <classname>ElapsedTime</classname> to milliseconds, convert
+        milliseconds to an <classname>ElapsedTime</classname> or convert a
+        <classname>DateTime</classname> to milliseconds since 1858-11-17 00:00
+        UTC.</para>
+        <para>Example:</para>
+        <programlisting>2 millis - str</programlisting>
+        <para>leaves <code>&quot;0T00:00:00.002&quot;</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>minute</code>
+          <remark> (minute of hour)</remark>
+        </title>
+        <synopsis>( date_time -- minute_of_hour )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with its minute of
+        the hour number.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd minute</programlisting>
+        <para>leaves <code>30</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>--minute</code>
+          <remark> (previous minute)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the previous minute.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd --minute str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:29:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>++minute</code>
+          <remark> (next minute)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the next minute.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ++minute str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:31:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>_minute</code>
+          <remark> (floor the minute)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time at the beginning of the minute.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd _minute str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:30-05&quot;</code> on the stack (in the
+        Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>~minute</code>
+          <remark> (round the minute)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time at a rounded value for the minute.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ~minute str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:30-05&quot;</code> on the stack (in the
+        Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>minutes</code>
+          <remark> (convert minutes)</remark>
+        </title>
+        <synopsis>( elapsed -- minutes:double )</synopsis>
+        <synopsis>( minutes:double -- elapsed )</synopsis>
+        <synopsis>( date_time -- minutes:double )</synopsis>
+        <para>This operation is overloaded within the module. Depending on the
+        type of the top object on the stack, it will convert an
+        <classname>ElapsedTime</classname> to minutes, convert minutes to an
+        <classname>ElapsedTime</classname> or convert a
+        <classname>DateTime</classname> to minutes since 1858-11-17 00:00
+        UTC.</para>
+        <para>Example:</para>
+        <programlisting>2 minutes - str</programlisting>
+        <para>leaves <code>&quot;0T00:02&quot;</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>mjd</code>
+          <remark> (convert to date_time)</remark>
+        </title>
+        <synopsis>( elapsed -- date_time )</synopsis>
+        <synopsis>( raw -- date_time )</synopsis>
+        <synopsis>( string -- date_time )</synopsis>
+        <para>This operation is overloaded within the module. Depending on the
+        type of the top object on the stack, it will convert an
+        <classname>ElapsedTime</classname>, a raw value or a
+        <classname>String</classname> to a
+        <classname>DateTime</classname>.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>month</code>
+          <remark> (month of year)</remark>
+        </title>
+        <synopsis>( date_time -- month_of_year )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with its month of
+        the year number (1-12).</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd month</programlisting>
+        <para>leaves <code>2</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>--month</code>
+          <remark> (previous month)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the previous month.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd --month str</programlisting>
+        <para>leaves <code>&quot;2000-01-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>++month</code>
+          <remark> (next month)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the next month.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ++month str</programlisting>
+        <para>leaves <code>&quot;2000-03-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>-months</code>
+          <remark> (substract months)</remark>
+        </title>
+        <synopsis>( date_time months -- date_time )</synopsis>
+        <para>Pops a number of months and the <classname>DateTime</classname>
+        and pushes a new <classname>DateTime</classname> at the number of
+        months before the original.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd 2 -months str</programlisting>
+        <para>leaves <code>&quot;1999-12-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>+months</code>
+          <remark> (add months)</remark>
+        </title>
+        <synopsis>( date_time months -- date_time )</synopsis>
+        <para>Pops a number of months and the <classname>DateTime</classname>
+        and pushes a new <classname>DateTime</classname> at the number of
+        months before the original.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd 2 +months str</programlisting>
+        <para>leaves <code>&quot;2000-04-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>noon</code>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same day at noon.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd noon str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:00-05&quot;</code> on the stack (in the
+        Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>now</code>
+        </title>
+        <synopsis>( -- date_time )</synopsis>
+        <para>Pushes the current system time as a
+        <classname>DateTime</classname>.</para>
+      </section>
+      <section>
+        <title>
+          <code>raw</code>
+        </title>
+        <synopsis>( date_time -- raw )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with its raw
+        (internal) representation (the number of tenths of microseconds since
+        1858-11-17 00:00 UTC).</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd raw</programlisting>
+        <para>leaves <code>44561430105000000</code> on the stack (in the
+        Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>second</code>
+          <remark> (second of minute)</remark>
+        </title>
+        <synopsis>( date_time -- second_of_minute )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with its second of
+        the minute number.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd second</programlisting>
+        <para>leaves <code>10</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>--second</code>
+          <remark> (previous second)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the previous second.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd --second str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:30:09.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>++second</code>
+          <remark> (next second)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the next second.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ++second str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:30:11.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>_second</code>
+          <remark> (floor the second)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time at the beginning of the second.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd _second str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:30:10-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>~second</code>
+          <remark> (round the second)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time at a rounded value for the second.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ~second str</programlisting>
+        <para>leaves <code>&quot;2000-02-01T12:30:11-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>seconds</code>
+          <remark> (convert seconds)</remark>
+        </title>
+        <synopsis>( elapsed -- seconds:double )</synopsis>
+        <synopsis>( seconds:double -- elapsed )</synopsis>
+        <synopsis>( date_time -- seconds:double )</synopsis>
+        <para>This operation is overloaded within the module. Depending on the
+        type of the top object on the stack, it will convert an
+        <classname>ElapsedTime</classname> to seconds, convert seconds to an
+        <classname>ElapsedTime</classname> or convert a
+        <classname>DateTime</classname> to seconds since 1858-11-17 00:00
+        UTC.</para>
+        <para>Example:</para>
+        <programlisting>2 seconds - str</programlisting>
+        <para>leaves <code>&quot;0T00:00:02&quot;</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>split</code>
+          <remark> (split date_time)</remark>
+        </title>
+        <synopsis>( elapsed -- days hours minutes seconds:double )</synopsis>
+        <synopsis>( date_time -- year month day hour minute second:double )</synopsis>
+        <para>This operation is overloaded within the module. Depending on the
+        type of the top object on the stack, it will split an
+        <classname>ElapsedTime</classname> to days, hours, minutes and
+        seconds, or split a <classname>DateTime</classname> to year, month,
+        day, hour, minute and second (to the millisecond).</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd split</programlisting>
+        <para>leaves <code>2000 02 01 12 30 10.5</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>today</code>
+        </title>
+        <synopsis>( -- date_time )</synopsis>
+        <para>Pushes the value of midnight based on the current system time as
+        a <classname>DateTime</classname>.</para>
+      </section>
+      <section>
+        <title>
+          <code>tomorrow</code>
+        </title>
+        <synopsis>( -- date_time )</synopsis>
+        <para>Pushes the value of tomorrow at midnight based on the current
+        system time as a <classname>DateTime</classname>.</para>
+      </section>
+      <section>
+        <title>
+          <code>tz</code>
+        </title>
+        <synopsis>( string -- )</synopsis>
+        <para>Sets the time zone for the current computation.</para>
+        <para>Example:</para>
+        <programlisting>&quot;GMT&quot; tz</programlisting>
+        <para>sets the time zone to GMT.</para>
+      </section>
+      <section>
+        <title>
+          <code>year</code>
+        </title>
+        <synopsis>( date_time -- year )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with its year
+        number.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd year</programlisting>
+        <para>leaves <code>2000</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>--year</code>
+          <remark> (previous year)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the previous year.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd --year str</programlisting>
+        <para>leaves <code>&quot;1999-02-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>++year</code>
+          <remark> (next year)</remark>
+        </title>
+        <synopsis>( date_time -- date_time )</synopsis>
+        <para>Replaces the <classname>DateTime</classname> with a new one
+        representing the same time for the next year.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd ++year str</programlisting>
+        <para>leaves <code>&quot;2001-02-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>-years</code>
+          <remark> (substract years)</remark>
+        </title>
+        <synopsis>( date_time years -- date_time )</synopsis>
+        <para>Pops a number of years and the <classname>DateTime</classname>
+        and pushes a new <classname>DateTime</classname> at the number of
+        years before the original.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd 2 -years str</programlisting>
+        <para>leaves <code>&quot;1998-02-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>+years</code>
+          <remark> (add years)</remark>
+        </title>
+        <synopsis>( date_time years -- date_time )</synopsis>
+        <para>Pops a number of years and the <classname>DateTime</classname>
+        and pushes a new <classname>DateTime</classname> at the number of
+        years before the original.</para>
+        <para>Example:</para>
+        <programlisting>&quot;2000-02-01 12:30:10.5&quot; mjd 2 +years str</programlisting>
+        <para>leaves <code>&quot;2002-02-01T12:30:10.5-05&quot;</code> on the stack (in
+        the Montreal timezone).</para>
+      </section>
+      <section>
+        <title>
+          <code>yesterday</code>
+        </title>
+        <synopsis>( -- date_time )</synopsis>
+        <para>Pushes the value of yesterday at midnight based on the current
+        system time as a <classname>DateTime</classname>.</para>
+      </section>
+    </section>
+    <section>
+      <title>Double Operations</title>
+      <para>The <classname>DoubleOperations</classname> module provides
+      operations on <classname>Double</classname> objects.</para>
+      <section>
+        <title>
+          <code>0?</code>
+          <remark> (is zero?)</remark>
+        </title>
+        <synopsis>( value -- value==0.0 )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if the number is
+        equal to <code>0.0</code>, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>0~?</code>
+          <remark> (is near zero?)</remark>
+        </title>
+        <synopsis>( value delta -- value~0.0 )</synopsis>
+        <para>Pops a delta and a number and pushes <code>true</code> if the
+        number is near <code>0.0</code> within the delta, <code>false</code>
+        otherwise.</para>
+        <para>Example:</para>
+        <programlisting>-0.3 0.5 0~?</programlisting>
+        <para>leaves <code>true</code> on the stack (-0.3 is within 0.5 of
+        0.0).</para>
+      </section>
+      <section>
+        <title>
+          <code>0+?</code>
+          <remark> (is zero or more?)</remark>
+        </title>
+        <synopsis>( value -- value&gt;=0.0 )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if the number is
+        equal to <code>0.0</code> or positive, <code>false</code>
+        otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>0-?</code>
+          <remark> (is zero or less?)</remark>
+        </title>
+        <synopsis>( value -- value&lt;=0.0 )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if the number is
+        equal to <code>0.0</code> or negative, <code>false</code>
+        otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>abs</code>
+          <remark> (absolute value)</remark>
+        </title>
+        <synopsis>( x -- abs(x) )</synopsis>
+        <para>Pops a number and pushes its absolute value.</para>
+      </section>
+      <section>
+        <title>
+          <code>acos</code>
+          <remark> (arc cosine)</remark>
+        </title>
+        <synopsis>( x -- acos(x) )</synopsis>
+        <para>Pops a number and pushes its arc cosine.</para>
+        <para>Example:</para>
+        <programlisting>0.0 acos</programlisting>
+        <para>leaves <code>1.5707963267948966</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>+</code>
+          <remark> (add)</remark>
+        </title>
+        <synopsis>( x y -- x+y )</synopsis>
+        <para>Pops two number and pushes their sum.</para>
+      </section>
+      <section>
+        <title>
+          <code>asin</code>
+          <remark> (arc sine)</remark>
+        </title>
+        <synopsis>( x -- asin(x) )</synopsis>
+        <para>Pops a number and pushes its arc sine.</para>
+        <para>Example:</para>
+        <programlisting>0.0 asin</programlisting>
+        <para>leaves <code>0.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>atan</code>
+          <remark> (arc tangent)</remark>
+        </title>
+        <synopsis>( x -- atan(x) )</synopsis>
+        <para>Pops a number and pushes its arc tangent.</para>
+        <para>Example:</para>
+        <programlisting>0.0 atan</programlisting>
+        <para>leaves <code>0.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>cbrt</code>
+          <remark> (cube root)</remark>
+        </title>
+        <synopsis>( x -- cbrt(x) )</synopsis>
+        <para>Replaces a number by its cube root.</para>
+      </section>
+      <section>
+        <title>
+          <code>ceil</code>
+          <remark> (ceiling)</remark>
+        </title>
+        <synopsis>( x -- ceil(x) )</synopsis>
+        <para>Replaces a number by the smallest whole number greater or equal
+        to this number.</para>
+      </section>
+      <section>
+        <title>
+          <code>cos</code>
+          <remark> (cosine)</remark>
+        </title>
+        <synopsis>( x -- cos(x) )</synopsis>
+        <para>Pops a number and pushes its cosine.</para>
+        <para>Example:</para>
+        <programlisting>pi 2 / cos</programlisting>
+        <para>leaves <code>0.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>cosh</code>
+          <remark> (hyperbolic cosine)</remark>
+        </title>
+        <synopsis>( x -- cosh(x) )</synopsis>
+        <para>Pops a number and pushes its hyperbolic cosine.</para>
+        <para>Example:</para>
+        <programlisting>0.0 cosh</programlisting>
+        <para>leaves <code>1.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>deg</code>
+          <remark> (conversion to degrees)</remark>
+        </title>
+        <synopsis>( radians -- degrees )</synopsis>
+        <para>Pops a number in radians and pushes its value in degrees.</para>
+        <para>Example:</para>
+        <programlisting>pi deg</programlisting>
+        <para>leaves <code>180.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>/</code>
+          <remark> (divide)</remark>
+        </title>
+        <synopsis>( x y -- x/y )</synopsis>
+        <para>Pops two number and pushes the result of the division of one by
+        the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>/%</code>
+          <remark> (divide with remainder)</remark>
+        </title>
+        <synopsis>( x y -- x%y x/y )</synopsis>
+        <para>Pops two number and pushes the quotient and remainder of the
+        division of one by the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>e</code>
+        </title>
+        <synopsis>( -- e )</synopsis>
+        <para>Pushes <code>2.7182818284590452354</code>.</para>
+      </section>
+      <section>
+        <title>
+          <code>eq</code>
+          <remark> (equal)</remark>
+        </title>
+        <synopsis>( x y -- x==y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is equal to
+        the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>eq~</code>
+          <remark> (near equal)</remark>
+        </title>
+        <synopsis>( x y delta -- x~~y )</synopsis>
+        <para>Pops a delta and two numbers and pushes <code>true</code> if the
+        numbers are equal within the delta, <code>false</code>
+        otherwise.</para>
+        <para>Example:</para>
+        <programlisting>-0.7 -1.0 0.5 eq~</programlisting>
+        <para>leaves <code>true</code> on the stack (-0.7 is within 0.5 of
+        -1.0).</para>
+      </section>
+      <section>
+        <title>
+          <code>float</code>
+        </title>
+        <synopsis>( x -- float(x) )</synopsis>
+        <para>Converts a number to a floating-point (double) number.</para>
+      </section>
+      <section>
+        <title>
+          <code>float?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if it is a
+        floating-point number, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>floor</code>
+        </title>
+        <synopsis>( x -- floor(x) )</synopsis>
+        <para>Replaces a number by the largest whole number less or equal to
+        this number.</para>
+      </section>
+      <section>
+        <title>
+          <code>ge</code>
+          <remark> (greater or equal)</remark>
+        </title>
+        <synopsis>( x y -- x&gt;=y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is greater
+        or equal to the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>gt</code>
+          <remark> (greater)</remark>
+        </title>
+        <synopsis>( x y -- x&gt;y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is greater
+        than the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>hypot</code>
+        </title>
+        <synopsis>( x y -- hypot(x,y) )</synopsis>
+        <para>Replaces two numbers <code>(x, y)</code> by the value of
+        <code>sqrt(x**2 + y**2)</code> .</para>
+      </section>
+      <section>
+        <title>
+          <code>inf?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if it represents an
+        infinite value, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>+inf</code>
+        </title>
+        <synopsis>( -- +inf )</synopsis>
+        <para>Pushes a value representing positive infinity.</para>
+      </section>
+      <section>
+        <title>
+          <code>-inf</code>
+        </title>
+        <synopsis>( -- -inf )</synopsis>
+        <para>Pushes a value representing negative infinity.</para>
+      </section>
+      <section>
+        <title>
+          <code>le</code>
+          <remark> (less or equal)</remark>
+        </title>
+        <synopsis>( x y -- x&lt;=y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is less or
+        equal to the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>log</code>
+          <remark> (natural logarithm)</remark>
+        </title>
+        <synopsis>( x -- log(x) )</synopsis>
+        <para>Replaces a number by its natural logarithm.</para>
+      </section>
+      <section>
+        <title>
+          <code>log10</code>
+          <remark> (base 10 logarithm)</remark>
+        </title>
+        <synopsis>( x -- log10(x) )</synopsis>
+        <para>Replaces a number by its base 10 logarithm.</para>
+      </section>
+      <section>
+        <title>
+          <code>lt</code>
+          <remark> (less)</remark>
+        </title>
+        <synopsis>( x y -- x&lt;y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is less
+        than the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>max</code>
+          <remark> (maximum)</remark>
+        </title>
+        <synopsis>( x y -- max(x,y) )</synopsis>
+        <para>Pops two numbers and pushes the greater of them.</para>
+      </section>
+      <section>
+        <title>
+          <code>min</code>
+          <remark> (minimum)</remark>
+        </title>
+        <synopsis>( x y -- min(x,y) )</synopsis>
+        <para>Pops two numbers and pushes the smaller of them.</para>
+      </section>
+      <section>
+        <title>
+          <code>*</code>
+          <remark> (multiply)</remark>
+        </title>
+        <synopsis>( x y -- x*y )</synopsis>
+        <para>Pops two number and pushes their product.</para>
+      </section>
+      <section>
+        <title>
+          <code>nan</code>
+        </title>
+        <synopsis>( -- nan )</synopsis>
+        <para>Pushes a &apos;Not-a-Number&apos; (NaN) value.</para>
+      </section>
+      <section>
+        <title>
+          <code>nan?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if it represents a
+        &apos;Not-a-Number&apos; (NaN) value, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>ne</code>
+          <remark> (not equal)</remark>
+        </title>
+        <synopsis>( x y -- x!=y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is not
+        equal to the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>neg</code>
+          <remark> (negative)</remark>
+        </title>
+        <synopsis>( x -- -x )</synopsis>
+        <para>Replaces a number by its negative.</para>
+      </section>
+      <section>
+        <title>
+          <code>number?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a value and pushes <code>true</code> if it is a number,
+        <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>pi</code>
+        </title>
+        <synopsis>( -- pi )</synopsis>
+        <para>Pushes <constant>pi</constant>, the ratio of the circumference
+        of a circle to its diameter.</para>
+      </section>
+      <section>
+        <title>
+          <code>**</code>
+          <remark> (power)</remark>
+        </title>
+        <synopsis>( x y -- x**y )</synopsis>
+        <para>Pops two number and pushes the result of one at the power of the
+        other.</para>
+      </section>
+      <section>
+        <title>
+          <code>rad</code>
+          <remark> (conversion to radians)</remark>
+        </title>
+        <synopsis>( degrees -- radians )</synopsis>
+        <para>Pops a number in degrees and pushes its value in radians.</para>
+        <para>Example:</para>
+        <programlisting>90.0 rad</programlisting>
+        <para>leaves <code>1.5707963267948966</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>%</code>
+          <remark> (remainder)</remark>
+        </title>
+        <synopsis>( x y -- x%y )</synopsis>
+        <para>Pops two number and pushes the remainder of the division of one
+        by the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>round</code>
+        </title>
+        <synopsis>( x -- round(x) )</synopsis>
+        <para>Replaces a number by its closest whole value..</para>
+      </section>
+      <section>
+        <title>
+          <code>sin</code>
+          <remark> (sine)</remark>
+        </title>
+        <synopsis>( x -- sin(x) )</synopsis>
+        <para>Pops a number and pushes its sine.</para>
+        <para>Example:</para>
+        <programlisting>pi 2 / sin</programlisting>
+        <para>leaves <code>1.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>sinh</code>
+          <remark> (hyperbolic sine)</remark>
+        </title>
+        <synopsis>( x -- sinh(x) )</synopsis>
+        <para>Pops a number and pushes its hyperbolic sine.</para>
+        <para>Example</para>
+        <programlisting>0.0 sinh</programlisting>
+        <para>leaves <code>0.0</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>sqrt</code>
+          <remark> (square root)</remark>
+        </title>
+        <synopsis>( x -- sqrt(x) )</synopsis>
+        <para>Replaces a number by its square root.</para>
+      </section>
+      <section>
+        <title>
+          <code>-</code>
+          <remark> (substract)</remark>
+        </title>
+        <synopsis>( x y -- x-y )</synopsis>
+        <para>Pops two number and pushes their difference.</para>
+      </section>
+      <section>
+        <title>
+          <code>tan</code>
+          <remark> (tangent)</remark>
+        </title>
+        <synopsis>( x -- tan(x) )</synopsis>
+        <para>Pops a number and pushes its tangent.</para>
+      </section>
+      <section>
+        <title>
+          <code>tanh</code>
+          <remark> (hyperbolic tangent)</remark>
+        </title>
+        <synopsis>( x -- tanh(x) )</synopsis>
+        <para>Pops a number and pushes its hyperbolic tangent.</para>
+      </section>
+    </section>
+    <section>
+      <title>Long Operations</title>
+      <para>The <classname>LongOperations</classname> module provides
+      operations on <classname>Long</classname> objects.</para>
+      <section>
+        <title>
+          <code>0?</code>
+          <remark> (is zero?)</remark>
+        </title>
+        <synopsis>( value -- value==0 )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if the number is
+        equal to <code>0</code>, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>0+?</code>
+          <remark> (is zero or more?)</remark>
+        </title>
+        <synopsis>( value -- value&gt;=0 )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if the number is
+        equal to <code>0</code> or positive, <code>false</code>
+        otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>0-?</code>
+          <remark> (is zero or less?)</remark>
+        </title>
+        <synopsis>( value -- value&lt;=0 )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if the number is
+        equal to <code>0</code> or negative, <code>false</code>
+        otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>abs</code>
+          <remark> (absolute value)</remark>
+        </title>
+        <synopsis>( x -- abs(x) )</synopsis>
+        <para>Pops a number and pushes its absolute value.</para>
+      </section>
+      <section>
+        <title>
+          <code>+</code>
+          <remark> (add)</remark>
+        </title>
+        <synopsis>( x y -- x+y )</synopsis>
+        <para>Pops two number and pushes their sum.</para>
+      </section>
+      <section>
+        <title>
+          <code>and</code>
+          <remark> (binary and)</remark>
+        </title>
+        <synopsis>( x y -- x&amp;y )</synopsis>
+        <para>Pops two number and pushes the result of a binary &apos;and&apos;
+        operation.</para>
+      </section>
+      <section>
+        <title>
+          <code>/</code>
+          <remark> (divide)</remark>
+        </title>
+        <synopsis>( x y -- x/y )</synopsis>
+        <para>Pops two number and pushes the result of the division of one by
+        the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>/%</code>
+          <remark> (divide with remainder)</remark>
+        </title>
+        <synopsis>( x y -- x%y x/y )</synopsis>
+        <para>Pops two number and pushes the quotient and remainder of the
+        division of one by the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>--</code>
+          <remark> (decrement)</remark>
+        </title>
+        <synopsis>( x -- x-1 )</synopsis>
+        <para>Replaces a number by its decremented value.</para>
+      </section>
+      <section>
+        <title>
+          <code>eq</code>
+          <remark> (equal)</remark>
+        </title>
+        <synopsis>( x y -- x==y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is equal to
+        the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>float</code>
+        </title>
+        <synopsis>( x -- float(x) )</synopsis>
+        <para>Converts a number to a floating-point (double) number.</para>
+      </section>
+      <section>
+        <title>
+          <code>ge</code>
+          <remark> (greater or equal)</remark>
+        </title>
+        <synopsis>( x y -- x&gt;=y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is greater
+        or equal to the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>gt</code>
+          <remark> (greater)</remark>
+        </title>
+        <synopsis>( x y -- x&gt;y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is greater
+        than the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>++</code>
+          <remark> (increment)</remark>
+        </title>
+        <synopsis>( x -- x+1 )</synopsis>
+        <para>Replaces a number by its incremented value.</para>
+      </section>
+      <section>
+        <title>
+          <code>int</code>
+        </title>
+        <synopsis>( x -- int(x) )</synopsis>
+        <para>Converts a number to an integer (long) number.</para>
+      </section>
+      <section>
+        <title>
+          <code>int?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a number and pushes <code>true</code> if it is an integer
+        number, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>le</code>
+          <remark> (less or equal)</remark>
+        </title>
+        <synopsis>( x y -- x&lt;=y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is less or
+        equal to the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>lshft</code>
+          <remark> (left shift)</remark>
+        </title>
+        <synopsis>( x y -- x&lt;&lt;y )</synopsis>
+        <para>Pops two number and pushes the result of the left shift of one
+        by the number of bits specified by the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>lt</code>
+          <remark> (less)</remark>
+        </title>
+        <synopsis>( x y -- x&lt;y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is less
+        than the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>max</code>
+          <remark> (maximum)</remark>
+        </title>
+        <synopsis>( x y -- max(x,y) )</synopsis>
+        <para>Pops two numbers and pushes the greater of them.</para>
+      </section>
+      <section>
+        <title>
+          <code>min</code>
+          <remark> (minimum)</remark>
+        </title>
+        <synopsis>( x y -- min(x,y) )</synopsis>
+        <para>Pops two numbers and pushes the smaller of them.</para>
+      </section>
+      <section>
+        <title>
+          <code>*</code>
+          <remark> (multiply)</remark>
+        </title>
+        <synopsis>( x y -- x*y )</synopsis>
+        <para>Pops two number and pushes their product.</para>
+      </section>
+      <section>
+        <title>
+          <code>ne</code>
+          <remark> (not equal)</remark>
+        </title>
+        <synopsis>( x y -- x!=y )</synopsis>
+        <para>Pops two numbers and pushes <code>true</code> if one is not
+        equal to the other, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>neg</code>
+          <remark> (negative)</remark>
+        </title>
+        <synopsis>( x -- -x )</synopsis>
+        <para>Replaces a number by its negative.</para>
+      </section>
+      <section>
+        <title>
+          <code>not</code>
+          <remark> (complement)</remark>
+        </title>
+        <synopsis>( x -- ~x )</synopsis>
+        <para>Replaces a number by its complement.</para>
+      </section>
+      <section>
+        <title>
+          <code>or</code>
+          <remark> (binary or)</remark>
+        </title>
+        <synopsis>( x y -- x&amp;y )</synopsis>
+        <para>Pops two number and pushes the result of a binary &apos;or&apos;
+        operation.</para>
+      </section>
+      <section>
+        <title>
+          <code>%</code>
+          <remark> (remainder)</remark>
+        </title>
+        <synopsis>( x y -- x%y )</synopsis>
+        <para>Pops two number and pushes the remainder of the division of one
+        by the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>rshft</code>
+          <remark> (right shift)</remark>
+        </title>
+        <synopsis>( x y -- x&gt;&gt;y )</synopsis>
+        <para>Pops two number and pushes the result of the right shift of one
+        by the number of bits specified by the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>rshftz</code>
+          <remark> (right shift zero fill)</remark>
+        </title>
+        <synopsis>( x y -- x&gt;&gt;&gt;y )</synopsis>
+        <para>Pops two number and pushes the result of the right shift with
+        zero fill of one by the number of bits specified by the other.</para>
+      </section>
+      <section>
+        <title>
+          <code>-</code>
+          <remark> (substract)</remark>
+        </title>
+        <synopsis>( x y -- x-y )</synopsis>
+        <para>Pops two number and pushes their difference.</para>
+      </section>
+      <section>
+        <title>
+          <code>xor</code>
+          <remark> (binary exclusive or)</remark>
+        </title>
+        <synopsis>( x y -- x^y )</synopsis>
+        <para>Pops two number and pushes the result of a binary &apos;xor&apos;
+        operation.</para>
+      </section>
+    </section>
+    <section>
+      <title>Boolean Operations</title>
+      <para>The <classname>BooleanOperations</classname> module provides
+      operations on <classname>Boolean</classname> objects.</para>
+      <section>
+        <title>
+          <code>?:</code>
+          <remark> (conditional value)</remark>
+        </title>
+        <synopsis>( ifFalse ifTrue condition -- condition?ifTrue:ifFalse )</synopsis>
+        <para>Pops a boolean value as a condition and leaves one of the next
+        two top values on the stack.</para>
+        <para>Example:</para>
+        <programlisting>1 2 false ?:</programlisting>
+        <para>leaves <code>1</code> on the stack.</para>
+      </section>
+      <section>
+        <title>
+          <code>and</code>
+        </title>
+        <synopsis>( x y -- x&amp;&amp;y )</synopsis>
+        <para>Pops two boolean values and pushes <code>true</code> if both are
+        <code>true</code>, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>assert</code>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Pops a boolean value and fails if it is <code>null</code> or
+        <code>false</code>.</para>
+      </section>
+      <section>
+        <title>
+          <code>bool</code>
+        </title>
+        <synopsis>( x -- bool(x) )</synopsis>
+        <para>Converts a string to a boolean value.</para>
+      </section>
+      <section>
+        <title>
+          <code>false</code>
+        </title>
+        <synopsis>( -- false )</synopsis>
+        <para>Pushes a <code>false</code> value.</para>
+      </section>
+      <section>
+        <title>
+          <code>false!</code>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Pops a boolean value and fails if it is
+        <code>true</code>.</para>
+      </section>
+      <section>
+        <title>
+          <code>not</code>
+        </title>
+        <synopsis>( x -- !x )</synopsis>
+        <para>Pops a boolean value and pushes <code>true</code> if it is
+        <code>false</code>, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>or</code>
+        </title>
+        <synopsis>( x y -- x||y )</synopsis>
+        <para>Pops two boolean values and pushes <code>true</code> if either
+        is <code>true</code>, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>true</code>
+        </title>
+        <synopsis>( -- true )</synopsis>
+        <para>Pushes a <code>true</code> value.</para>
+      </section>
+      <section>
+        <title>
+          <code>true!</code>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Pops a boolean value and fails if it is
+        <code>false</code>.</para>
+      </section>
+      <section>
+        <title>
+          <code>xor</code>
+        </title>
+        <synopsis>( x y -- x^y )</synopsis>
+        <para>Pops two boolean values and pushes <code>true</code> if they are
+        different, <code>false</code> otherwise.</para>
+      </section>
+    </section>
+    <section>
+      <title>String Operations</title>
+      <para>The <classname>StringOperations</classname> module provides
+      operations on <classname>String</classname> objects.</para>
+      <section>
+        <title>
+          <code>+</code>
+          <remark> (concatenate)</remark>
+        </title>
+        <synopsis>( x y -- xy )</synopsis>
+        <para>Pops two strings and pushes their concatenation.</para>
+      </section>
+      <section>
+        <title>
+          <code>debug</code>
+          <remark> (debug log)</remark>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Pops a string value and put it in a log message at &apos;debug&apos;
+        level.</para>
+      </section>
+      <section>
+        <title>
+          <code>empty?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a string and pushes <code>true</code> if its lenght is
+        <code>0</code>, <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>error<remark> (error log)</remark></code>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Pops a string value and put it in a log message at &apos;error&apos;
+        level.</para>
+      </section>
+      <section>
+        <title>
+          <code>format</code>
+        </title>
+        <synopsis>( ... format -- ... text )</synopsis>
+        <para>Pops a format string and peeks at the content of the top stack
+        partition to push a formatted text.</para>
+      </section>
+      <section>
+        <title>
+          <code>format*</code>
+        </title>
+        <synopsis>( ... format -- ... text )</synopsis>
+        <para>Pops a format string and peeks at the content of the whole stack
+        to push a formatted text.</para>
+      </section>
+      <section>
+        <title>
+          <code>info<remark> (info log)</remark></code>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Pops a string value and put it in a log message at &apos;info&apos;
+        level.</para>
+      </section>
+      <section>
+        <title>
+          <code>lower<remark> (lower case)</remark></code>
+        </title>
+        <synopsis>( string -- lower(string) )</synopsis>
+        <para>Pops a string value and pushes it with all lower case
+        characters.</para>
+      </section>
+      <section>
+        <title>
+          <code>str</code>
+          <remark> (string conversion)</remark>
+        </title>
+        <synopsis>( x -- str(x) )</synopsis>
+        <para>Pops a value and pushes is string representation.</para>
+      </section>
+      <section>
+        <title>
+          <code>str?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a value and pushes <code>true</code> if it is a string,
+        <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>substring</code>
+        </title>
+        <synopsis>( string from to -- substring )</synopsis>
+        <para>Pops a limit index (to), a start index (from) and a string and
+        pushes a substring including characters form the start index up to but
+        not including the limit index.</para>
+      </section>
+      <section>
+        <title>
+          <code>trim</code>
+        </title>
+        <synopsis>( string -- trim(string) )</synopsis>
+        <para>Pops a string value and pushes it with white spaces removed at
+        both ends.</para>
+      </section>
+      <section>
+        <title>
+          <code>upper</code>
+          <remark> (upper case)</remark>
+        </title>
+        <synopsis>( string -- upper(string) )</synopsis>
+        <para>Pops a string value and pushes it with all upper case
+        characters.</para>
+      </section>
+      <section>
+        <title>
+          <code>warn</code>
+          <remark> (warn log)</remark>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Pops a string value and put it in a log message at &apos;warn&apos;
+        level.</para>
+      </section>
+    </section>
+    <section>
+      <title>Compound Operations</title>
+      <para>The <classname>CompoundOperations</classname> module provides
+      compound operations.</para>
+      <section>
+        <title>
+          <code>{</code>
+          <remark> (begin)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Begins bundling all the following operations until the next
+        &quot;<code>}</code>&quot; (end) word. This allows operations like
+        <code>if</code> or <code>do</code> which expect to be followed by
+        single instructions to apply to the whole block.</para>
+      </section>
+      <section>
+        <title>
+          <code>}</code>
+          <remark> (end)</remark>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Ends the bundling of operations initiated by the preceeding
+        &quot;<code>{</code>&quot; (begin) word.</para>
+      </section>
+      <section>
+        <title>
+          <code>break</code>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Breaks the current loop instruction (<code>do</code> or <code>while</code>).</para>
+      </section>
+      <section>
+        <title>
+          <code>continue</code>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Continues the current loop instruction (<code>do</code> or <code>while</code>).</para>
+      </section>
+      <section>
+        <title>
+          <code>do</code>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Executes the following operation, then pops a boolean value and repeats the operation if the value is true.</para>
+      </section>
+      <section>
+        <title>
+          <code>if</code>
+        </title>
+        <synopsis>( boolean -- )</synopsis>
+        <para>Pops a boolean value and executes the following operation if the value is true.</para>
+        <para>If the following word is <code>else</code>, then execute the operation following that word if and only if the boolean value was false. When the <code>else</code> word is present, the operation following the <code>if</code> is optional.</para>
+      </section>
+      <section>
+        <title>
+          <code>reduce</code>
+        </title>
+        <synopsis>( ... -- value )</synopsis>
+        <para>While the size of the current stack is greater than 1, executes the following operation.</para>
+      </section>
+      <section>
+        <title>
+          <code>#reduce</code>
+        </title>
+        <synopsis>( ... size -- values )</synopsis>
+        <para>Pops a target size and, while the size of the current stack is greater than the target size, executes the following operation.</para>
+      </section>
+      <section>
+        <title>
+          <code>try</code>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Executes the following operation, then if it fails, executes the next operation after clearing the part of the stack built by the tried operation..</para>
+      </section>
+      <section>
+        <title>
+          <code>unless</code>
+        </title>
+        <synopsis>( -- )</synopsis>
+        <para>Pops a boolean value and executes the following operation if the value is false.</para>
+      </section>
+      <section>
+        <title>
+          <code>while</code>
+        </title>
+        <synopsis>( boolean -- )</synopsis>
+        <para>Pops a boolean value and, if the value is true, executes the following operation and repeats.</para>
+      </section>
+    </section>
+    <section>
+      <title>Container Operations</title>
+      <para>The <classname>ContainerOperations</classname> module provides
+      container operations, most of which are available only while executing the <code>apply</code> operation. Two types of container are supported: the <code>tuple</code> hold a sequence of values, the <code>dict</code> holds key and value pairs. Both  types allow random access to their values: the <code>dict</code> by its keys, the <code>tuple</code> by an origin <code>0</code> index.</para>
+      <section>
+        <title>
+          <code>append</code>
+        </title>
+        <synopsis>( x -- )</synopsis>
+        <para>Available only to <code>apply</code> on a <code>tuple</code>: pops a value and appends it to the <code>tuple</code>.</para>
+      </section>
+      <section>
+        <title>
+          <code>apply</code>
+        </title>
+        <synopsis>( container -- )</synopsis>
+        <para>Pops a container (<code>tuple</code> or <code>dict</code>) and applies the next operation to that container.</para>
+      </section>
+      <section>
+        <title>
+          <code>container?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a value and pushes <code>true</code> if it is a container,
+        <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>dict</code>
+        </title>
+        <synopsis>( -- dict )</synopsis>
+        <para>Pushes an empty <code>dict</code>.</para>
+      </section>
+      <section>
+        <title>
+          <code>dict?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a value and pushes <code>true</code> if it is a <code>dict</code>,
+        <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>entries</code>
+        </title>
+        <synopsis>( -- entries )</synopsis>
+        <para>Available only to <code>apply</code> on a <code>dict</code>: pushes the <code>dict</code> entries. Each entry takes two locations on the stack: the key on top and the value under the key.</para>
+      </section>
+      <section>
+        <title>
+          <code>get</code>
+        </title>
+        <synopsis>( key|index -- value )</synopsis>
+        <para>Available only to <code>apply</code>: pushes the value at popped  key or index.</para>
+      </section>
+      <section>
+        <title>
+          <code>keys</code>
+        </title>
+        <synopsis>( -- keys )</synopsis>
+        <para>Available only to <code>apply</code> on a <code>dict</code>: pushes the <code>dict</code> keys.</para>
+      </section>
+      <section>
+        <title>
+          <code>put</code>
+        </title>
+        <synopsis>( value key|index -- )</synopsis>
+        <para>Available only to <code>apply</code>: pops the   key or index and puts the popped value at the corresponding position in the container. When necessary, a <code>tuple</code> will be extended with <code>null</code> values.</para>
+      </section>
+      <section>
+        <title>
+          <code>remove</code>
+        </title>
+        <synopsis>( key|index -- value )</synopsis>
+        <para>Available only to <code>apply</code>: pushes  and removes the value at popped  key or index.</para>
+      </section>
+      <section>
+        <title>
+          <code>size</code>
+        </title>
+        <synopsis>( -- size )</synopsis>
+        <para>Available only to <code>apply</code>: pushes the container size (number of values).</para>
+      </section>
+      <section>
+        <title>
+          <code>tuple</code>
+        </title>
+        <synopsis>( -- tuple )</synopsis>
+        <para>Pushes an empty <code>tuple</code>.</para>
+      </section>
+      <section>
+        <title>
+          <code>tuple?</code>
+        </title>
+        <synopsis>( x -- boolean )</synopsis>
+        <para>Pops a value and pushes <code>true</code> if it is a <code>tuple</code>,
+        <code>false</code> otherwise.</para>
+      </section>
+      <section>
+        <title>
+          <code>values</code>
+        </title>
+        <synopsis>( -- values )</synopsis>
+        <para>Available only to <code>apply</code>: pushes the container values.</para>
+      </section>
+    </section>
+  </section>
+  <section>
+    <title>Configuration</title>
+    <para>An instance of the RPN engine comes configured with all the bundled
+    modules. It may be used directly, or cloned if one wants to specify macros
+    and additional words.</para>
+    <para>The configuration is done with the <constant>Module</constant> parameter in the RPN engine definition inside the metadata. This parameter allows multiple values, each being a reference to the <classname>ClassDef</classname> for a RPN module.</para>
+    <para>The order of the module class references is important since the word overloading works by looking from last to first.</para>
+    <para>A RPN engine definition may  add macro and word definitions with the <constant>Macro</constant> and <constant>Word</constant> parameters. These definitions will then be available to all the transforms associated with that engine.</para>
+    <para>Each transform for a RPN engine must supply a RPN program with the <constant>Program</constant> parameter. This program can access the values specified by the <constant>Param</constant> parameter. It may also add macro and word definitions.</para>
+  </section>
+</article>

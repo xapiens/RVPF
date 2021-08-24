@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!-- This document was created with Syntext Serna Free. -->
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<article>
+  <title>RVPF Metadata</title>
+  <subtitle>
+    <phrase role="revised-date">Revised: 2010-03-10.</phrase>
+  </subtitle>
+  <articleinfo>
+    <copyright>
+      <year>2003</year>
+      <year>2004</year>
+      <year>2005</year>
+      <year>2006</year>
+      <year>2007</year>
+      <year>2008</year>
+      <year>2009</year>
+      <year>2010</year>
+      <holder>Serge Brisson.</holder>
+    </copyright>
+  </articleinfo>
+  <para>The <classname>Metadata</classname> is at the heart of the framework.
+  It holds all the information about the point definitions needed by the
+  components to perform their duties. It can also be used as a reference for
+  definitions held in proprietary systems. Its external format is
+  <acronym>XML</acronym> and is specified by a <acronym>DTD</acronym>.</para>
+  <section>
+    <title>
+      <classname>Behavior</classname>
+    </title>
+    <para>Each point value entering the system may affect many other point
+    values. It may trigger the computation of a new value, or of previously
+    computed values, combined with other values. We call the specifics of
+    these actions the <emphasis>behavior</emphasis> of
+    <emphasis>input</emphasis> values on <emphasis>result</emphasis>
+    values.</para>
+    <para>The <classname>Behavior</classname> entity represents the behavior
+    of an <emphasis>input</emphasis> value on a <emphasis>result</emphasis>
+    computed from that value.</para>
+  </section>
+  <section>
+    <title>
+      <classname>ClassDef</classname>
+    </title>
+    <para>A <classname>ClassDef</classname> entity holds the informations for
+    the creation of instances of a class or declares an interface. This is
+    used during the setup of a framework component to prepare the
+    <classname>Metadata</classname> objects needed by this component.</para>
+    <para>The informations include the class name, its package and a reference
+    to its <classname>ClassLib</classname> entity.</para>
+    <para>The interfaces that the class implements should be specified
+    (unless, of course, it is declaring such an interface).</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="classdef"/>
+        </imageobject>
+        <caption>
+          <para><classname>ClassDef</classname> Class Hierarchy.</para>
+        </caption>
+      </mediaobject>
+    </informalfigure>
+  </section>
+  <section>
+    <title>
+      <classname>ClassLib</classname>
+    </title>
+    <para>A <classname>ClassLib</classname> entity holds the informations to
+    add a class library to the classpath. When the entity is identified (with
+    a <varname>name</varname>, <varname>uuid</varname> or
+    <varname>id</varname> attribute), that library will be accessed only if it
+    is referenced by an activated <classname>ClassDef</classname>. Otherwise,
+    it is immediately put on the classpath. Since a ClassLib may be remote, it
+    may also be cached and have more than one <acronym>URL</acronym> from
+    which it may be downloaded (the caching and multiple
+    <acronym>URL</acronym> support is not yet implemented).</para>
+  </section>
+  <section>
+    <title>
+      <classname>Content</classname>
+    </title>
+    <para>A <classname>Content</classname> provides logic for the content of a
+    point&apos;s values. Its main responsibility is the
+    <emphasis>normalization</emphasis> before supplying an input value for the
+    computation of a result value and the <emphasis>denormalization</emphasis>
+    of that result value after computation.</para>
+    <para>This allows the computation to ignore the choice of storage
+    representation of the points.</para>
+  </section>
+  <section>
+    <title>
+      <classname>Def</classname>
+    </title>
+    <para>All selectable entities are classified as definitions
+    (<classname>Def</classname>). The only fields actually used by the
+    framework are <structfield>name</structfield> and
+    <structfield>uuid</structfield>; the other fields are present only for
+    documentation purposes.</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="def"/>
+        </imageobject>
+        <caption>
+          <para><classname>Def</classname> Class Hiearchy.</para>
+        </caption>
+      </mediaobject>
+    </informalfigure>
+  </section>
+  <section>
+    <title>
+      <classname>Engine</classname>
+    </title>
+    <para>An <classname>Engine</classname> implements the machinery used to
+    produce a result value from its input values.</para>
+  </section>
+  <section>
+    <title>
+      <classname>Input</classname>
+    </title>
+    <para>An <classname>Input</classname> expresses the relationship between
+    the values of a <classname>Point</classname> as the result of a
+    transformation and the values of other <classname>Point</classname>s as
+    input to that transformation.</para>
+  </section>
+  <section>
+    <title><classname>Origin</classname>.</title>
+    <para>An <classname>Origin</classname> represents the origin of a
+    <classname>Point</classname>&apos;s values. It may be from within the
+    framework, like the <classname>Clock Service</classname>, or from
+    outside.</para>
+  </section>
+  <section>
+    <title>
+      <classname>Param</classname>
+    </title>
+    <para>Many entities may have additional informations supplied in the form
+    of parameter (<classname>Param</classname>).</para>
+    <para>Each <classname>Param</classname> must reference a
+    <classname>ParamDef</classname>.</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="param"/>
+        </imageobject>
+        <caption>
+          <para><classname>Param</classname> Relations.</para>
+        </caption>
+      </mediaobject>
+    </informalfigure>
+  </section>
+  <section>
+    <title>
+      <classname>ParamDef</classname>
+    </title>
+    <para>A <classname>ParamDef</classname> acts as a reference for the
+    parameters of holding entities.</para>
+  </section>
+  <section>
+    <title>
+      <classname>Point</classname>
+    </title>
+    <para>A <classname>Point</classname> entity holds the reference
+    information for a set of timestamped values.</para>
+    <para>It has a <classname>UUID</classname> as primary key, but may be
+    located according to its <classname>Origin</classname>, its
+    <classname>Store</classname>, or from its relationships
+    (<classname>Input</classname> or result) with other
+    <classname>Point</classname>s.</para>
+    <para>When its <classname>Origin</classname> is a <acronym>RVPF</acronym>
+    <classname>Processor</classname>, its values are the result from a
+    <classname>Transform</classname> applied to the values of its
+    <classname>Input</classname>s.</para>
+    <para>When one of its values is received by a <acronym>RVPF</acronym>
+    <classname>Processor</classname>, it may trigger an update of the values
+    for some or all of the <classname>Point</classname>s using it as an
+    <classname>Input</classname> on this
+    <classname>Processor</classname>.</para>
+    <para>Its <classname>Store</classname> allows access to its values.</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="point"/>
+        </imageobject>
+        <caption>
+          <para><classname>Point</classname> Relations.</para>
+        </caption>
+      </mediaobject>
+    </informalfigure>
+  </section>
+  <section>
+    <title>
+      <classname>Store</classname>
+    </title>
+    <para>A <classname>Store</classname> entity holds the informations for
+    accessing the service holding the values for a
+    <classname>Point</classname>. This information is held explicitly by its
+    <classname>Param</classname>s and implicitly by its
+    <classname>ClassDef</classname>.</para>
+  </section>
+  <section>
+    <title>
+      <classname>Transform</classname>
+    </title>
+    <para>A <classname>Transform</classname> holds the informations required
+    for a specific transformation of input values to a result value. These
+    informations are used by the referenced <classname>Engine</classname> to
+    perform the computation.</para>
+  </section>
+</article>

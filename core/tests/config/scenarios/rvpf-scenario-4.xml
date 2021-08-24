@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE scenario PUBLIC
+        "-//Serge Brisson//DTD RVPF Scenarios//EN"
+        "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-scenario-4.xml 3388 2017-03-14 16:36:04Z SFB $
+ -->
+
+<scenario title="Running interval" time='2017-02-01'>
+
+    <casting director='tests.scenario.4'>
+        <cast role='BEGIN' actor='TESTS.BEGIN:TEXT'/>
+        <cast role='END' actor='TESTS.END:TEXT'/>
+        <cast role='ENTRY' actor='TESTS.ENTRY:NUMERIC'/>
+        <cast role='HOUR' actor='TESTS.HOUR:CLOCK'/>
+        <cast role='SUM' actor='TESTS.SUM:NUMERIC'/>
+    </casting>
+
+    <scene title="First hour">
+        <entry line='A1' role='HOUR' time='01:00' text='0'/>
+        <exit line='A2' role='SUM' time='01:00' text='0.0'/>
+        <entry line='A3' role='ENTRY' time='01:15' text='1.0'/>
+        <entry line='A4' role='ENTRY' time='01:45' text='3.0'/>
+        <exit line='A5' role='SUM' time='01:00' text='4.0'/>
+        <entry line='A6' role='ENTRY' time='01:30' text='2.0'/>
+        <exit line='A7' role='SUM' time='01:00' text='6.0'/>
+    </scene>
+
+    <scene title="Second hour">
+        <entry line='B1' role='HOUR' time='02:00' text='0'/>
+        <exit line='B2' role='SUM' time='01:00' text='6.0'/>
+        <exit line='B3' role='SUM' time='02:00' text='0.0'/>
+        <entry line='B4' role='ENTRY' time='02:15' text='5.0'/>
+        <entry line='B5' role='ENTRY' time='02:30' text='6.0'/>
+        <exit line='B6' role='SUM' time='02:00' text='11.0'/>
+    </scene>
+
+    <scene title="Third hour">
+        <entry line='C1' role='ENTRY' time='03:00' text='7.0'/>
+        <entry line='C3' role='HOUR' time='03:00' text='0'/>
+        <exit line='C4' role='SUM' time='03:00' text='7.0'/>
+        <exit line='C5' role='SUM' time='02:00' text='11.0'/>
+    </scene>
+
+    <scene title="End" time='+1'>
+        <!-- Ensures that there are no more results. -->
+        <entry line='Z1' role='BEGIN' time='01:00' state='Done' text='Z'/>
+        <exit line='Z2' role='END' time='01:00' state='Done' text='Z'/>
+    </scene>
+
+</scenario>
+
+<!-- End. -->
