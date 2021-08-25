@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- $Id: log4j2.xml 3055 2016-06-09 16:18:42Z SFB $ -->
+
+<Configuration strict='true' name='RVPFTests'
+        packages="org.rvpf.base.logger.log4j">
+
+    <Appenders>
+
+        <Appender type='File' name='TESTS'
+                fileName='${env:RVPF_LOG}/tests.log' append='false'>
+            <Layout type='PatternLayout'>
+                <Pattern>%d{ABSOLUTE} %-5p [%X{ID}:%c] %m%n</Pattern>
+            </Layout>
+        </Appender>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name='org.rvpf' level='DEBUG'/>
+
+        <Logger name='org.rvpf.base.util.Version' level='DEBUG'/>
+
+        <Logger name='org.rvpf.base.util.Profiler' level='DEBUG'/>
+
+        <Logger name='org.rvpf.service.Config' level='INFO'/>
+
+        <Logger name='org.rvpf.document' level='DEBUG'/>
+
+        <Root level='INFO'>
+            <AppenderRef ref='TESTS'/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
+
+<!-- End. -->

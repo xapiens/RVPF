@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- $Id: log4j2.xml 3051 2016-06-05 13:12:28Z SFB $ -->
+
+<Configuration strict='true' name='RVPF_Service'
+        packages="org.rvpf.base.logger.log4j">
+
+    <Appenders>
+
+        <Appender type='Console' name='Console'>
+            <Filter type='ThresholdFilter' level='INFO'/>
+            <Layout type='PatternLayout'>
+                <Pattern>%d %-5p [%X{ID}:%c{1}] %m%n</Pattern>
+            </Layout>
+        </Appender>
+
+        <Appender type='DailyFile' name='Daily'
+                directory='log' maxFileSize='3MB'>
+            <Layout type='PatternLayout'>
+                <Pattern>%d %-5p [%X{ID}:%c] %m%n</Pattern>
+            </Layout>
+        </Appender>
+
+        <Appender type='DetailFile' name='Detail'
+                directory='log' maxFileSize='1MB'
+                maxBackups='4'>
+            <Layout type='PatternLayout'>
+                <Pattern>%d %-5p [%X{ID}:%c] %m%n</Pattern>
+            </Layout>
+        </Appender>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name='org.rvpf' level='DEBUG'/>
+
+        <Logger name='org.rvpf.base.util.Version' level='DEBUG'/>
+
+        <Logger name='org.rvpf.base.util.Profiler' level='DEBUG'/>
+
+        <Logger name='org.rvpf.service.Config' level='INFO'/>
+
+        <Root level='INFO'>
+            <AppenderRef ref='Console'/>
+            <AppenderRef ref='Daily'/>
+            <AppenderRef ref='Detail'/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
+
+<!-- End. -->

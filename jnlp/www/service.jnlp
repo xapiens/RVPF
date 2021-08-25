@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+
+<!-- $Id: service.jnlp 3740 2018-10-13 18:50:34Z SFB $ -->
+
+<jnlp codebase='http://localhost:10080/'>
+
+    <resources>
+    	<property name='rvpf.jnlp' value='true'/>
+        <jar href='lib/rvpf-jnlp-starter.jar'/>
+        <jar href='lib/rvpf-forwarder.jar'/>
+        <jar href='lib/rvpf-service.jar'/>
+        <jar href='lib/rvpf-base.jar'/>
+        <jar href='lib/rvpf-ext.jar'/>
+        <jar href='lib/log4j-api.jar'/>
+        <jar href='lib/log4j-core.jar'/>
+        <jar href='lib/log4j-jul.jar'/>
+        <jar href='lib/xstream.jar'/>
+    </resources>
+
+</jnlp>
+
+<!-- End. -->

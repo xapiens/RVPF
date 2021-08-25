@@ -1,0 +1,397 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE project>
+
+<!--
+ Related Values Processing Framework (JNLP support).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: build.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<project name='RVPF-JNLP' default='build'
+        xmlns:if='ant:if' xmlns:unless='ant:unless'
+        xmlns:ivy='antlib:org.apache.ivy.ant'>
+
+    <import file='../core/config/build/build-common.xml'/>
+
+    <property name='name' value='JNLP'/>
+    <property name='name.unix' value='jnlp'/>
+    <property name='project.name' value='${rvpf.name}-${name}'/>
+    <property name='project.name.unix'
+            value='${rvpf.name.unix}-${name.unix}'/>
+    <property name='target' value='${project.name.unix}'/>
+    <property name='target.launcher' value='${target}-launcher'/>
+    <property name='target.loader' value='${target}-loader'/>
+    <property name='target.starter' value='${target}-starter'/>
+    <property name='target.tests' value='${target}-tests'/>
+    <property name='target.tests.starter' value='${target}-tests-starter'/>
+
+    <property name='www.lib' value='www/lib'/>
+
+    <property name='launcher.main.class'
+            value='${package}.${name.unix}.launcher.Launcher'/>
+    <property name='starter.main.class'
+            value='${package}.${name.unix}.starter.Starter'/>
+
+    <path id='project.class.path'>
+        <pathelement location='${rvpf.core}/lib/${rvpf.base.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.tools.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${jsr305.jar}'/>
+    </path>
+
+    <path id='validate.class.path'>
+        <pathelement location='config/script'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.tools.jar}'/>
+        <pathelement location='build/main/classes'/>
+        <pathelement location='build/test/classes'/>
+    </path>
+
+    <path id='project.tests.class.path'>
+        <pathelement location='${rvpf.core}/lib/${rvpf.http.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.tests.jar}'/>
+    </path>
+
+    <path id='tests.class.path'>
+        <pathelement location='lib/${target.tests}.jar'/>
+        <pathelement location='lib/${target.launcher}.jar'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.tests.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.http.jar}'/>
+    </path>
+
+    <presetdef name='signtestjars'>
+        <signjar lazy='true'
+                preservelastmodified='true'
+                alias='localhost'
+                tsaurl='http://timestamp.comodoca.com/rfc3161'
+                keystore='tests/config/server.keystore'
+                storepass='rvpf-tests'>
+            <sysproperty key='java.security.egd'
+                    value='file:/dev/urandom'/>
+        </signjar>
+    </presetdef>
+
+    <target name='help'
+            description="Provides some help on usage.">
+        <echo>Please specify a target:
+
+    build -- Builds the jar files (default). (*)
+    clean -- Removes generated files.
+    compile -- Compiles the Java files. (*)
+    help -- Displays this.
+    jar -- Creates the jar files. (*)
+    rebuild -- Rebuilds the subproject. (*)
+    recompile -- Recompiles the subproject. (*)
+    refresh -- Refreshes the subproject. (*)
+    setup -- Sets up the default environment. (*)
+    sync -- Synchronizes duplicated files.
+    test -- Runs tests.
+    validate -- Validates some files.
+
+(*) These targets need the source files.</echo>
+    </target>
+
+    <target name='build' depends='RVPF-common.build'
+            description="Builds the subsystem.">
+        <uptodate property='tests.starter.uptodate'
+                targetfile='tests/www/lib/${target.tests.starter}.jar'>
+            <srcfiles file='lib/${target.loader}.jar'/>
+            <srcfiles dir='tests/config' excludes='testng.xml'/>
+            <srcfiles dir='tests/www' includes='tests-service.jnlp'/>
+        </uptodate>
+        <antcall target='build-tests-starter'/>
+    </target>
+
+    <target name='build-tests-starter' unless='tests.starter.uptodate'>
+        <jar jarfile='tests/www/lib/${target.tests.starter}.jar'
+                duplicate='fail'>
+            <zipfileset src='lib/${target.loader}.jar'
+                    includes='${package.dir}/jnlp/starter/*.class'/>
+            <fileset dir='tests/config' excludes='testng.xml'/>
+            <manifest>
+                <attribute name='Main-Class'
+                        value='${starter.main.class}'/>
+            </manifest>
+            <zipfileset dir='tests/www'
+                    includes='tests-service.jnlp'
+                    fullpath='JNLP-INF/APPLICATION.JNLP'/>
+        </jar>
+        <signtestjars>
+            <fileset dir='tests/www/lib'
+                    includes='${target.tests.starter}.jar'/>
+        </signtestjars>
+    </target>
+
+    <target name='clean' depends='RVPF-common.clean'
+            description="Removes generated files.">
+        <delete dir='web/ivy'/>
+        <delete>
+            <fileset dir='web'>
+                <include name='ChangeLog.txt'/>
+                <include name='${license}'/>
+                <include name='style.css'/>
+            </fileset>
+        </delete>
+        <delete dir='www/lib'/>
+        <delete dir='tests/www/lib'/>
+    </target>
+
+    <target name='sync'
+            description="Synchronizes duplicated files.">
+        <copy todir='tests/config'>
+            <fileset dir='${rvpf.core}/tests/config'>
+                <include name='server.keystore'/>
+                <include name='client.truststore'/>
+            </fileset>
+        </copy>
+        <copy todir='bin'>
+            <fileset dir='${rvpf.core}/bin'>
+                <include name='${rvpf.name.unix}-service.exe'/>
+                <include name='retrieve.*'/>
+                <include name='wrap.*'/>
+            </fileset>
+        </copy>
+        <chmod dir='bin' perm='+x' includes='**/*.sh'/>
+        <copy todir='.'>
+            <fileset dir='${rvpf.core}'>
+                <include name='rc.rvpf'/>
+                <include name='wrap'/>
+                <include name='wrap.cmd'/>
+            </fileset>
+        </copy>
+        <copy todir='bin/setup'>
+            <fileset dir='${rvpf.core}/bin/setup'>
+                <include name='rvpf.*'/>
+                <include name='rvpf-env.*'/>
+                <include name='rvpf-tests-env.*'/>
+            </fileset>
+        </copy>
+        <chmod dir='.' perm='+x' includes='wrap,wrap.cmd'/>
+        <mkdir dir='tests/www/lib'/>
+        <copy todir='tests/www/lib'>
+            <fileset dir='${rvpf.core}/lib'>
+                <include name='rvpf-base.jar'/>
+                <include name='rvpf-service.jar'/>
+                <include name='rvpf-forwarder.jar'/>
+                <include name='log4j-api.jar'/>
+                <include name='log4j-core.jar'/>
+                <include name='log4j-jul.jar'/>
+                <include name='xstream.jar'/>
+            </fileset>
+        </copy>
+        <signtestjars>
+            <fileset dir='tests/www/lib' includes='*.jar'/>
+        </signtestjars>
+    </target>
+
+    <target name='jar' depends='compile'
+            description="Creates the jar files.">
+        <svnversion/>
+        <jar jarfile='lib/${target.launcher}.jar' duplicate='fail'>
+            <fileset dir='build/main/classes'
+                    includes='${package.dir}/jnlp/launcher/*.class'/>
+            <zipfileset src='${rvpf.core}/lib/${rvpf.base.jar}'
+                    includes='${package.dir}/base/util/tool/SystemExit.class'/>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Main-Class'
+                        value='${launcher.main.class}'/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.loader}.jar' duplicate='fail'>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/jnlp/loader/*.class'/>
+                <include name='${package.dir}/jnlp/starter/*.class'/>
+                <include name='${package.dir}/jnlp/install/*.class'/>
+                <include name='${package.dir}/messages/*.properties'/>
+            </fileset>
+            <zipfileset src='${rvpf.core}/lib/${rvpf.base.jar}'>
+                <include name='${package.dir}/base/BaseMessages.class'/>
+                <include name='${package.dir}/base/ClassDef.class'/>
+                <include name='${package.dir}/base/ClassDefImpl.class'/>
+                <include name='${package.dir}/base/DateTime.class'/>
+                <include name='${package.dir}/base/DateTime$*.class'/>
+                <include name='${package.dir}/base/ElapsedTime.class'/>
+                <include name='${package.dir}/base/UUID.class'/>
+                <include name='${package.dir}/base/logger/Logger.class'/>
+                <include name='${package.dir}/base/logger/Logger$*.class'/>
+                <include name='${package.dir}/base/logger/Message.class'/>
+                <include name='${package.dir}/base/logger/Messages.class'/>
+                <include name='${package.dir}/base/logger/Messages$*.class'/>
+                <include name='${package.dir}/base/logger/log4j/*.class'/>
+                <include name='${package.dir}/base/util/Version.class'/>
+                <include name='${package.dir}/base/util/Version$*.class'/>
+                <include name='${package.dir}/base/util/container/IdentityHashSet.class'/>
+                <include name='${package.dir}/base/util/container/KeyedValues.class'/>
+                <include name='${package.dir}/base/util/container/KeyedValues$*.class'/>
+                <include name='${package.dir}/base/util/container/ListLinkedHashMap.class'/>
+                <include name='${package.dir}/base/util/container/ListMap.class'/>
+                <include name='${package.dir}/base/util/container/ListMap$*.class'/>
+                <include name='${package.dir}/base/util/tool/Inet.class'/>
+                <include name='${package.dir}/base/util/tool/ValueConverter.class'/>
+                <include name='${package.dir}/base/xml/*.class'/>
+                <include name='${package.dir}/messages/base*.properties'/>
+            </zipfileset>
+            <fileset dir='config/build' includes='log4j2.xml'/>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path' value="${log4j.api.jar} ${log4j.core.jar} ${log4j.jul.jar}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.tests}.jar' duplicate='fail'>
+            <fileset dir='build/test/classes'/>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+            </manifest>
+        </jar>
+        <copy file='${rvpf.core}/lib/${rvpf.tools.jar}'
+                todir='lib'/>
+    </target>
+
+    <target name='setup' depends='setup-default'
+            description="Default setup.">
+        <mkdir dir='../config/wrap'/>
+        <mkdir dir='../log'/>
+        <mkdir dir='../tmp'/>
+
+        <chmod dir='bin' perm='+x' includes='**/*.sh'/>
+        <chmod file='run' perm='+x'/>
+        <chmod file='wrap' perm='+x'/>
+
+        <available file='../config/service' type='dir'
+                property='root.config.service.present'/>
+        <copy todir='..'>
+            <fileset dir='.'>
+                <present targetdir='..' present='srconly'/>
+                <include name='rc.rvpf'/>
+                <include name='run'/>
+                <include name='wrap'/>
+                <include name='bin/setup/rvpf.sh'/>
+                <include name='bin/js.sh'/>
+                <include name='bin/jython.sh'/>
+                <include name='bin/script.sh'/>
+                <include name='bin/service.sh'/>
+                <include name='bin/wrap.cmd' if:set='os.windows'/>
+                <include name='bin/wrap.sh'/>
+                <include name='run.cmd' if:set='os.windows'/>
+                <include name='wrap.cmd' if:set='os.windows'/>
+                <include name='bin/jython.cmd' if:set='os.windows'/>
+                <include name='bin/script.cmd' if:set='os.windows'/>
+                <include name='bin/service.cmd' if:set='os.windows'/>
+                <include name='bin/rvpf-service.exe'
+                        if:set='os.windows'/>
+                <include name='config/script/log4j2.xml'/>
+            </fileset>
+        </copy>
+        <chmod dir='../bin' perm='+x' includes='**/*.sh'/>
+        <chmod file='../run' perm='+x'/>
+        <chmod file='../wrap' perm='+x'/>
+        <copy file='config/build/rvpf-root.cmd'
+                tofile='../bin/setup/rvpf.cmd'
+                if:set='os.windows'/>
+        <copy file='config/build/rvpf-root.sh'
+                tofile='../bin/setup/rvpf.sh'/>
+        <copy file='config/build/rvpf-env-root.cmd'
+                tofile='../bin/setup/rvpf-env.cmd'
+                if:set='os.windows'/>
+        <copy file='config/build/rvpf-env-root.sh'
+                tofile='../bin/setup/rvpf-env.sh'/>
+        <copy todir='..'>
+            <fileset dir='.'>
+                <include name='config/service/*'
+                        unless='root.config.service.present'/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name='validate'
+            description="Validates some files.">
+        <antcall target='validate-xml'/>
+        <antcall target='validate-messages'/>
+    </target>
+
+    <target name='www' if:set='sign.jars'>
+        <mkdir dir='build/www/lib'/>
+        <jar jarfile='build/www/lib/${target.starter}.jar'
+                duplicate='fail'>
+            <zipfileset src='lib/${target.loader}.jar'
+                    includes='${package.dir}/jnlp/starter/*.class'/>
+            <fileset dir='config/service'/>
+            <manifest>
+                <attribute name='Main-Class'
+                        value='${starter.main.class}'/>
+            </manifest>
+            <zipfileset dir='www' includes='service.jnlp'
+                    fullpath='JNLP-INF/APPLICATION.JNLP'/>
+        </jar>
+        <mkdir dir='www/lib'/>
+        <copy todir='www/lib'>
+            <fileset dir='${rvpf.core}/lib'>
+                <include name='rvpf-base.jar'/>
+                <include name='rvpf-ext.jar'/>
+                <include name='rvpf-service.jar'/>
+                <include name='rvpf-forwarder.jar'/>
+                <include name='log4j-api.jar'/>
+                <include name='log4j-core.jar'/>
+                <include name='log4j-jul.jar'/>
+                <include name='xstream.jar'/>
+            </fileset>
+        </copy>
+        <copy todir='www/lib' failonerror='no' quiet='yes'>
+            <fileset dir='dist' includes='${target}-*-install.jar'/>
+            <mapper type='merge' to='${target}-install.jar'/>
+        </copy>
+        <copy todir='www/lib'>
+            <fileset dir='build/www/lib'
+                    includes='${target.starter}.jar'/>
+        </copy>
+        <signjar lazy='true'
+                preservelastmodified='true'
+                alias='${rvpf.keystore.alias}'
+                tsaurl='http://timestamp.comodoca.com/rfc3161'
+                keystore='${rvpf.keystore}'
+                storepass='${rvpf.keystore.password}'>
+            <fileset dir='www/lib' includes='*.jar'/>
+        </signjar>
+    </target>
+
+    <target name='setup-report' depends='setup'>
+        <mkdir dir='web/ivy'/>
+        <ivy:report todir='web/ivy' graph='false'/>
+    </target>
+
+</project>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

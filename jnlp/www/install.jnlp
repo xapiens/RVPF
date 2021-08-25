@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<!-- $Id: install.jnlp 2535 2015-02-09 21:09:15Z SFB $ -->
+
+<jnlp codebase="http://localhost:10080/">
+
+    <information>
+        <title>RVPF-JNLP Installation</title>
+        <vendor>Serge Brisson</vendor>
+        <homepage href="http://rvpf.org/"/>
+    </information>
+
+    <security>
+        <all-permissions/>
+    </security>
+
+    <resources>
+        <java version="1.7+"/>
+        <jar href="lib/rvpf-jnlp-install.jar"/>
+    </resources>
+
+    <application-desc
+            main-class="com.izforge.izpack.installer.Installer"/>
+
+</jnlp>
+
+<!-- End. -->

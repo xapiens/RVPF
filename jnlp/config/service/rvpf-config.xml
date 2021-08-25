@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config.xml 2785 2015-09-29 20:57:54Z SFB $
+
+ This configuration file is used for stand alone operation.
+ -->
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<config lang='en' title="Configuration example">
+
+    <?include href='resource:rvpf-config-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <properties name='rmi.registry'>
+        <property name='port' property='rmi.registry.port'/>
+    </properties>
+
+    <properties name='security'>
+        <properties name='keystore'>
+            <property name='path' property='server.keystore'/>
+            <property name='password'
+                    property='server.keystore.password'/>
+        </properties>
+        <properties name='truststore'>
+            <property name='path' property='server.truststore'/>
+        </properties>
+    </properties>
+
+    <properties name='service.alerter'>
+        <property name='embedded'/>
+        <property name='shared'/>
+    </properties>
+
+    <properties name='queue.collector' def='som.queue'>
+        <property name='binding'
+                property='collector.queue'
+                value='queue/Collector'/>
+    </properties>
+
+    <service name='org.rvpf:type=ForwarderService,name=Collector'>
+        <alias name='collector'/>
+        <property name='service.log.id' value='COLL'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesPortServer'/>
+            <property name='address'
+                    property='forwarder.xml.address'/>
+            <property name='role' value='updater'/>
+            <property name='batch.limit'
+                    property='forwarder.xml.batch'/>
+            <property name='traces' value='from-port'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesPortServer'/>
+            <property name='address'
+                    property='forwarder.xml.address.ssl'/>
+            <property name='role' value='updater'/>
+            <properties name='security' extends='security'>
+                <property name='certified'/>
+            </properties>
+            <property name='batch.limit'
+                    property='forwarder.xml.batch'/>
+            <property name='traces' value='from-ssl-port'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesFiles'/>
+            <property name='input.dir'
+                    property='forwarder.xml.input.dir'/>
+            <property name='batch.limit'
+                    property='forwarder.xml.batch'/>
+            <property name='traces' value='from-files'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue' extends='queue.collector'>
+                <property name='server'/>
+            </properties>
+            <property name='traces' value='sent'/>
+        </properties>
+
+        <properties name='service.alerter'>
+            <property name='alerter.class' classDef='NullAlerter'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='collector'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer'>
+        <alias name='http-server'/>
+        <property name='service.log.id' value='HTTP'/>
+
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='port' property='http.server.port'/>
+            </properties>
+
+            <properties name='listener'>
+                <property name='port' property='http.server.port.ssl'/>
+            </properties>
+
+            <properties name='context'>
+                <property name='path' value=''/>
+                <property name='resource' property='http.server.pages'/>
+            </properties>
+        </properties>
+
+        <properties name='jmx'>
+            <property name='registration.enabled'/>
+        </properties>
+
+        <property name='service.uuid'
+                value='8f7cf2b84976dd45944a92cbbc1ae8f6'/>
+    </service>
+
+</config>
+
+<!-- End. -->

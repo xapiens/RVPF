@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='yes'?>
+
+<!--
+ Related Values Processing Framework (JNLP).
+
+ $Id: izpack-install.xml 3097 2016-07-13 20:12:59Z SFB $
+ -->
+
+<installation version='1.0'>
+
+    <info>
+        <appname>@NAME@</appname>
+        <appversion>@VERSION@</appversion>
+        <authors>
+            <author name="Serge Brisson"
+                    email="serge.brisson@rvpf.org"/>
+        </authors>
+        <url>http://rvpf.org/</url>
+        <javaversion>1.7</javaversion>
+        <uninstaller write='no'/>
+        <writeinstallationinformation>no</writeinstallationinformation>
+    </info>
+
+    <variables>
+        <variable name='home_node_path' value='/org/rvpf'/>
+        <variable name='root_name' value='@ROOT@'/>
+        <variable name='project_subdir' value='@SUBDIR@'/>
+    </variables>
+
+    <conditions>
+        <condition type='variable' id='serverinstall'>
+            <name>core_present</name>
+            <value>true</value>
+        </condition>
+        <condition type='variable' id='clientinstall'>
+            <name>core_present</name>
+            <value>false</value>
+        </condition>
+    </conditions>
+
+    <guiprefs width='800' height='600' resizable='yes'/>
+
+    <locale>
+        <langpack iso3='eng'/>
+        <langpack iso3='fra'/>
+    </locale>
+
+    <resources>
+        <res id='InfoPanel.info' src='README.txt'/>
+        <res id='InfoPanel.info_fra' src='README_fr.txt'/>
+        <res id='LicencePanel.licence' src='LICENSE.txt'/>
+        <res id='LicencePanel.licence_fra' src='LICENSE_fr.txt'/>
+        <res id='packsLang.xml_fra' src='packsLang_fr.xml'/>
+    </resources>
+
+    <panels>
+        <panel classname='HelloPanel'/>
+        <panel classname='InfoPanel'/>
+        <panel classname='LicencePanel'/>
+        <panel classname='AnchoredTargetPanel'/>
+        <panel classname='PacksPanel'/>
+        <panel classname='InstallPanel'/>
+        <panel classname='PostInstallPanel'/>
+        <panel classname='SimpleFinishPanel'/>
+    </panels>
+
+    <packs>
+        <pack name="Distribution files"
+                required='yes' id='pack.distribution'>
+            <description>
+                This pack will copy the distribution files to the
+                selected target directory.
+            </description>
+            <fileset dir='.' targetdir='$INSTALL_PATH'
+                    condition='serverinstall'>
+                <exclude name='izpack-*'/>
+                <exclude name='packsLang_*.xml'/>
+            </fileset>
+            <fileset dir='.' targetdir='$INSTALL_PATH'
+                    condition='clientinstall'>
+                <include name='lib/rvpf-jnlp-launcher.jar'/>
+                <include name='lib/rvpf-jnlp-loader.jar'/>
+                <include name='lib/log4j-api.jar'/>
+                <include name='lib/log4j-core.jar'/>
+                <include name='lib/log4j-jul.jar'/>
+            </fileset>
+            <executable stage='postinstall' failure='abort'
+                    targetfile='$INSTALL_PATH/setup-exec.sh'
+                    condition='izpack.linuxinstall|izpack.macinstall'/>
+        </pack>
+    </packs>
+
+</installation>
+
+<!-- End. -->

@@ -1,0 +1,78 @@
+/** Related Values Processing Framework.
+ *
+ * Copyright (c) 2003-2019 Serge Brisson.
+ *
+ * This software is distributable under the LGPL license.
+ * See details at the bottom of this file.
+ *
+ * $Id: build.gradle 3961 2019-05-06 20:14:59Z SFB $
+ */
+
+project.description = "RVPF JNLP"
+
+apply from: "../core/config/build/build-common.gradle"
+
+debStep = {debDir ->
+    mkdirs "${debDir}/etc/opt/rvpf/tests/jnlp/config/local"
+    copy {
+        from 'tests/config'
+        into "${debDir}/etc/opt/rvpf/tests/jnlp/config"
+        include '*.*'
+    }
+    copy {
+        from 'tests/www'
+        into "${debDir}/etc/opt/rvpf/tests/jnlp/www"
+    }
+}
+
+distStep = {
+    ant.copy(todir: '${rvpf.web.lib.rvpf}') {
+        ant.mapper(type: 'glob',
+                from: '${project.name.unix}-*-install.jar',
+                to: '${project.name.unix}-install-*.jar')
+        ant.fileset(dir: 'dist') {
+            ant.include(name: '${project.name.unix}-${version.string}-install.jar')
+        }
+    }
+    ant.copy(todir: '${rvpf.web.lib.rvpf}') {
+        ant.mapper(type: 'glob', from: '*.xml',
+                to: '${rvpf.name.unix}-*-${version.string}.xml')
+        ant.fileset(dir: 'config/build/rvpf') {
+            ant.include(name: '${name.unix}-install.xml')
+        }
+        ant.filterset {
+            ant.filter(token: 'REVISION', value: '${version.string}')
+            ant.filter(token: 'PUBLICATION', value: '${deploy.time}')
+        }
+    }
+}
+
+tagTargets = [
+    '.launcher',
+    '.loader',
+    '.tests'
+]
+
+tarsStepAdd = {->
+    ant.zip(destfile: 'dist/${project.name.unix}-${version.string}.zip',
+            update: 'yes', duplicate: 'fail') {
+        ant.zipfileset(dir: '.', prefix: '${tar.root.dir}') {
+            ant.include(name: 'tests/www/**')
+        }
+    }
+}
+
+/* This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA
+ */
