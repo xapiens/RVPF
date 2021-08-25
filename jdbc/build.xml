@@ -1,0 +1,189 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE project>
+
+<!--
+ Related Values Processing Framework (JDBC).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: build.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<project name='RVPF-JDBC' default='build'
+        xmlns:if='ant:if' xmlns:unless='ant:unless'
+        xmlns:ivy='antlib:org.apache.ivy.ant'>
+
+    <import file='../core/config/build/build-common.xml'/>
+
+    <property name='name' value='JDBC'/>
+    <property name='name.unix' value='jdbc'/>
+    <property name='project.name' value='${rvpf.name}-${name}'/>
+    <property name='project.name.unix' value='${rvpf.name.unix}-${name.unix}'/>
+    <property name='target' value='${project.name.unix}'/>
+    <property name='target.tests' value='${project.name.unix}-tests'/>
+    <property name='target.jdbc' value='${rvpf.name.unix}'/>
+
+    <path id='project.class.path'>
+        <pathelement location='${rvpf.core}/lib/${rvpf.store.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${jsr305.jar}'/>
+    </path>
+
+    <path id='validate.class.path'>
+        <pathelement location='config/script'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.tools.jar}'/>
+        <pathelement location='build/main/classes'/>
+        <pathelement location='build/test/classes'/>
+    </path>
+
+    <path id='project.tests.class.path'>
+        <pathelement location='${rvpf.core}/lib/${rvpf.core.tests.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.processor.jar}'/>
+    </path>
+
+    <path id='tests.class.path'>
+        <pathelement location='lib/${target.tests}.jar'/>
+        <pathelement location='lib/${target}.jar'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.core.tests.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.store.jar}'/>
+    </path>
+
+    <target name='help'
+            description="Provides some help on usage.">
+        <echo>Please specify a target:
+
+    build -- Builds the jar files (default). (*)
+    clean -- Removes generated files.
+    compile -- Compiles the Java files. (*)
+    help -- Displays this.
+    jar -- Creates the jar files. (*)
+    rebuild -- Rebuilds the subproject. (*)
+    recompile -- Recompiles the subproject. (*)
+    refresh -- Refreshes the subproject. (*)
+    setup -- Sets up the default environment.
+    sync -- Synchronizes duplicated files.
+    test -- Runs tests.
+    validate -- Validates some files.
+
+(*) These targets need the source files.</echo>
+    </target>
+
+    <target name='clean' depends='RVPF-common.clean'
+            description="Removes generated files.">
+        <delete dir='tests/config' includes='${keystores}'/>
+        <delete dir='tests/config' includes='${realm.config}'/>
+        <delete dir='tests/config' includes='${truststores}'/>
+        <delete dir='web/ivy'/>
+        <delete>
+            <fileset dir='web'>
+                <include name='ChangeLog.txt'/>
+                <include name='${license}'/>
+                <include name='style.css'/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name='compile' depends='setup-done'
+            description="Compiles files.">
+        <copy todir='build/main/classes/${package.dir}'>
+            <fileset dir='src/main/resources'
+                    includes='messages/*.properties'/>
+        </copy>
+        <antcall target='compile-jdbc'/>
+        <antcall target='compile-tests'/>
+    </target>
+
+    <target name='jar' depends='compile'
+            description="Creates the jar files.">
+        <mkdir dir='lib'/>
+        <svnversion/>
+        <jar jarfile='lib/${target}.jar'
+                duplicate='fail'>
+            <fileset dir='build/main/classes'/>
+            <zipfileset src='${rvpf.core}/lib/${rvpf.base.jar}'>
+                <include name='${package.dir}/base/**/*.class'/>
+                <include name='${package.dir}/messages/base*.properties'/>
+            </zipfileset>
+            <fileset dir='config/build' includes='log4j2.xml'/>
+            <service type='java.sql.Driver'
+                    provider='${package}.jdbc.StoreDriver'/>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.tests}.jar' duplicate='fail'>
+            <fileset dir='build/test/classes'/>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+            </manifest>
+        </jar>
+        <copy file='${rvpf.core}/lib/${rvpf.tools.jar}'
+                todir='lib'/>
+    </target>
+
+    <target name='setup' depends='setup-default'
+            description="Default setup."/>
+
+    <target name='sync'
+            description="Synchronizes duplicated files.">
+        <copy todir='bin/setup'>
+            <fileset dir='${rvpf.core}/bin/setup'>
+                <include name='rvpf.*'/>
+                <include name='rvpf-env.*'/>
+                <include name='rvpf-tests-env.*'/>
+            </fileset>
+        </copy>
+        <copy todir='tests/config'>
+            <fileset dir='${rvpf.core}/tests/config'>
+                <include name='${keystores}'/>
+                <include name='${realm.config}'/>
+                <include name='${truststores}'/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name='validate'
+            description="Validates some files.">
+        <antcall target='validate-xml'/>
+        <antcall target='validate-messages'/>
+    </target>
+
+    <target name='compile-jdbc'>
+        <rvpf.javac srcdir='src/main/java' destdir='build/main/classes'
+                classpathref='project.class.path'/>
+    </target>
+
+    <target name='setup-report' depends='setup'>
+        <mkdir dir='web/ivy'/>
+        <ivy:report todir='web/ivy' graph='false'/>
+    </target>
+
+</project>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->
