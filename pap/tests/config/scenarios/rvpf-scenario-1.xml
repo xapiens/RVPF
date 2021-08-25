@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE scenario PUBLIC
+        "-//Serge Brisson//DTD RVPF Scenarios//EN"
+        "http://rvpf.org/dtd/rvpf-scenarios.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-scenario-1.xml 3028 2016-03-16 18:45:25Z SFB $
+ -->
+
+<scenario title="Capture" time='-2' note="Tests the captor engine">
+
+    <casting director='tests.scenario.1'>
+        <cast role='BEGIN'/>
+        <cast role='CAPTURED-REFERENCE'/>
+        <cast role='CAPTURED-STREAM'/>
+        <cast role='END'/>
+        <cast role='REFERENCE'/>
+        <cast role='STREAM'/>
+        <cast role='TRIGGER'/>
+    </casting>
+
+    <scene title="Before" note="Puts values before the trigger">
+        <set line='A0' role='REFERENCE' time='00:00' text='0'/>
+        <set line='A1' role='STREAM' time='00:01' text='1'/>
+        <set line='A2' role='STREAM' time='00:02' text='2'/>
+        <set line='A3' role='STREAM' time='00:03' text='3'/>
+        <set line='A4' role='STREAM' time='00:04' text='4'/>
+        <set line='A5' role='STREAM' time='00:05' text='5'/>
+        <set line='A6' role='STREAM' time='00:06' text='6'/>
+    </scene>
+
+    <scene title="Action" note="Action on start">
+        <entry line='B1' role='TRIGGER' time='00:06' text='1'/>
+        <exit line='B2' role='CAPTURED-STREAM' time='00:03' text='3'/>
+        <exit line='B3' role='CAPTURED-STREAM' time='00:04' text='4'/>
+        <exit line='B4' role='CAPTURED-STREAM' time='00:05' text='5'/>
+        <exit line='B5' role='CAPTURED-STREAM' time='00:06' text='6'/>
+        <exit line='B6' role='CAPTURED-REFERENCE' time='00:00' text='0'/>
+        <set line='B7' role='STREAM' time='00:07' text='7'/>
+        <set line='B8' role='STREAM' time='00:08' text='8'/>
+        <set line='B9' role='STREAM' time='00:09' text='9'/>
+        <set line='B10' role='STREAM' time='00:10' text='10'/>
+        <silence line='B11' time='00:10'/>
+        <action line='B12' role='TRIGGER' time='00:10' text='0'/>
+        <set line='B13' role='STREAM' time='00:11' text='11'/>
+    </scene>
+
+    <scene title="Conclusion" note="Action on stop">
+        <entry line='C1' role='TRIGGER' time='00:11' text='0'/>
+        <exit line='C2' role='CAPTURED-STREAM' time='00:07' text='7'/>
+        <exit line='C3' role='CAPTURED-STREAM' time='00:08' text='8'/>
+        <exit line='C4' role='CAPTURED-STREAM' time='00:09' text='9'/>
+    </scene>
+
+    <scene title="End" time='+1' note="Ensures no more results">
+        <entry line='Z1' role='BEGIN' time='01:00' text='Z'/>
+        <exit line='Z2' role='END' time='01:00' text='Z'/>
+    </scene>
+
+</scenario>
+
+<!-- End. -->

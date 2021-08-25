@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<metadata domain='Tests' lang='en'>
+
+    <!-- Common definitions. -->
+
+    <properties from='resource:local.properties'/>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-pap-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <property name='dnp3.master.device' value='0'
+            unless='dnp3.master.device'/>
+    <property name='dnp3.outstation.device' value='0'
+            unless='dnp3.outstation.device'/>
+
+    <properties name='outstation.listener' def='dnp3.listener'>
+        <property name='tcp.listen.address' value='127.0.0.1'
+            property='dnp3.outstation.socket.address'/>
+        <property name='tcp.listen.port' value='20000'
+            property='dnp3.outstation.socket.port'/>
+        <property name='logical.device' value='0'
+            property='dnp3.outstation.device'/>
+    </properties>
+
+    <!-- Components. -->
+
+    <Origin name='DNP3-Outstation'
+            uuid='65f4f9d6-3d1c-4a74-b26f-d91cf1001a6f'>
+        <attributes usage='DNP3'>
+            <attribute name='TCP_ADDRESS' value='127.0.0.1'
+                    property='dnp3.outstation.socket.address'/>
+            <attribute name='TCP_PORT' value='20000'
+                    property='dnp3.outstation.socket.port'/>
+            <attribute name='LOGICAL_DEVICE'
+                    value='Test:${dnp3.outstation.device}'/>
+            <attribute name='REPLY_TIMEOUT'
+                    value='15000'/>
+        </attributes>
+    </Origin>
+
+    <Point name='TESTS-DNP3.AO-SHORT.1' origin='DNP3-Outstation'
+            uuid='084a1b2d-a143-41eb-8ecb-f108dbdf0a0c'
+            store='NullStore' content='Short'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='ANALOG_OUTPUT'/>
+            <attribute name='INDEX' value='4'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.BO-FLAGS.1' origin='DNP3-Outstation'
+            uuid='90d9baad-b849-440f-bef6-832d72cd0105'
+            store='NullStore' content='Boolean'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='BINARY_OUTPUT'/>
+            <attribute name='INDEX' value='3'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.AI-FLOAT-FLAGS.1' origin='DNP3-Outstation'
+            uuid='65f31f42-63c1-4ed4-a01a-353b883114b1'
+            store='NullStore' content='Float'>
+        <attributes usage='DNP3'>
+            <attribute name='INDEX' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.BI-FLAGS.1' origin='DNP3-Outstation'
+            uuid='728eaaab-d24a-404e-b24f-298fc3941862'
+            store='NullStore' content='Boolean'>
+        <attributes usage='DNP3'>
+            <attribute name='INDEX' value='2'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.COUNTER-FLAGS.1' origin='DNP3-Outstation'
+            uuid='a37a0d95-a16f-47b3-9c94-abdc3336b350'
+            store='NullStore' content='Count'>
+        <attributes usage='DNP3'>
+            <attribute name='LOGICAL_DEVICE' value='Test'/>
+            <attribute name='POINT_TYPE' value='COUNTER'/>
+            <attribute name='INDEX' value='9'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.AI-ARRAY.1' origin='DNP3-Outstation'
+            uuid='f7b99407-46bd-41e8-9653-c532597759e8'
+            content='DNP3Array'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='ANALOG_INPUT'/>
+            <attribute name='START_INDEX' value='3'/>
+            <attribute name='STOP_INDEX' value='7'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.BI-ARRAY.1' origin='DNP3-Outstation'
+            uuid='99b47e45-b9ca-432d-96c3-aba73c58bd89'
+            content='DNP3Array'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='SINGLE_BIT_INPUT'/>
+            <attribute name='START_INDEX' value='0'/>
+            <attribute name='STOP_INDEX' value='4'/>
+        </attributes>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

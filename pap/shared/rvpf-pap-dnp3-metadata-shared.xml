@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-pap-dnp3-metadata-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<metadata title="Shared PAP-DNP3 metadata">
+
+    <description>
+        This file holds the basic metadata which is needed for
+        proper RVPF-PAP-DNP3 operations.
+    </description>
+
+    <notes>
+        It is recommended to leave this file unmodified and to include
+        it at the top of the master 'rvpf-metadata.xml' file, after the
+        include of the 'rvpf-metadata-shared.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+    </notes>
+
+    <?include href='resource:rvpf-pap-metadata-shared.xml'
+            unless='metadata.pap'?>
+
+    <!-- Definition of DNP3 attributes. -->
+
+    <AttributesDef usage='DNP3' extends='PAP'>
+        <AttributeDef name='CONNECT_TIMEOUT' title="Connect Timeout"
+                type='Elapsed'>
+            <description>
+                Specifies the maximum time to wait for a connection to
+                the remote.
+
+                Defaults to 30.0 (seconds).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='DATA_TYPE' title="Data Type">
+            <description>
+                Identifies the point data type.
+
+                Recognized data types: ANY, BSTR1, BSTR2, INT16, INT32,
+                UINT16, UINT32, FLOAT16, FLOAT32.
+
+                Required if the content is not specified for the point;
+                otherwise defaults either to a value compatible with the
+                content and point type, or 'ANY'.
+            </description>
+            <notes>
+                Each point type supports a subset of the recognized data
+                types.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='INDEX' title="Object Index" type='Integer'>
+            <description>
+                Identifies the index of the object.
+
+                Required unless specified by 'START_INDEX' and
+                'STOP_INDEX'.
+            </description>
+            <notes>
+                May alternatively be specified by 'START_INDEX' and
+                'STOP_INDEX' with the same value.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='KEEP_ALIVE_TIMEOUT'
+                title="Keep-alive Timeout" type='Elapsed'>
+            <description>
+                Specifies the maximum silent interval before a link
+                status request is sent to the remote.
+
+                Defaults to 60.0 (seconds).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='LOGICAL_DEVICE' title="Logical Device"
+                multiple='yes'>
+            <description>
+                Specifies a logical device for point objects.
+
+                The value must have the non empty form
+                '[name][:address]'.
+
+                The name is optional, but when supplied associates the
+                name with the address. The name may then be used instead
+                of the address.
+
+                When the point origin specifies a single logical device,
+                then defaults to that; otherwise defaults to 2.
+            </description>
+            <notes>
+                For origins, multiple values represent multiple logical
+                devices for the outstation.
+
+                For points, only a single value is allowed.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='MAX_FRAGMENT_SIZE'
+                title="Maximum Fragment Size" type='Integer'>
+            <description>
+                Specifies the maximum fragment size accepted by the
+                remote.
+
+                For a master, defaults to 2048; for an outstation,
+                defaults to 249.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='POINT_TYPE' title="Point Type">
+            <description>
+                Identifies the point type.
+
+                Supported point types: ANALOG_INPUT, ANALOG_OUTPUT,
+                SINGLE_BIT_INPUT, DOUBLE_BIT_INPUT, BINARY_OUTPUT,
+                COUNTER.
+
+                A Boolean content defaults to 'SINGLE_BIT_INPUT'.
+                A Number content defaults to 'ANALOG_INPUT'.
+                Required for other contents.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='REPLY_TIMEOUT' title="Reply Timeout"
+                type='Elapsed'>
+            <description>
+                Specifies the maximum time to wait for a reply from the
+                remote.
+
+                Defaults to 5.0 (seconds).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SERIAL_PORT' title="Serial Port"
+                type='Integer' notes="Used by origins">
+            <description>
+                Specifies the serial port for an origin.
+
+                Defaults to none.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SERIAL_SPEED'>
+            <description>
+                Specifies the serial port speed in bits per second.
+
+                Defaults to 9600.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='START_INDEX' title="Object Start Index"
+                type='Integer'>
+            <description>
+                Identifies the start index of the object.
+
+                Must be specified if and only if 'INDEX' is not
+                specified.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='STOP_INDEX' title="Object Stop Index"
+                type='Integer'>
+            <description>
+                Identifies the stop index of the object.
+
+                Must be specified if and only if 'START_INDEX' is
+                specified.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='TCP_ADDRESS' title="TCP Address"
+                multiple='yes'>
+            <description>
+                Specifies the TCP address of an origin.
+
+                The address may be supplied as a name or in numeric
+                form. It may be followed by a ':' and a port number.
+
+                Defaults to none.
+            </description>
+            <notes>
+                In some contexts, a value of '*' is allowed to indicate
+                that the origin may have any address.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='TCP_PORT' title="TCP Port">
+            <description>
+                Specifies the TCP port on which an origin is listening.
+
+                Defaults to 20000.
+            </description>
+            <notes>
+                This attribute will be ignored if the port has been
+                specified in the 'TCP_ADDRESS' attribute.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='UDP_ADDRESS' title="UDP Address"
+                multiple='yes'>
+            <description>
+                Specifies the UDP address of an origin.
+
+                The address may be supplied as a name or in numeric
+                form. It may be followed by a ':' and a port number.
+
+                Defaults to none.
+            </description>
+            <notes>
+                In some contexts, a value of '*' is allowed to indicate
+                that the origin may have any address.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='UDP_PORT' title="UDP Port">
+            <description>
+                Specifies the UDP port on which an origin is listening.
+
+                Defaults to 20000.
+            </description>
+            <notes>
+                This attribute will be ignored if the port has been
+                specified in the 'UDP_ADDRESS' attribute.
+            </notes>
+        </AttributeDef>
+    </AttributesDef>
+
+    <ClassDef name='DNP3SplitterEngine'
+            package='org.rvpf.processor.engine.pap.dnp3'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <Content name='DNP3Array' classDef='TupleContent'>
+        <description>
+            Content used to represent the array expected as input by the
+            DNP3 splitter transform.
+        </description>
+    </Content>
+
+    <Engine name='DNP3Splitter' classDef='DNP3SplitterEngine'/>
+
+    <Transform name='DNP3Splitter' engine='DNP3Splitter'>
+        <description>
+            For each result, extract values from a DNP3 array
+            represented by a point value containing a tuple.
+        </description>
+        <arg/>
+    </Transform>
+
+</metadata>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

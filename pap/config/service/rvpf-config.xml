@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="PAP configuration">
+
+    <properties from='resource:local.properties' optional='yes'/>
+
+    <?include href='resource:rvpf-config-shared.xml'?>
+    <?include href="resource:rvpf-pap-config-shared.xml"?>
+
+    <property name='substitution.enabled'/>
+
+    <properties name='modbus.forwarder.queue' def='som.queue'>
+        <property name='name' value='ModbusForwarder'/>
+    </properties>
+
+    <properties name='modbus.store.notifier.queue' def='som.queue'>
+        <property name='name' value='ModbusStoreNotifier'/>
+    </properties>
+
+    <properties name='modbus.listener.socket' def='modbus.listener'>
+        <property name='socket.address' value='*'/>
+        <property name='socket.port' property='server.socket.port'/>
+    </properties>
+
+    <properties name='modbus.listener.serial' def='modbus.listener'
+            if='modbus.server.serial.port'>
+        <property name='origin' value='PLC.1'/>
+        <property name='serial.port'
+                property='modbus.server.serial.port'/>
+        <property name='serial.speed'
+                property='modbus.serial.port.speed'/>
+        <property name='serial.mode'
+                property='modbus.serial.port.mode'/>
+        <property name='serial.parity'
+                property='modbus.serial.port.parity'/>
+        <property name='serial.modem'
+                property='modbus.serial.port.modem'/>
+        <property name='serial.control'
+                property='modbus.serial.port.control'/>
+    </properties>
+
+    <service name='org.rvpf:type=DataloggerService'>
+        <property name='service.log.id' value='DTLG'/>
+        <properties name='datalogger'>
+            <properties name='scanner'>
+                <property name='name' value='Scanner'/>
+                <property name='sync' value='ScanSync'/>
+                <property name='traces' if='scanner.traces'
+                        value='scanner'/>
+            </properties>
+            <properties name='output'>
+                <properties name='queue'>
+                    <property name='name' value='Datalogger'/>
+                    <property name='server'/>
+                    <property name='merge.limit' value='100'/>
+                    <property name='merge.split' value='10000'/>
+                </properties>
+                <property name='traces' if='scanner.traces'
+                        value='output'/>
+            </properties>
+        </properties>
+        <property name='service.uuid'
+                value='c8932ca0-9499-4f98-91c7-b51cfdc141df'/>
+        <properties name='traces'>
+            <property name='dir' value='datalogger'/>
+        </properties>
+        <properties name='service.alerter'>
+            <property name='embedded'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=Modbus'>
+        <alias name='modbus-forwarder'/>
+        <property name='service.log.id' value='MBFW'/>
+        <properties name='forwarder.module'>
+            <property name='module.class' classDef='ModbusInputModule'/>
+            <properties name='modbus'>
+                <properties name='listener'
+                        extends='modbus.listener.socket'/>
+                <properties name='listener'
+                        if='modbus.server.serial.port'
+                        extends='modbus.listener.serial'/>
+                <property name='traces' if='protocol.traces'
+                        value='protocol'/>
+            </properties>
+            <property name='batch.limit' value='1000'/>
+            <property name='batch.timeout' value='1.0'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue' extends='modbus.forwarder.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='traces' value='forwarded'/>
+        </properties>
+        <property name='service.uuid'
+                value='f9924446-2043-4a69-8247-3b10c5ac8245'/>
+        <properties name='traces'>
+            <property name='dir' value='modbus-forwarder'/>
+            <property name='compressed' property='traces.compressed'/>
+        </properties>
+        <properties name='service.alerter'>
+            <property name='embedded'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=TheStoreService,name=Modbus'>
+        <alias name='modbus-the-store'/>
+        <property name='service.log.id' value='MBMS'/>
+        <property name='store.name' value='ModbusTheStore'/>
+        <properties name='store.server.the'>
+            <property name='sql.create'/>
+            <properties name='updates.listener'>
+                <property name='listener.class'
+                        classDef='ModbusUpdatesListener'/>
+                <properties name='modbus'>
+                    <properties name='listener'
+                            extends='modbus.listener.socket'/>
+                    <properties name='listener'
+                            if='modbus.server.serial.port'
+                            extends='modbus.listener.serial'/>
+                </properties>
+                <property name='traces' if='protocol.traces'
+                        value='protocol'/>
+            </properties>
+            <property name='notifier.class' classDef='NullNotifier'/>
+            <property name='notices.filtered'/>
+        </properties>
+        <property name='service.uuid'
+                value='35e8b063-917f-4a3e-9331-971427480f39'/>
+        <properties name='traces'>
+            <property name='dir' value='modbus-the-store'/>
+            <property name='compressed' property='traces.compressed'/>
+        </properties>
+        <properties name='service.alerter'>
+            <property name='embedded'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=PAPStoreService,name=Modbus'>
+        <alias name='modbus-store'/>
+        <property name='service.log.id' value='MBST'/>
+        <property name='store.name' value='ModbusStore'/>
+        <properties name='store.server.pap'>
+            <properties name='notifier.som.queue'
+                    extends='modbus.store.notifier.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='protocol' value='Modbus'/>
+            <property name='traces' if='protocol.traces'
+                    value='protocol'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='modbus-store'/>
+            <property name='compressed' property='traces.compressed'/>
+        </properties>
+        <properties name='service.alerter'>
+            <property name='embedded'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->

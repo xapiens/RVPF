@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-modbus-config-datalogger.xml 3311 2017-01-03 19:23:13Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-modbus-config-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <service name='org.rvpf:type=DataloggerService,name=Modbus'>
+        <property name='service.log.id' value='DTLG'/>
+        <properties name='datalogger'>
+            <properties name='scanner'>
+                <property name='name' value='TestsScanner'/>
+                <property name='sync' value='TestsSync'/>
+                <property name='traces' value='scanner'/>
+            </properties>
+            <properties name='output'>
+                <properties name='queue' if='tests.datalogger.queue'
+                        extends='${tests.datalogger.queue}'/>
+                <property name='traces' value='output'/>
+            </properties>
+        </properties>
+        <property name='service.uuid'
+                value='27928a93-a81f-4888-93a1-db3f69c617b1'/>
+        <properties name='traces'>
+            <property name='dir' value='datalogger'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->

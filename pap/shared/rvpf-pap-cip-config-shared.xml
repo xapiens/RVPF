@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-pap-cip-config-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<config title="Shared PAP-CIP configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper RVPF-PAP-CIP operations.
+    </description>
+
+    <notes>
+        It is recommended to leave this file unmodified and to include
+        it at the top of the master 'rvpf-config.xml' file, after the
+        include of the 'rvpf-config-shared.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+    </notes>
+
+    <?include href='resource:rvpf-pap-config-shared.xml'
+            unless='config.pap'?>
+
+    <!-- Propert(y/ies) definitions. -->
+
+    <property name='substitution.enabled'/>
+
+    <!-- Class definitions. -->
+
+    <ClassDef name='CIPSupport' package='org.rvpf.pap.cip'>
+        <implements classDef='PAPSupport'/>
+    </ClassDef>
+
+    <property name='pap.support.class' classDef='CIPSupport'/>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

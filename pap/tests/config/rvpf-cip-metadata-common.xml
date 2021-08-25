@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-cip-metadata-common.xml 3313 2017-01-04 14:23:30Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-pap-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Origin name='TestsCIP'
+            uuid='a0768117-f7ad-4ea1-823c-ed2fda64d7f8'>
+        <attributes usage='CIP'>
+            <attribute name='TCP_ADDRESS'
+                    property='tests.cip.tcp.address'/>
+        </attributes>
+    </Origin>
+
+</metadata>
+
+<!-- End. -->

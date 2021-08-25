@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-cip-config-common.xml 3313 2017-01-04 14:23:30Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-common-config.xml'?>
+    <?include href="resource:rvpf-pap-config-shared.xml"?>
+
+    <properties name='tests.forwarder.queue' def='som.queue'>
+        <property name='name' value='TestsForwarder'/>
+    </properties>
+
+</config>
+
+<!-- End. -->

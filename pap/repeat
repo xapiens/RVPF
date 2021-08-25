@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# $Id: repeat 1613 2012-02-17 17:04:22Z SFB $
+
+RUN_FILE="$1"
+shift
+
+
+while ./$RUN_FILE $@; do
+    date
+done
+
+# End.

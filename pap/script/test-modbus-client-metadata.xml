@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<metadata domain='Tests' lang='en'>
+
+    <!-- Common definitions. -->
+
+    <properties from='resource:local.properties'/>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-pap-modbus-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <!-- Components. -->
+
+    <Origin name='Modbus-PLC.1' anchored='yes'
+            uuid='75170f74-4e2a-4140-9ce0-9352e6a0cf9b'>
+        <attributes usage='MODBUS'>
+            <attribute name='CONNECT_TIMEOUT'
+                    property='modbus.connect.timeout'/>
+            <attribute name='REQUEST_TIMEOUT'
+                    property='modbus.request.timeout'/>
+            <attribute name='SOCKET_ADDRESS' value='127.0.0.1'
+                    unless='modbus.client.serial.port'
+                    property='modbus.server.socket.address'/>
+            <attribute name='SOCKET_PORT'
+                    unless='modbus.client.serial.port'
+                    property='modbus.server.socket.port'/>
+            <attribute name='SERIAL_PORT'
+                    property='modbus.client.serial.port'/>
+            <attribute name='SERIAL_SPEED'
+                    property='modbus.serial.port.speed'/>
+            <attribute name='SERIAL_MODE'
+                    property='modbus.serial.port.mode'/>
+            <attribute name='SERIAL_PARITY'
+                    property='modbus.serial.port.parity'/>
+            <attribute name='SERIAL_MODEM'
+                    property='modbus.serial.port.modem'/>
+            <attribute name='SERIAL_CONTROL'
+                    property='modbus.serial.port.control'/>
+        </attributes>
+    </Origin>
+
+    <Point name='COIL'
+            uuid='33ebfa58-955f-41c8-b1ec-1b41a595af1f'
+            origin='Modbus-PLC.1'
+            content='Logical'>
+        <attributes usage='MODBUS'>
+            <attribute name='COIL_ADDRESS' value='2'/>
+        </attributes>
+    </Point>
+
+    <Point name='WORD-REGISTER'
+            uuid='deced4ac-bbec-4f2d-8e5b-c12feff23c41'
+            origin='Modbus-PLC.1'
+            content='Count'>
+        <attributes usage='MODBUS'>
+            <attribute name='REGISTER_ADDRESS' value='2'/>
+        </attributes>
+    </Point>
+
+    <Point name='FLOAT-REGISTER'
+            uuid='1dac2b17-7d30-4998-940f-774964c7dd87'
+            origin='Modbus-PLC.1'
+            content='Numeric'>
+        <attributes usage='MODBUS'>
+            <attribute name='REGISTER_ADDRESS' value='3'/>
+            <attribute name='TYPE' value='FLOAT'/>
+        </attributes>
+    </Point>
+
+    <properties name='traces'/>
+
+</metadata>
+
+<!-- End. -->

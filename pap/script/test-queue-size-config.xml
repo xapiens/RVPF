@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<config title="Test Store size configuration" lang='en'>
+
+    <properties from='test-store-size.properties'/>
+
+    <?include href='resource:rvpf-config-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <properties name='metadata'>
+        <property name='path' value='test-store-size-metadata.xml'/>
+    </properties>
+
+    <properties name='test.queue' def='som.queue'>
+        <property name='name' value='TestQueue'/>
+    </properties>
+
+    <service name='org.rvpf:type=SOMContainerService'>
+        <alias name='soms'/>
+        <property name='service.log.id' value='SOMS'/>
+
+        <properties name='som.queue' extends='test.queue'>
+            <property name='compressed'/>
+            <property name='autocommit.threshold' value='5000'/>
+        </properties>
+
+        <properties name='service.alerter'>
+            <property name='embedded'/>
+        </properties>
+
+        <property name='service.uuid'
+                value='e6d9b930-35b1-4928-a5af-195f53937d7b'/>
+    </service>
+
+</config>
+
+<!-- End. -->

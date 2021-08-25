@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE FindBugsFilter>
+
+<FindBugsFilter>
+
+    <Match>
+        <Package name='~etherip.*'/>
+    </Match>
+
+</FindBugsFilter>
+
+<!-- End. -->

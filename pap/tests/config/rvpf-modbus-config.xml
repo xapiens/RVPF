@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-modbus-config.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-modbus-config-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <service name='org.rvpf:type=ForwarderService,name=Modbus'>
+        <alias name='forwarder'/>
+        <property name='service.log.id' value='FORW'/>
+        <properties name='forwarder.module'>
+            <property name='module.class' classDef='ModbusInputModule'/>
+            <properties name='modbus'>
+                <properties name='listener'
+                        extends='modbus.listener.socket'/>
+                <properties name='listener'
+                        if='tests.outstation.serial.port'
+                        extends='modbus.listener.serial'/>
+                <property name='origin' value='TestsModbus'/>
+            </properties>
+            <property name='batch.timeout'/>
+            <property name='traces' value='protocol'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue' extends='tests.forwarder.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='traces' value='forwarded'/>
+        </properties>
+        <property name='service.uuid'
+                value='803b6d32-8c03-8643-b10b-714e24770256'/>
+        <properties name='traces'>
+            <property name='dir' value='forwarder'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <alias name='snapshot'/>
+        <property name='service.log.id' value='TSSN'/>
+        <property name='store.name' value='TestsSnapshot'/>
+        <properties name='store.server.the'>
+            <property name='snapshot'/>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'/>
+                <property name='url' property='store.the.sql.url'/>
+            </properties>
+            <property name='sql.table.archive' value='TestsSnapshot'/>
+            <property name='sql.create'/>
+            <property name='notifier.class' classDef='NullNotifier'/>
+            <property name='notices.filtered'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='the-snapshot'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=TheStoreService,name=Modbus'>
+        <alias name='store'/>
+        <property name='service.log.id' value='THST'/>
+        <property name='store.name' value='TestsStore'/>
+        <properties name='store.server.the'>
+            <properties name='notifier.som.queue'
+                    extends='tests.store.notifier.queue'>
+                <property name='server'/>
+            </properties>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'/>
+                <property name='url' property='store.the.sql.url'/>
+            </properties>
+            <property name='sql.table.archive' value='TestsArchive'/>
+            <property name='sql.create'/>
+            <property name='backend.class' if='store.the.backend'
+                classDef='${store.the.backend}'/>
+            <property name='bdb.dir' value='tests/data/bdb'/>
+            <properties name='updates.listener'>
+                <property name='listener.class'
+                        classDef='ModbusUpdatesListener'/>
+                <properties name='modbus'>
+                    <properties name='listener'
+                            extends='modbus.listener.socket'/>
+                    <properties name='listener'
+                            if='tests.outstation.serial.port'
+                            extends='modbus.listener.serial'/>
+                    <property name='origin' value='TestsModbus'/>
+                </properties>
+                <property name='traces' value='protocol'/>
+            </properties>
+            <properties name='replicator'>
+                <properties name='partner'>
+                    <properties name='queue'
+                            extends='tests.store.replicated.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <properties name='partner'>
+                    <property name='store.name' value='TestsReplicate'/>
+                    <properties name='queue'
+                            extends='tests.store.replicate.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <property name='replicate.converts'/>
+            </properties>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='the-store'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=PAPStoreService,name=Modbus'>
+        <alias name='store'/>
+        <property name='service.log.id' value='MBST'/>
+        <property name='store.name' value='TestsStore'/>
+        <properties name='store.server.pap'>
+            <properties name='notifier.som.queue'
+                    extends='tests.store.notifier.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='protocol' value='Modbus'/>
+            <properties name='replicator'>
+                <properties name='partner'>
+                    <properties name='queue'
+                            extends='tests.store.replicated.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <properties name='partner'>
+                    <property name='store.name' value='TestsReplicate'/>
+                    <properties name='queue'
+                            extends='tests.store.replicate.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <property name='replicate.converts'/>
+            </properties>
+            <property name='traces' value='protocol'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='modbus-store'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService'>
+        <property name='service.log.id' value='PROC'/>
+        <properties name='processor'>
+            <property name='name' value='TestsProcessor'/>
+            <property name='cache.updates.filtered'/>
+            <property name='receptionist.class'
+                    classDef='StoreListenerReceptionist'/>
+            <property name='receptionist.wait' value='15000'/>
+        </properties>
+        <property name='service.uuid'
+                value='664ee3e1-5696-4803-aa6d-7b778e7351a2'/>
+        <properties name='traces'>
+            <property name='dir' value='processor'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->

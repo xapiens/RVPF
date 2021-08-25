@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-dnp3-config-common.xml 3539 2017-08-23 11:56:49Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-common-config.xml'?>
+    <?include href="resource:rvpf-pap-config-shared.xml"?>
+
+    <properties name='dnp3.listener.socket' def='dnp3.listener'>
+        <property name='tcp.listen.address'
+                property='tests.lan.listen.address'/>
+        <property name='tcp.listen.port'
+                property='tests.dnp3.outstation.tcp.port'/>
+        <property name='logical.device' value='4'/>
+    </properties>
+
+    <properties name='tests.master.listen' def='dnp3.listener'>
+        <property name='tcp.listen.address' if='tests.dnp3.listen.tcp'
+            property='tests.lan.listen.address'/>
+        <property name='tcp.listen.port' if='tests.dnp3.listen.tcp'
+            property='tests.dnp3.master.tcp.port'/>
+        <property name='udp.listen.address' if='tests.dnp3.listen.udp'
+            property='tests.lan.listen.address'/>
+        <property name='udp.listen.port' if='tests.dnp3.listen.udp'
+            property='tests.dnp3.master.udp.port'/>
+        <property name='logical.device' value='3'/>
+    </properties>
+
+    <properties name='tests.outstation.listen' def='dnp3.listener'>
+        <property name='tcp.listen.address' if='tests.dnp3.listen.tcp'
+            property='tests.lan.listen.address'/>
+        <property name='tcp.listen.port' if='tests.dnp3.listen.tcp'
+            property='tests.dnp3.outstation.tcp.port'/>
+        <property name='udp.listen.address' if='tests.dnp3.listen.udp'
+            property='tests.lan.listen.address'/>
+        <property name='udp.listen.port' if='tests.dnp3.listen.udp'
+            property='tests.dnp3.outstation.udp.port'/>
+        <property name='logical.device' value='4'/>
+    </properties>
+
+    <properties name='tests.forwarder.queue' def='som.queue'>
+        <property name='name' value='TestsForwarder'/>
+    </properties>
+
+</config>
+
+<!-- End. -->

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<metadata domain='Tests' lang='en'>
+
+    <!-- Common definitions. -->
+
+    <properties from='resource:local.properties'/>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-pap-modbus-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <!-- Components. -->
+
+    <Origin name='Modbus-PLC.1'
+            uuid='2c75ec68-673c-4742-8a17-fbf10b8a54d4'>
+        <attributes usage='MODBUS'>
+            <attribute name='SOCKET_ADDRESS'
+                    unless='client.serial.port'
+                    value='plc-1'/>
+            <attribute name='SERIAL_PORT'
+                    property='client.serial.port'/>
+            <attribute name='SERIAL_SPEED'
+                    property='serial.port.speed'/>
+            <attribute name='SERIAL_MODE'
+                    property='serial.port.mode'/>
+            <attribute name='SERIAL_PARITY'
+                    property='serial.port.parity'/>
+            <attribute name='SERIAL_MODEM'
+                    property='serial.port.modem'/>
+            <attribute name='SERIAL_CONTROL'
+                    property='serial.port.control'/>
+            <attribute name='TIMEOUT' value='5.0'/>
+        </attributes>
+    </Origin>
+
+    <?include href='resource:rvpf-modbus-coils.xml'?>
+    <?include href='resource:rvpf-modbus-registers.xml'?>
+
+</metadata>
+
+<!-- End. -->

@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<metadata domain='Examples' lang='en'>
+
+    <!-- Common definitions. -->
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-pap-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <!-- Components. -->
+
+    <Origin name='Scanner' uuid='6158686d-05de-410b-9789-c9a6384c998b'/>
+
+    <Origin name='CIP-PLC.1' if='cip.server.tcp.address'
+            uuid='5c028141-f833-408f-bd48-51a3e44d48ef'>
+        <attributes usage='CIP'>
+            <attribute name='TCP_ADDRESS'
+                    property='cip.server.tcp.address'/>
+        </attributes>
+    </Origin>
+
+    <Sync name='ScanSync' classDef='ElapsedSync' anchored='yes'>
+        <param name='Elapsed' value='0.1'/>
+    </Sync>
+
+    <Point name='TESTS_SIN_CIP' if='cip.server.tcp.address'
+            origin='CIP-PLC.1'
+            uuid='d09d3b14-2097-45c8-98e0-51df3371ce2a'>
+        <attributes usage='CIP'/>
+    </Point>
+
+    <Point name='TESTS_SQUARE_CIP' if='cip.server.tcp.address'
+            origin='CIP-PLC.1'
+            uuid='50052201-d910-421f-aa8f-77220e9cd06e'>
+        <attributes usage='CIP'/>
+        <param name='DeadbandGap' value='0'/>
+    </Point>
+
+    <Point name='TESTS-SIN-CIP' if='cip.server.tcp.address'
+            origin='Scanner'
+            uuid='dc886d53-3970-4cc8-9ae7-b31be39a26c0'>
+        <input point='TESTS_SIN_CIP'/>
+    </Point>
+
+    <Point name='TESTS-SQUARE-CIP' if='cip.server.tcp.address'
+            origin='Scanner'
+            uuid='15f4a6c9-e605-4040-b63f-f95ea6aef714'>
+        <input point='TESTS_SQUARE_CIP'/>
+    </Point>
+
+    <Origin name='Modbus-PLC.1'
+            uuid='8511a666-4c63-4330-adcc-f5aa5673a637'>
+        <attributes usage='MODBUS'>
+            <attribute name='CONNECT_TIMEOUT'
+                    property='modbus.connect.timeout'/>
+            <attribute name='REQUEST_TIMEOUT'
+                    property='modbus.request.timeout'/>
+            <attribute name='SOCKET_ADDRESS'
+                    unless='modbus.client.serial.port'
+                    property='modbus.server.socket.address'/>
+            <attribute name='SOCKET_PORT'
+                    unless='modbus.client.serial.port'
+                    property='modbus.server.socket.port'/>
+            <attribute name='SERIAL_PORT'
+                    property='modbus.client.serial.port'/>
+            <attribute name='SERIAL_SPEED'
+                    property='modbus.serial.port.speed'/>
+            <attribute name='SERIAL_MODE'
+                    property='modbus.serial.port.mode'/>
+            <attribute name='SERIAL_PARITY'
+                    property='modbus.serial.port.parity'/>
+            <attribute name='SERIAL_MODEM'
+                    property='modbus.serial.port.modem'/>
+            <attribute name='SERIAL_CONTROL'
+                    property='modbus.serial.port.control'/>
+        </attributes>
+    </Origin>
+
+    <Point name='TESTS_SIN_MODBUS' if='modbus.server.socket.address'
+            origin='Modbus-PLC.1'
+            uuid='99eab083-557e-429c-8386-79379a281c43'>
+        <attributes usage='MODBUS'>
+            <attribute name='REGISTER_ADDRESS' value='1'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS_SQUARE_MODBUS' if='modbus.server.socket.address'
+            origin='Modbus-PLC.1'
+            uuid='94a88a9a-9b3a-4fc6-97ef-fdd135dfec9c'>
+        <attributes usage='MODBUS'>
+            <attribute name='REGISTER_ADDRESS' value='2'/>
+        </attributes>
+        <param name='DeadbandGap' value='0'/>
+    </Point>
+
+    <Point name='TESTS-SIN-MODBUS' if='modbus.server.socket.address'
+            origin='Scanner'
+            uuid='3832b8b5-527d-4f36-a00f-e9364e24414e'>
+        <input point='TESTS_SIN_MODBUS'/>
+    </Point>
+
+    <Point name='TESTS-SQUARE-MODBUS' if='modbus.server.socket.address'
+            origin='Scanner'
+            uuid='44d16b19-fd8f-4610-add3-2176be7fa3d7'>
+        <input point='TESTS_SQUARE_MODBUS'/>
+    </Point>
+
+    <Store name='ModbusTheStore'
+            uuid='a0478d45-c5b2-4064-a7ee-b3babd05497b'>
+        <param name='Binding' value='ModbusTheStoreServer'/>
+    </Store>
+
+    <Store name='ModbusStore'
+            uuid='9db18a45-5e23-4ff1-83bf-a1bfe1540e78'>
+        <param name='Binding' value='ModbusStoreServer'/>
+    </Store>
+
+    <!-- Points. -->
+
+    <?include href='resource:rvpf-modbus-coils.xml' optional='yes'?>
+    <?include href='resource:rvpf-modbus-registers.xml' optional='yes'?>
+
+</metadata>
+
+<!-- End. -->

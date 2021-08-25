@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-dnp3-metadata-datalogger.xml 3577 2017-11-14 21:13:32Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-dnp3-metadata-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Store name='TestsSink' classDef='SOMSinkStore'
+            uuid='a95dc043-6a8d-44d8-8c87-d98d4f8b85d8'/>
+
+    <Origin name='TestsScanner' anchored='yes'
+            uuid='57dc00be-4afa-43c1-aaf8-37040509a5c0'/>
+
+    <Origin name='TestsInactive'
+            uuid='10148c4e-7f46-4ddf-9661-091c00f38645'>
+        <attributes usage='DNP3'>
+            <attribute name='TCP_ADDRESS' value='127.0.0.2'/>
+            <attribute name='TCP_PORT' if='tests.dnp3.listen.tcp'
+                    property='tests.dnp3.outstation.tcp.port'/>
+
+            <attribute name='UDP_ADDRESS' value='127.0.0.2'/>
+            <attribute name='UDP_PORT' if='tests.dnp3.listen.udp'
+                    property='tests.dnp3.outstation.udp.port'/>
+
+            <attribute name='LOGICAL_DEVICE' value='Test:5'/>
+            <attribute name='INACTIVE'/>
+        </attributes>
+    </Origin>
+
+    <Sync name='TestsSync' classDef='CrontabSync' anchored='yes'>
+        <param name='Crontab' value='0 0 * * *'/>
+    </Sync>
+
+    <Point name='TESTS-DNP3.REGISTER.1' origin='TestsDNP3'
+            uuid='457a48d3-e3e5-4349-9042-8ba5684488d7'
+            content='Count'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='COUNTER'/>
+            <attribute name='INDEX' value='11'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.SCANNED.1' origin='TestsScanner'
+            uuid='20489ff4-eaee-42c0-8f9c-dbe7f5a7846a'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-DNP3.REGISTER.1'/>
+    </Point>
+
+    <Point name='TESTS-DNP3.INACTIVE.1' origin='TestsDNP3'
+            uuid='d3fb2b91-1b38-4257-b788-f954b1ae2fd1'
+            content='Count'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='COUNTER'/>
+            <attribute name='INDEX' value='12'/>
+            <attribute name='INACTIVE'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.SCANNED-INACTIVE.1' origin='TestsScanner'
+            uuid='b78f0b05-6a91-4cfd-bc3d-8fe200e70bf0'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-DNP3.INACTIVE.1'/>
+    </Point>
+
+    <Point name='TESTS-DNP3.INACTIVE.2' origin='TestsInactive'
+            uuid='a35c02a6-c282-48a5-bc00-3128efbda7a8'
+            content='Count'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='COUNTER'/>
+            <attribute name='INDEX' value='1'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.SCANNED-INACTIVE.2' origin='TestsScanner'
+            uuid='3b77da90-1642-4a63-9d98-49776556bfb7'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-DNP3.INACTIVE.2'/>
+    </Point>
+
+    <Point name='TESTS-DNP3.SCANNED-INACTIVE.3' origin='TestsScanner'
+            uuid='c8dd6469-d5b8-4eb6-b008-c5ba24814204'
+            store='TestsSink' content='Count'>
+        <attributes usage='DNP3'>
+            <attribute name='INACTIVE'/>
+        </attributes>
+        <input point='TESTS-DNP3.REGISTER.1'/>
+    </Point>
+
+    <Point name='TESTS-DNP3.SPLITTED.1' origin='TestsDNP3'
+            uuid='a09c410f-9545-4409-8a9f-7be25b47d468'
+            content='DNP3Array'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='COUNTER'/>
+            <attribute name='DATA_TYPE' value='UINT16'/>
+            <attribute name='START_INDEX' value='21'/>
+            <attribute name='STOP_INDEX' value='25'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.SPLIT.1' origin='TestsScanner'
+            uuid='49a55161-1288-43dd-bec1-69a7e69a0646'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-DNP3.SPLITTED.1'>
+            <param name='Index' value='1'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-DNP3.SPLIT.2' origin='TestsScanner'
+            uuid='6999df43-f985-4e43-9da4-a3043eef92dc'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-DNP3.SPLITTED.1'>
+            <param name='Index' value='2'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-DNP3.CONNECTION.1' origin='TestsDNP3'
+            uuid='d877f2a8-22d6-46e3-b69b-f3ed5a5bd1d5'>
+        <attributes usage='DNP3'>
+            <attribute name='CONNECTION_STATE'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.STATE.1' origin='TestsScanner'
+            uuid='02ee6d36-832c-4ba6-8b6d-1967badf7b0d'
+            store='TestsSink' content='Boolean'>
+        <input point='TESTS-DNP3.CONNECTION.1'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

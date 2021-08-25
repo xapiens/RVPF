@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# $Id: profile 3673 2018-08-16 18:38:55Z SFB $
+
+shopt -s extglob
+run_dir=${0%%*([^/])}
+[ -z "$run_dir" ] || cd $run_dir
+
+DEBUG_OPTS=-ea
+
+#DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.start.millis=45000"
+DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.sample.millis=100"
+#DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.sample.count=600000"
+#DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.snapshot.millis=10000"
+#DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.snapshot.count=5"
+#DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.snapshot.depth=3"
+#DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.thread.group=main"
+#DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.thread.state=runnable"
+#DEBUG_OPTS="$DEBUG_OPTS -Drvpf.profile.stop.ignored=yes"
+
+export DEBUG_OPTS
+
+run_dir=bin
+run_file=$1.sh
+[ -e $run_dir/$run_file ] || run_dir="pap/bin"
+shift
+
+pushd . > /dev/null
+cd $run_dir
+. setup/rvpf-env.sh
+popd > /dev/null
+
+exec $run_dir/$run_file $@
+
+# End.

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: testng.xml 4088 2019-06-18 13:07:16Z SFB $
+ -->
+
+<suite name="RVPF-PAP">
+
+    <test name="Modbus-context">
+        <classes>
+            <class name='org.rvpf.tests.pap.modbus.ModbusContextTests'/>
+        </classes>
+    </test>
+
+    <test name="Modbus-client-server">
+        <classes>
+            <class name='org.rvpf.tests.pap.modbus.ModbusClientServerTests'/>
+        </classes>
+    </test>
+
+    <test name="Modbus-forwarder-input">
+        <classes>
+            <class name='org.rvpf.tests.forwarder.input.pap.modbus.ForwarderInputTests'/>
+        </classes>
+    </test>
+
+    <test name="Modbus-updates-listener">
+        <classes>
+            <class name='org.rvpf.tests.store.server.pap.modbus.UpdatesListenerTests'/>
+        </classes>
+    </test>
+
+    <test name="Modbus-store-server">
+        <classes>
+            <class name='org.rvpf.tests.store.server.pap.modbus.StoreServerTests'/>
+        </classes>
+    </test>
+
+    <test name="Modbus-splitter-engine">
+        <classes>
+            <class name='org.rvpf.tests.processor.engine.pap.modbus.SplitterEngineTests'/>
+        </classes>
+    </test>
+
+    <test name="Modbus-datalogger">
+        <classes>
+            <class name='org.rvpf.tests.service.pap.datalogger.modbus.DataloggerServiceTests'/>
+            <class name='org.rvpf.tests.service.pap.datalogger.modbus.DataloggerConnectTests'/>
+        </classes>
+    </test>
+
+    <test name="CIP-client">
+        <parameter name='tests' value='org.rvpf.tests.pap.cip.CIPClientTests'/>
+        <classes>
+            <class name='org.rvpf.tests.pap.cip.CIPTestsFactory'/>
+        </classes>
+    </test>
+
+    <test name="CIP-splitter-engine">
+        <parameter name='tests' value='org.rvpf.tests.processor.engine.pap.cip.SplitterEngineTests'/>
+        <classes>
+            <class name='org.rvpf.tests.pap.cip.CIPTestsFactory'/>
+        </classes>
+    </test>
+
+    <test name="CIP-datalogger">
+        <parameter name='tests' value='org.rvpf.tests.service.pap.datalogger.cip.DataloggerServiceTests'/>
+        <classes>
+            <class name='org.rvpf.tests.pap.cip.CIPTestsFactory'/>
+        </classes>
+    </test>
+
+    <test name="CIP-store-server">
+        <parameter name='tests' value='org.rvpf.tests.store.server.pap.cip.StoreServerTests'/>
+        <classes>
+            <class name='org.rvpf.tests.pap.cip.CIPTestsFactory'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-context">
+        <classes>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3ContextTests'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-objects">
+        <classes>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3ObjectsValidation'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-connections">
+        <classes>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3TCPConnectionsTests'/>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3UDPConnectionsTests'/>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3SerialConnectionsTestsFactory'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-data-link-layer">
+        <classes>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3DataLinkLayerTests'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-transport-function">
+        <classes>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3TransportFunctionTests'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-application-layer">
+        <classes>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3ApplicationLayerTests'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-master-outstation">
+        <classes>
+            <class name='org.rvpf.tests.pap.dnp3.DNP3MasterOutstationTests'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-store-server">
+        <classes>
+            <class name='org.rvpf.tests.store.server.pap.dnp3.StoreServerTests'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-forwarder-input">
+        <classes>
+            <class name='org.rvpf.tests.forwarder.input.pap.dnp3.ForwarderInputTests'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-updates-listener">
+        <classes>
+            <class name='org.rvpf.tests.store.server.pap.dnp3.UpdatesListenerTests'/>
+        </classes>
+    </test>
+
+    <test name="DNP3-datalogger">
+        <classes>
+            <class name='org.rvpf.tests.service.pap.datalogger.dnp3.DataloggerServiceTests'/>
+        </classes>
+    </test>
+
+    <test name='Processor-scenarios'>
+        <parameter name='scenarios' value=''/>
+        <classes>
+            <class name='org.rvpf.tests.processor.TestScenarioFactory'/>
+        </classes>
+    </test>
+
+</suite>
+
+<!-- End. -->

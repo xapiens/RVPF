@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-cip-config.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-cip-config-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <property name='service.log.id' value='TSSN'/>
+        <property name='store.name' value='TestsStore'/>
+        <properties name='store.server.the'>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'/>
+                <property name='url' property='store.the.sql.url'/>
+            </properties>
+            <property name='sql.table.archive' value='TestsSnapshot'/>
+            <property name='sql.create'/>
+            <property name='notifier.class' classDef='NullNotifier'/>
+            <property name='notices.filtered'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='the-store'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=PAPStoreService,name=CIP'>
+        <alias name='store'/>
+        <property name='service.log.id' value='CIST'/>
+        <property name='store.name' value='TestsStore'/>
+        <properties name='store.server.pap'>
+            <properties name='notifier.som.queue'
+                    extends='tests.store.notifier.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='protocol' value='CIP'/>
+            <properties name='replicator'>
+                <properties name='partner'>
+                    <properties name='queue'
+                            extends='tests.store.replicated.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <properties name='partner'>
+                    <property name='store.name' value='TestsReplicate'/>
+                    <properties name='queue'
+                            extends='tests.store.replicate.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <property name='replicate.converts'/>
+            </properties>
+            <property name='traces' value='protocol'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='cip-store'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService'>
+        <property name='service.log.id' value='PROC'/>
+        <properties name='processor'>
+            <property name='name' value='TestsProcessor'/>
+            <property name='cache.updates.filtered'/>
+            <property name='receptionist.class'
+                    classDef='StoreListenerReceptionist'/>
+            <property name='receptionist.wait' value='15000'/>
+        </properties>
+        <property name='service.uuid'
+                value='664ee3e1-5696-4803-aa6d-7b778e7351a2'/>
+        <properties name='traces'>
+            <property name='dir' value='processor'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->

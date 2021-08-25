@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-scenarios.xml 3021 2016-03-11 16:14:57Z SFB $
+ -->
+
+<metadata lang='en'>
+
+    <?log message="Scenarios Metadata"?>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-pap-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <property name='tests.notice.timeout' value='5.0'/>
+
+    <Store name='TestsStore'
+            uuid='a617807d-557a-47ac-a995-c73ca17accf1'/>
+
+    <Processor name='TestsProcessor'
+            uuid='9daabb68-c26a-474e-9f0a-5dd73ff4d808'/>
+
+    <?include href='resource:scenarios/rvpf-metadata-scenario-1.xml'
+            if='tests.scenario.1'?>
+
+</metadata>
+
+<!-- End. -->

@@ -1,0 +1,91 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config-scenarios.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Tests scenarios configuration">
+
+    <?include href='resource:rvpf-common-config.xml'?>
+
+    <PropertyDef name='tests.messaging' type='ClassDef'
+            title="Tests messaging support"/>
+
+    <property name='substitution.enabled'/>
+
+    <PropertyDef name='tests.notice.timeout' type='Elapsed'/>
+    <PropertyDef name='tests.scenarios'/>
+
+    <property name='tests.scenarios' value='rvpf-scenarios.xml'/>
+
+    <properties name='tests.processor.receptionist.queue'
+            def='som.queue'>
+        <property name='name' value='TestsReceptionist'/>
+        <property name='keep.alive' value='60.0'/>
+        <property name='memory'/>
+    </properties>
+
+    <properties name='traces'>
+        <property name='disabled' property='traces.disabled'/>
+        <property name='compressed' property='traces.compressed'/>
+    </properties>
+
+    <property name='service.monitor.disabled'/>
+
+    <service name='org.rvpf:type=ContainerService'>
+        <property name='service.log.id' value='CONT'/>
+
+        <properties name='service'>
+            <property name='service.class' classDef='TheStoreService'/>
+            <property name='wait'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService'>
+        <property name='service.log.id' value='PROC'/>
+        <properties name='processor'>
+            <property name='name' value='TestsProcessor'/>
+            <property name='receptionist.wait'
+                    value='15000'/>
+            <properties name='receptionist.som.queue'
+                    extends='tests.processor.receptionist.queue'/>
+        </properties>
+        <property name='service.uuid'
+                value='cc5e3292-3a91-4478-9c27-817df41edd95'/>
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='processor'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <alias name='the-store'/>
+        <property name='service.log.id' value='THST'/>
+        <property name='store.name' value='TestsStore'/>
+
+        <properties name='store.server.the'>
+            <property name='backend.class'
+                    classDef='TheStoreMemoryBackEnd'/>
+            <properties name='backup'>
+                <property name='disabled'/>
+            </properties>
+            <properties name='notifier.som.queue'
+                    extends='tests.store.notifier.queue'>
+                <property name='server'/>
+                <property name='memory'/>
+            </properties>
+        </properties>
+
+        <properties name='traces' extends='traces'>
+            <property name='dir' value='the-store'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->
