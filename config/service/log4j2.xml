@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- $Id: log4j2.xml 3468 2017-06-07 14:00:58Z SFB $ -->
+
+<Configuration strict='true' name='RVPF_Service'
+        packages="org.rvpf.base.logger.log4j">
+
+    <Appenders>
+
+        <Appender type='Console' name='Console'>
+            <Filter type='ThresholdFilter' level='INFO'/>
+            <Layout type='PatternLayout'>
+                <Pattern>%d %-5p [%X{ID}:%c{1}] %m%n</Pattern>
+            </Layout>
+        </Appender>
+
+        <Appender type='DailyFile' name='Daily'
+                directory='${env:RVPF_LOG}' maxFileSize='3MB'>
+            <Layout type='PatternLayout'>
+                <Pattern>%d %-5p [%X{ID}:%c] %m%n</Pattern>
+            </Layout>
+        </Appender>
+
+        <Appender type='DetailFile' name='Detail'
+                directory='${env:RVPF_LOG}' maxFileSize='1MB'
+                maxBackups='4'>
+            <Layout type='PatternLayout'>
+                <Pattern>%d %-5p [%X{ID}:%c] %m%n</Pattern>
+            </Layout>
+        </Appender>
+
+        <!--
+        <Appender type='Mail' name='Mail'>
+                smtpProtocol='smtps'
+                smtpHost='${log4j.smtp.host}'
+                smtpPort='${log4j.smtp.port}'
+                smtpUsername="${log4j.smtp.username}"
+                smtpPassword="${log4j.smtp.password}"
+                to="${log4j.smtp.to}"
+                from="${log4j.smtp.from}"
+                subject="${log4j.smtp.subject}">
+            <Filters>
+                <Filter type='MidnightFilter'/>
+                <Filter type='ThresholdFilter' level='INFO'/>
+            </Filters>
+            <MidnightTriggeringPolicy maxWarnings='9'/>
+            <Layout type='PatternLayout'>
+                <Pattern>%d %-5p [%X{ID}:%c] %m%n</Pattern>
+            </Layout>
+        </Appender>
+         -->
+
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name='org.rvpf' level='DEBUG'/>
+
+        <!-- The next three loggers are recommended. -->
+
+        <Logger name='org.rvpf.base.util.Version' level='DEBUG'/>
+
+        <Logger name='org.rvpf.base.util.Profiler' level='DEBUG'/>
+
+        <Logger name='org.rvpf.service.Config' level='INFO'/>
+
+        <Root level='INFO'>
+            <AppenderRef ref='Console'/>
+            <AppenderRef ref='Daily'/>
+            <AppenderRef ref='Detail'/>
+            <!-- <AppenderRef ref='Mail'/> -->
+        </Root>
+
+    </Loggers>
+
+</Configuration>
+
+<!-- End. -->

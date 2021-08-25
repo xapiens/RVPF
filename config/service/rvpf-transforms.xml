@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-transforms.xml 3012 2016-03-02 00:46:45Z SFB $
+ -->
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<metadata lang='en' title="Transform definitions">
+
+    <Transform name='Add' engine='RPN'>
+        <description>
+            Simple addition of any number of inputs.
+        </description>
+        <param name='Program' value='$*! reduce +'/>
+    </Transform>
+
+    <Transform name='Average' engine='Summarizer'>
+        <description>
+            Computes the average of the summarized input during the period.
+        </description>
+        <param name='InitialProgram' value='0'/>
+        <param name='StepProgram' value='$0 $ +'/>
+        <param name='FinalProgram' value='$0 $# /'/>
+    </Transform>
+
+    <Transform name='ClearSeconds' engine='Resynchronizer'>
+        <description>
+            Clears the seconds from the timestamp.
+        </description>
+        <param name='FloorInterval' value='00:01'/>
+    </Transform>
+
+    <Transform name='Copy' engine='RPN'>
+        <description>
+            Simple copy of the single input to the result.
+        </description>
+        <notes>
+            The action of content normalization / denormalization may result
+            in a value conversion.
+        </notes>
+        <param name='Program' value='$1'/>
+    </Transform>
+
+    <Transform name='Count' engine='Summarizer'>
+        <description>
+            Counts the occurences of the summarized input during the period.
+        </description>
+        <param name='InitialProgram' value='$#'/>
+    </Transform>
+
+    <Transform name='CountAll' engine='Summarizer'>
+        <description>
+            Counts all occurences of the summarized input during the period,
+            including null values.
+        </description>
+        <param name='InitialProgram' value='$#'/>
+        <arg/>
+        <arg>
+            <param name='IncludeNulls'/>
+        </arg>
+    </Transform>
+
+    <Transform name='Difference' engine='Summarizer'>
+        <param name='InitialProgram' value='last : ! first : ! - dup 0 le !'/>
+    </Transform>
+
+    <Transform name='Divide' engine='RPN'>
+        <description>
+            Simple division of two inputs.
+        </description>
+        <param name='Program' value='$1! $2! /'/>
+    </Transform>
+
+    <Transform name='Integrator' engine='Summarizer'>
+        <description>
+            Extracts the value accumulated during the interval.
+        </description>
+        <notes>
+            The Point's Param #1 must contain the integrator's
+            overflow value.
+        </notes>
+        <param name='InitialProgram' value='0 @1 int #1='/>
+        <param name='StepProgram'>
+            1 step le if return
+            $ prev - :-? if { #1 + } $0 +
+        </param>
+        <param name='FinalProgram' value='1 $# le if { null return }'/>
+        <arg/>
+        <arg>
+            <param name='FetchPreviousEndValue'/>
+        </arg>
+    </Transform>
+
+    <Transform name='Mebi' engine='RPN'>
+        <description>
+            Converts a count to 'mebi'.
+        </description>
+        <param name='Program' value='$1 1024 1024 * /'/>
+    </Transform>
+
+    <Transform name='Multiply' engine='RPN'>
+        <description>
+            Simple multiplication of any number of inputs.
+        </description>
+        <param name='Program' value='$*! reduce *'/>
+    </Transform>
+
+    <Transform name='RSD' engine='Summarizer' title="Relative standard deviation">
+        <description>
+            Computes the relative standard deviation of the summarized input
+            during the period.
+        </description>
+        <notes>
+            The RSD is computed as (STD / Mean).
+        </notes>
+        <param name='InitialProgram'>
+            1 $# gt assert 0.0 :#1= #2=
+        </param>
+        <param name='StepProgram'>
+            $ #1 + #1= $ :* #2 + #2=
+        </param>
+        <param name='FinalProgram'>
+            0.0 #1 eq if 0.0 else {
+                #2 $# * #1 :* - abs $# :-- * / sqrt
+                #1 $# / abs /
+            }
+        </param>
+    </Transform>
+
+    <Transform name='Substract' engine='RPN'>
+        <description>
+            Simple substraction of two inputs.
+        </description>
+        <param name='Program' value='$1! $2! -'/>
+    </Transform>
+
+    <Transform name='STDEV' engine='Summarizer' title="STandard DEViation">
+        <param name='InitialProgram'>
+            1 $# gt assert 0.0 :#1= #2=
+        </param>
+        <param name='StepProgram'>
+            $ #1 + #1= $ :* #2 + #2=
+        </param>
+        <param name='FinalProgram'>
+            0.0 #1 eq if 0.0 else {
+                #2 $# * #1 :* - abs $# :-- * / sqrt
+            }
+        </param>
+    </Transform>
+
+</metadata>
+
+<!-- End. -->

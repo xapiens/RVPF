@@ -1,0 +1,75 @@
+/*
+ * $Id: rvpf.css 1 2005-04-21 21:54:49Z SFB $
+ */
+
+* {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    font-weight: normal;
+    background: #f5f5dc;
+}
+
+name {
+    font-weight: bold;
+}
+name:after {content: " "}
+
+ParamDef, Processor, Origin, Store, Content, Filter, Behavior, Engine, Transform, Point {
+    display: block;
+    margin-top: 15px;
+    font-size: 12pt;
+}
+
+ClassLib, ClassDef, Group, PropertiesDef, PropertyDef {
+    display: block;
+    margin-top: 15px;
+    font-size: 12pt;
+}
+
+properties, property, service {
+    display: block;
+    margin-top: 10px;
+}
+
+property property {
+    display: inline;
+}
+
+description, notes, param {
+    display: block;
+    margin-left: 15px;
+}
+
+title:before {content: " " open-quote}
+title:after {content: close-quote}
+
+ParamDef:before {content: "Parameter definition for "}
+Processor:before {content: "Processor "}
+Origin:before {content: "Origin "}
+Store:before {content: "Store "}
+Content:before {content: "Content "}
+Filter:before {content: "Filter "}
+Behavior:before {content: "Behavior "}
+Engine:before {content: "Engine "}
+Transform:before {content: "Transform "}
+Point:before {content: "Point "}
+param:before {content: "Parameter "}
+
+PropertiesDef:before {content: "Properties definition for "}
+PropertyDef:before {content: "Properties definition for "}
+
+engine:before {content: " ("}
+engine:after {content: ")"}
+
+param name:after, property name:after {content: ": "}
+
+property:before {content: "Property "}
+property property:before {content: " (from "}
+property property:after {content: ") "}
+
+properties:before {content: "Properties "}
+source:after {content: " "}
+
+service:before {content: "Service "}
+
+/* End. */
