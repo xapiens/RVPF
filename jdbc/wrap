@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# $Id: wrap 3099 2016-07-14 19:24:59Z SFB $
+
+cd bin
+. setup/rvpf-env.sh
+cd ..
+
+exec $RVPF_HOME/core/wrap $*
+
+# End.
