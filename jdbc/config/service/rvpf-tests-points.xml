@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-tests-points.xml 1847 2013-08-13 20:54:48Z SFB $
+ -->
+
+<metadata lang='en' title="RVPF Tests points">
+
+    <description>
+        This file contains tests points definitions needed by the tests
+        procedures.
+    </description>
+
+    <Point name='RVPF-1'
+            store='Store' content='Numeric'
+            uuid='09b9e293-f056-44c7-9f23-ee54553c095d'/>
+
+    <Point name='RVPF-2'
+            store='Store' content='Numeric'
+            uuid='f86cadc9-050c-43f1-bced-ee54553c095d'/>
+
+    <Point name='RVPF-3'
+            store='Store' content='Numeric'
+            uuid='623376b9-0227-4129-9e43-ee54553c095d'/>
+
+    <Point name='RVPF-4'
+            store='Store' content='Numeric'
+            uuid='cf1b1a6d-c756-4dda-bdab-ee54553c095d'/>
+
+    <Point name='RVPF-5'
+            store='Store' content='Numeric'
+            uuid='1ba02c8a-f080-4af4-bee0-ee54553c095d'/>
+
+    <Point name='RVPF-6'
+            store='Store' content='Numeric'
+            uuid='41a26b53-7711-4317-857f-ee54553c095d'/>
+
+    <Point name='RVPF-7'
+            store='Store' content='Numeric'
+            uuid='c50ae580-1322-4d38-87fa-ee54553c095d'/>
+
+    <Point name='RVPF-8'
+            store='Store' content='Numeric'
+            uuid='b80682d7-c863-4fb9-a0b6-ee54553c095d'/>
+
+    <Point name='RVPF-9'
+            store='Store' content='Numeric'
+            uuid='71c14b9e-342e-4fd2-9df6-ee54553c095d'/>
+
+    <Point name='RVPF-10'
+            store='Store' content='Numeric'
+            uuid='9d236b23-3693-49ef-ac65-ee54553c095d'/>
+
+    <Point name='RVPF-11'
+            store='Store' content='Count'
+            uuid='70ff08cf-62f3-430b-88b3-ee54553c095d'/>
+
+    <Point name='RVPF-12'
+            store='Store' content='Count'
+            uuid='ca2ce688-856e-4fb4-962f-ee54553c095d'/>
+
+    <Point name='RVPF-13'
+            store='Store' content='Count'
+            uuid='d6e6b066-a5bf-473b-a3ed-ee54553c095d'/>
+
+    <Point name='RVPF-14'
+            store='Store' content='Count'
+            uuid='2d750729-3072-4603-ba2f-ee54553c095d'/>
+
+    <Point name='RVPF-15'
+            store='Store' content='Count'
+            uuid='850f1f79-d5d9-43ac-b1a3-ee54553c095d'/>
+
+    <Point name='RVPF-16'
+            store='Store' content='State'
+            uuid='48bb54db-7649-4f6a-865a-ee54553c095d'>
+        <param name='States' if='config.store' value='On'/>
+    </Point>
+
+    <Point name='RVPF-17'
+            store='Store' content='State'
+            uuid='f1c1adb4-ce61-435b-b8c9-ee54553c095d'>
+        <param name='States' if='config.store' value='Traffic'/>
+    </Point>
+
+    <Point name='RVPF-18'
+            store='Store' content='State'
+            uuid='7183e588-47a1-42f1-93e3-ee54553c095d'>
+        <param name='States' if='config.store' value='Traffic'/>
+    </Point>
+
+    <Point name='RVPF-19'
+            store='Store' content='Text'
+            uuid='6e1f8710-2323-4c77-adda-ee54553c095d'/>
+
+    <Point name='RVPF-20'
+            store='Store' content='Text'
+            uuid='79df5a74-7540-45ab-935d-ee54553c095d'/>
+
+</metadata>
+
+<!-- End. -->

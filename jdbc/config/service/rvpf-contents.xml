@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-contents.xml 2664 2015-06-15 14:02:25Z SFB $
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<metadata lang='en' title="Content definitions">
+
+    <title lang='fr'>Définitions de contenu</title>
+
+    <Content name='CELCIUS' classDef='TemperatureContent'>
+        <param name='Ident' value='degree Celcius'/>
+        <param name='Abbrev' value='°C'/>
+        <param name='Constant' value='273.15'/>
+    </Content>
+
+    <?include href='resource:rvpf-contents-non-si.xml'?>
+
+</metadata>
+
+<!-- End. -->

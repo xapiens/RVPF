@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-syncs.xml 1847 2013-08-13 20:54:48Z SFB $
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<metadata lang='en' title="Sync definitions">
+
+    <Sync name='Hour' title="Each hour"
+            classDef='CrontabSync'>
+        <param name='Crontab' value='0 * * * *'/>
+    </Sync>
+
+    <Sync name='Midnight' title="Each day at midnight"
+            classDef='CrontabSync'>
+        <param name='Crontab' value='0 0 * * *'/>
+    </Sync>
+
+    <Sync name='Quarter' title="Each quarter"
+            classDef='CrontabSync'>
+        <param name='Crontab' value='*/15 * * * *'/>
+    </Sync>
+
+    <Sync name='Minute' title="Each minute"
+            classDef='CrontabSync'>
+        <param name='Crontab' value='* * * * *'/>
+    </Sync>
+
+</metadata>
+
+<!-- End. -->

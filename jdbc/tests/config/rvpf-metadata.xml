@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata.xml 3681 2018-08-31 13:28:03Z SFB $
+ -->
+
+<metadata lang='en' title="Tests metadata" domain='tests'>
+
+    <!-- Base metadata document tests. -->
+
+    <PropertyDef name='tests.metadata.property'/>
+
+    <property name='substitution.enabled'/>
+
+    <property name='tests.metadata.property' value='TestsMetadataValue'>
+        <notes>Used for base tests of MetadataDocument.</notes>
+    </property>
+
+    <!-- Common definitions. -->
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-contents.xml'?>
+
+    <!-- Tests components. -->
+
+    <AttributesDef usage='tests-attributes'>
+        <AttributeDef name='test-attribute-1' multiple='yes'/>
+        <AttributeDef name='test-attribute-2'/>
+        <AttributeDef name='test-attribute-6'/>
+        <AttributeDef name='test-attribute-7'/>
+        <AttributeDef name='test-attribute-8'/>
+        <AttributeDef name='test-attribute-9'/>
+    </AttributesDef>
+
+    <Group name='ClockTests'/>
+
+    <Permissions name='DefaultPermissions'>
+        <permissions allow='read'/>
+        <permissions role='$${tests.role}' allow='write,process,delete'/>
+    </Permissions>
+
+    <Sync name='Hour' classDef='ElapsedSync'>
+        <param name='Elapsed' value="01:00"/>
+    </Sync>
+
+    <Sync name='Hour:15' classDef='ElapsedSync'>
+        <param name='Elapsed' value="01:00"/>
+        <param name='Offset' value="00:15"/>
+    </Sync>
+
+    <Sync name='Hour:30' classDef='CrontabSync'>
+        <param name='Crontab' value="30 * * * *"/>
+    </Sync>
+
+    <Sync name='Quarter' classDef='ElapsedSync'>
+        <param name='Elapsed' value="00:15"/>
+    </Sync>
+
+    <Sync name='Minute' classDef='ElapsedSync'>
+        <param name='Elapsed' value="00:01"/>
+    </Sync>
+
+    <Processor name='TestsProcessor'
+            uuid='09606b86-ecfa-4147-b61b-1dc00cca5e14'>
+        <description>Used for base Processor tests.</description>
+    </Processor>
+
+    <Store name='TestsCStore' if='tests.cstore'
+            uuid='dbcba6bf-90cc-46ba-9d62-60c1514eda47'>
+        <description>Used for base CStore tests.</description>
+        <param name='User' value='$${tests.user}'/>
+        <param name='Password' value='$${tests.password}'/>
+    </Store>
+
+    <Store name='TestsStore'
+            permissions='DefaultPermissions'
+            uuid='6392efbe-9d47-4ac6-96b6-e2ef9fdcb1f5'>
+        <description>Used for base Store tests.</description>
+        <param name='User' value='$${tests.user}'/>
+        <param name='Password' value='$${tests.password}'/>
+    </Store>
+
+    <Store name='TestsBoundStore'
+            permissions='DefaultPermissions'
+            uuid='323f1f35-eea5-462b-a9c0-3a1fadbf2915'>
+        <description>Used for base Store tests.</description>
+        <param name='Name' value='TestsStore'/>
+        <param name='BindPoints'/>
+        <param name='User' value='$${tests.user}'/>
+        <param name='Password' value='$${tests.password}'/>
+    </Store>
+
+    <Store name='TestsProxyStore'
+            permissions='DefaultPermissions'
+            uuid='3dce7ec6-e810-4537-9827-75a70e6a5d98'>
+        <description>Used for base ProxyStore tests.</description>
+        <param name='User' value='$${tests.user}'/>
+        <param name='Password' value='$${tests.password}'/>
+    </Store>
+
+    <Store name='TestsSink' classDef='RMISinkStore'
+            uuid='d74f3376-7757-4fb1-8747-15b5362526c6'>
+        <description>Used for base Sink tests.</description>
+        <param name='User' value='$${tests.user}'/>
+        <param name='Password' value='$${tests.password}'/>
+    </Store>
+
+    <Store name='TestsReplicate' classDef='NullStore'
+            unless='tests.store.replicator.disabled'
+            uuid='943ac397-d925-436c-89c5-efdda388c1bf'>
+        <description>Used for base replicate tests.</description>
+    </Store>
+
+    <Store name='NullStore' lang='fr' title="Dépot nul"/>
+
+    <Origin name='TestsClock' group='ClockTests'
+            uuid='5b19a0d3-0334-4b9e-9952-24fe7c31ff73'
+            description="Used for base Clock tests.">
+        <attributes usage='tests-attributes'>
+            <attribute name='test-attribute-1' value='test-1'/>
+            <attribute name='test-attribute-2' value='test-2'/>
+            <attribute name='test-attribute-1' value='test-3'>
+                <value>test-4</value>
+                <value value='test-5'/>
+            </attribute>
+        </attributes>
+    </Origin>
+
+    <!-- These Syncs are used for base Clock tests. -->
+
+    <Sync name='MidnightWeekend' classDef='CrontabSync'>
+        <param name='Crontab' value="0 0 * * 0,6"/>
+    </Sync>
+
+    <Sync name='MidnightWorkDays' classDef='CrontabSync'>
+        <param name='Crontab' value="0 0 * * 1-5"/>
+    </Sync>
+
+    <!-- The following definitions used for base Store and Processor tests. -->
+
+    <Engine name='PipeExample' classDef='LocalExecutorEngine'>
+        <param name='EngineExecutor' classDef="PipeEngineExecutor"/>
+        <param name='Program' value='${tests.command.java}'
+                property='tests.pipe.program'/>
+        <param name='Arg'>
+            <value value='org.rvpf.tests.example.PipeProgramExample'
+                    unless='tests.pipe.program'/>
+            <value value='TRANSFORM'/>
+        </param>
+        <param name='Set' unless='tests.pipe.program'>
+            <value value='CLASSPATH=tests/classes'/>
+            <value value='CLASSPATH+=${rvpf.core.lib}/rvpf-base.jar'/>
+        </param>
+    </Engine>
+
+    <Engine name='ScriptExample' classDef='LocalExecutorEngine'>
+        <param name='EngineExecutor' classDef="ScriptEngineExecutor"/>
+        <param name='ScriptEngineName' property='script.engine.name'/>
+        <param name='StartFile'
+                value="${config.dir}/../script/script-engine-tests.${script.file.type}"/>
+    </Engine>
+
+    <Transform name='PipeExample' engine='PipeExample'>
+        <param name='Param' value='100.0' notes="Modulo"/>
+        <arg behavior='Required'/>
+    </Transform>
+
+    <Transform name='ScriptExample' engine='ScriptExample'>
+        <param name='ApplyText' value="apply()"/>
+        <param name='Param' value='100.0' notes="Modulo"/>
+        <arg behavior='Required'/>
+    </Transform>
+
+    <Point name='TESTS.SYNC.01'
+            uuid='6e9536ba-265b-4759-ae65-7208e51955ae'
+            store='NullStore' content='Clock' sync='Minute'>
+    </Point>
+    <Point name='TESTS.SYNC.02'
+            uuid='6420b661-314b-4681-9ed2-cfee1efa929a'
+            store='NullStore' content='Clock' sync='Hour'>
+    </Point>
+    <Point name='TESTS.NUMERIC.01'
+            uuid='6069f04b-aa26-4e45-8f2d-2d260b88e543'
+            store='TestsStore' content='Numeric'>
+        <param name='Tag' value='RVPF-1'/>
+        <param name='ArchiveTime' property='tests.archive.time'/>
+        <replicate point='TESTS.REPLICATE.01'
+                unless='tests.store.replicator.disabled'/>
+        <replicate point='TESTS.REPLICATE.02'
+                unless='tests.store.replicator.disabled'/>
+        <param name='DeadbandGap' value='0.5'/>
+    </Point>
+    <Point name='TESTS.NUMERIC.02'
+            uuid='4e3e1f2e-030c-4058-b3a5-fd039fe91045'
+            store='TestsStore' content='Numeric'
+            processor='TestsProcessor' transform='PipeExample'>
+        <param name='Tag' value='RVPF-2'/>
+        <param name='KeepAtMost' if='tests.archive.time' value='2'/>
+        <param name='Notify'/>
+        <param name='Volatile'/>
+        <param name='Param' value='10.0' notes="Factor"/>
+        <input point='TESTS.NUMERIC.01'/>
+    </Point>
+    <Point name='TESTS.NUMERIC.03'
+            uuid='fb3fdabe-4385-4629-98bf-965d9cc1242c'
+            store='TestsStore' content='Unspecified'
+            processor='TestsProcessor' transform='Replicate'>
+        <param name='Tag' value='RVPF-3'/>
+        <param name='Confirm' if='tests.notifier.pull'/>
+        <param name='NullRemoves'/>
+        <input point='.'/>
+    </Point>
+    <Point name='TESTS.NUMERIC.05'
+            uuid='82d55a30-b1d2-4afc-aa99-5480e98c3f8b'
+            store='TestsStore' content='Numeric'
+            processor='TestsProcessor' transform='ScriptExample'>
+        <param name='Tag' value='RVPF-5'/>
+        <param name='Notify'/>
+        <param name='Param' value='10.0' notes="Factor"/>
+        <input point='TESTS.NUMERIC.01'/>
+    </Point>
+    <Point name='TESTS.HOUR'
+            uuid='e4d448e3-4153-4093-a46b-01c101813f47'
+            store='TestsStore' content='Hour'>
+        <param name='Tag' value='RVPF-6'/>
+    </Point>
+    <Point name='TESTS.TEXT.01'
+            uuid='0d1f896f-49a2-4046-b4c1-d0ae4d1dbd69'
+            store='TestsStore' content='Text' sync='Minute'
+            processor='TestsProcessor' transform='Null'>
+        <alias name='TESTS:ALIAS'/>
+        <param name='Tag' value='RVPF-19'/>
+        <param name='Notify'/>
+        <input point='TESTS.NUMERIC.01'/>
+    </Point>
+    <Point name='TESTS.TEXT.02'
+            uuid='d8aa68d7-7548-4cf9-a80d-0b3033d88ad2'
+            store='TestsBoundStore' content='Text' sync='Minute'>
+        <param name='Tag' value='TESTS.TEXT.01'/>
+        <param name='Notify'/>
+    </Point>
+    <Point name='TESTS.SYNC.03'
+            uuid='a6f88c03-06b6-472b-af1c-f48e366c3681'
+            store='NullStore' content='Count'
+            processor='TestsProcessor' transform='PipeExample'>
+        <input point='TESTS.SYNC.01' sync='Hour'/>
+    </Point>
+    <Point name='TESTS.STATE.01'
+            uuid='383cdd3f-304f-4b6a-b2e2-2bce521cc378'
+            store='TestsStore' content='State'>
+        <param name='Tag' value='RVPF-16'/>
+        <param name='States' value='On'/>
+    </Point>
+
+    <Point name='TESTS.BIG.DECIMAL'
+            uuid='8d8fad96-a2ac-484e-9dbf-9799eb0d0e17'
+            store='TestsStore' content='BigDecimal'>
+        <param name='Tag' value='RVPF-21'/>
+        <param name='Scale' value='32'/>
+    </Point>
+    <Point name='TESTS.BIG.INTEGER'
+            uuid='c3ada499-cc25-44f8-ba17-ffe165246235'
+            store='TestsStore' content='BigInteger'>
+        <param name='Tag' value='RVPF-22'/>
+    </Point>
+    <Point name='TESTS.BIG.RATIONAL'
+            uuid='eae54b46-5d0a-4694-ba4e-2dbac3c3434e'
+            store='TestsStore' content='BigRational'>
+        <param name='Tag' value='RVPF-23'/>
+    </Point>
+    <Point name='TESTS.BOOLEAN'
+            uuid='ca72f3f1-6069-467b-b515-3356d438bef0'
+            store='TestsStore' content='Logical'>
+        <param name='Tag' value='RVPF-24'/>
+    </Point>
+    <Point name='TESTS.BYTE.ARRAY'
+            uuid='2bf6f1bf-42f3-43a8-b87d-cb1adb2f9d3a'
+            store='TestsStore' content='Unspecified'>
+        <param name='Tag' value='RVPF-25'/>
+    </Point>
+    <Point name='TESTS.TUPLE'
+            uuid='eac768aa-e677-4322-8d7a-eb2a6b0ee1aa'
+            store='TestsStore' content='NumericTuple'>
+        <param name='Tag' value='RVPF-26'/>
+    </Point>
+    <Point name='TESTS.COMPLEX'
+            uuid='8144d5bb-0715-47a2-8da4-191ec303f912'
+            store='TestsStore' content='Complex'>
+        <param name='Tag' value='RVPF-27'/>
+    </Point>
+    <Point name='TESTS.DICT'
+            uuid='57cf9a54-d996-4a81-aae6-91c3549d0eca'
+            store='TestsStore' content='CountDict'>
+        <param name='Tag' value='RVPF-28'/>
+    </Point>
+    <Point name='TESTS.RATIONAL'
+            uuid='3c76706f-28ee-440f-9a18-bd86af321382'
+            store='TestsStore' content='Rational'>
+        <param name='Tag' value='RVPF-29'/>
+    </Point>
+
+    <!-- The following Points used for Clock tests. -->
+
+    <Point name='TESTS.CLOCK.01'
+            uuid='6e536960-82e2-4ec8-b8c4-d4088cd9fdac'
+            store='TestsStore' content='Clock'
+            sync='Minute' group='ClockTests' origin='TestsClock'>
+        <notes>
+            Being at the finest resolution, this clock point will fire
+            immediatly. This is expected by the clock tests.
+
+            See also 'TESTS.CLOCK.04'.
+        </notes>
+        <param name='Tag' value='RVPF-11'/>
+        <param name='Notify'/>
+    </Point>
+    <Point name='TESTS.CLOCK.02'
+            uuid='2f3ba329-c879-4d70-bd4d-dcb63324d827'
+            store='TestsStore' content='Clock' sync='MidnightWorkDays'
+            origin='TestsClock' group='ClockTests'>
+        <attributes usage='tests-attributes'>
+            <attribute name='test-attribute-6' value='test-6'/>
+            <attribute name='test-attribute-7' value='test-7'/>
+        </attributes>
+        <param name='Tag' value='RVPF-12'/>
+    </Point>
+    <Point name='TESTS.CLOCK.03'
+            uuid='51c5fb18-2c86-4649-8b03-bab4e26ab2e1'
+            store='TestsStore' content='Clock' sync='MidnightWeekend'
+            origin='TestsClock' group='ClockTests'>
+        <attributes usage='tests-attributes'>
+            <attribute name='test-attribute-8' value='test-8'/>
+            <attribute name='test-attribute-9' value='test-9'/>
+        </attributes>
+        <param name='Tag' value='RVPF-13'/>
+    </Point>
+    <Point name='TESTS.CLOCK.04'
+            uuid='8dc0b158-5703-4b24-ade5-7284877b8ca2'
+            store='TestsStore' content='Clock' sync='Minute'
+            origin='TestsClock' group='ClockTests'>
+        <notes>
+            Having the same 'Crontab' as 'TESTS.CLOCK.01', this clock
+            point is used to ensure that more than one event may be
+            scheduled for the same time.
+        </notes>
+        <param name='Tag' value='RVPF-14'/>
+        <param name='Notify'/>
+    </Point>
+
+    <!-- The following Point is used for a Cutoff Control test. -->
+
+    <Point name='TESTS.CUTOFF.CONTROL'
+            uuid='b3801cab-d7f5-4854-822a-c9446f7e8e8d'
+            store='TestsStore' content='Clock'
+            processor='TestsProcessor' transform='UpdateCutoffControl'>
+        <param name='Tag' value='RVPF-15'/>
+        <input point='.'/>
+    </Point>
+
+    <!-- The following Point used for Sink tests. -->
+
+    <Point name='TESTS.SINK.01'
+            uuid='9db19348-9c6b-4650-971c-94c2eaadb84e'
+            store='TestsSink' content='Count' if="tests.sink"
+            processor='TestsProcessor' transform='Replicate'>
+        <input point='.'/>
+    </Point>
+
+    <Point name='TESTS.SINK.02'
+            uuid='230171c4-9ec2-460a-a1ef-808ba43694ec'
+            store='TestsSink' content='Text' if="tests.sink"
+            processor='TestsProcessor' transform='Replicate'>
+        <input point='.'/>
+    </Point>
+
+    <!-- The following Points used for CStore tests. -->
+
+    <Point name='TESTS.CSTORE.01'
+            uuid='deb673d0-6620-4a8f-8a21-c20bf3b67c81'
+            store='TestsCStore' content='Numeric' if='tests.cstore'>
+        <param name='Tag' value='TESTS.NUMERIC.01'/>
+    </Point>
+
+    <Point name='TESTS.CSTORE.02'
+            uuid='0b508112-54b5-4c7f-a3b5-010bbe3d6702'
+            store='TestsCStore' content='Numeric' if='tests.cstore'>
+        <param name='Tag' value='TESTS.NUMERIC.02'/>
+        <input point='TESTS.CSTORE.01'/>
+    </Point>
+
+    <!-- The following Points used for Snapshot tests. -->
+
+    <Point name='TESTS.SNAPSHOT.01'
+            uuid='adb11d96-967c-4bd8-b7a0-891963f8a8af'
+            store='TestsStore' content='Count'>
+        <param name='Notify'/>
+    </Point>
+
+    <Point name='TESTS.SNAPSHOT.02'
+            uuid='96c5c3d8-e903-4aa7-a0da-53565dfd1285'
+            store='TestsStore' content='Text'>
+    </Point>
+
+    <!-- The following Points used for replicates tests. -->
+
+    <Point name='TESTS.REPLICATE.01'
+            uuid='c49f328d-1c61-4703-87e5-af842e1e6544'
+            unless='tests.store.replicator.disabled'
+            store='TestsReplicate' content='Numeric'/>
+
+    <Point name='TESTS.REPLICATE.02'
+            uuid='a7648e4e-73ce-4425-821c-ed8120acd16d'
+            unless='tests.store.replicator.disabled'
+            store='TestsStore' content='Numeric'>
+        <replicate point='TESTS.NUMERIC.01'/>
+    </Point>
+
+    <!-- The following Processor and Point test processors coexistence. -->
+
+    <Processor name='TestsDummyProcessor'/>
+
+    <Point name='TESTS.NUMERIC.04'
+            uuid='e74734a9-8883-459d-b3b2-329d91fdc9c9'
+            store='TestsStore' content='Numeric'
+            processor='TestsDummyProcessor' transform='Replicate'>
+        <param name='Tag' value='RVPF-4'/>
+        <input point='TESTS.NUMERIC.02'/>
+    </Point>
+
+    <!-- Get the specific metadata. -->
+
+    <?include href='resource:rvpf-metadata-specific.xml'
+            optional='yes'?>
+
+</metadata>
+
+<!-- End. -->

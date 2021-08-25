@@ -1,0 +1,15 @@
+
+Related Values Processing Framework (JDBC) release 0.8.2
+
+This is the second public distribution as a subproject.
+
+To run the included tests, this release needs:
+
+- A recent Java runtime (1.8.0 or later, http://java.sun.com/javase/).
+
+- The 0.8.2 release of the RVPF core.
+
+- The released files expanded under a common directory.
+  The source bundle (rvpf-jdbc-*-src.tgz) may be omitted.
+
+---

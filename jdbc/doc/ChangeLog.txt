@@ -1,0 +1,15 @@
+
+0.8.2
+
+- Updated Java version requirement to 7.0.
+
+0.8.1
+
+- Added JDBC 4.0 support.
+- Modified distribution files name to include Subversion revision.
+
+0.8.0
+
+- First public distribution (2006-11-10).
+
+---
