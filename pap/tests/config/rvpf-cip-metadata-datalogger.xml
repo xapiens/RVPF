@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-cip-metadata-datalogger.xml 3383 2017-03-11 16:16:10Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-cip-metadata-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Store name='TestsSink' classDef='SOMSinkStore'
+            uuid='a95dc043-6a8d-44d8-8c87-d98d4f8b85d8'/>
+
+    <Origin name='TestsScanner'
+            uuid='57dc00be-4afa-43c1-aaf8-37040509a5c0'/>
+
+    <Sync name='TestsSync' classDef='CrontabSync' anchored='yes'>
+        <param name='Crontab' value='0 0 * * *'/>
+    </Sync>
+
+    <Point name='TESTS-CIP.REGISTER.1' origin='TestsCIP'
+            uuid='10242f58-d92c-4e3e-897c-03c8847a5d78'
+            content='Count'>
+        <attributes usage='CIP'>
+            <attribute name='TAG' value='TESTS_DINT_1'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-CIP.SCANNED.1' origin='TestsScanner'
+            uuid='31ec6997-a22f-4172-a706-4b7600b8c629'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-CIP.REGISTER.1'/>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.0.1' origin='TestsScanner'
+            uuid='a73231c6-2b92-4bb7-9473-7332ae13ec68'
+            store='TestsSink' content='Logical'>
+        <input point='TESTS-CIP.REGISTER.1'>
+            <param name='Bit' value='1'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.0.2' origin='TestsScanner'
+            uuid='dfa7f5d5-6298-40da-9673-a59582b12266'
+            store='TestsSink' content='Logical'>
+        <input point='TESTS-CIP.REGISTER.1'>
+            <param name='Bit' value='3'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLITTED.1' origin='TestsCIP'
+            uuid='a6791bd3-3a45-428b-aeba-6dfd8ae38a87'
+            content='CIPArray'>
+        <attributes usage='CIP'>
+            <attribute name='TAG' value='TESTS_DINT_ARRAY_1'/>
+            <attribute name='ELEMENTS' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.1.1' origin='TestsScanner'
+            uuid='81fa4bd3-df91-43dd-acb5-7731df2712a9'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-CIP.SPLITTED.1'>
+            <param name='Index' value='1'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.1.2' origin='TestsScanner'
+            uuid='2ed67f4c-1474-4a5e-8aad-3bb860648e69'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-CIP.SPLITTED.1'>
+            <param name='Index' value='2'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.1.3' origin='TestsScanner'
+            uuid='22dcf323-a51e-4239-9331-75b68f2a0cf7'
+            store='TestsSink' content='Logical'>
+        <input point='TESTS-CIP.SPLITTED.1'>
+            <param name='Index' value='1'/>
+            <param name='Bit' value='33'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLITTED.2' origin='TestsCIP'
+            uuid='5578850c-53be-4736-b043-1d4104b644eb'
+            content='CIPArray'>
+        <attributes usage='CIP'>
+            <attribute name='TAG' value='TESTS_BOOL_ARRAY_1'/>
+            <attribute name='ELEMENTS' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.2.1' origin='TestsScanner'
+            uuid='dd25860f-97ff-4f07-bb4f-cbfdcb1c2ecf'
+            store='TestsSink' content='Logical'>
+        <input point='TESTS-CIP.SPLITTED.2'>
+            <param name='Index' value='1'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.2.2' origin='TestsScanner'
+            uuid='74f5a67e-84fb-4ace-b7ec-09b0e3fa0495'
+            store='TestsSink' content='Logical'>
+        <input point='TESTS-CIP.SPLITTED.2'>
+            <param name='Index' value='2'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLITTED.3' origin='TestsCIP'
+            uuid='24517460-9156-407f-9d3e-93a1eca639f6'
+            content='CIPArray'>
+        <attributes usage='CIP'>
+            <attribute name='TAG' value='TESTS_REAL_ARRAY_1'/>
+            <attribute name='ELEMENTS' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.3.1' origin='TestsScanner'
+            uuid='8a0f9885-3216-4be9-9272-5de1381f9aa3'
+            store='TestsSink' content='Numeric'>
+        <input point='TESTS-CIP.SPLITTED.3'>
+            <param name='Index' value='1'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.3.2' origin='TestsScanner'
+            uuid='13654045-ab57-46ba-9aca-b395ef414397'
+            store='TestsSink' content='Numeric'>
+        <input point='TESTS-CIP.SPLITTED.3'>
+            <param name='Index' value='2'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.CONNECTION.1' origin='TestsCIP'
+            uuid='55259434-47e6-404b-82e5-5dcc615e6b7a'>
+        <attributes usage='CIP'>
+            <attribute name='CONNECTION_STATE'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-CIP.STATE.1' origin='TestsScanner'
+            uuid='96361f6d-05bf-4354-9689-114bbfe2551e'
+            store='TestsSink' content='Boolean'>
+        <input point='TESTS-CIP.CONNECTION.1'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

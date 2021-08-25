@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-pap-modbus-config-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<config title="Shared PAP-Modbus configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper RVPF-PAP-Modbus operations.
+    </description>
+
+    <notes>
+        It is recommended to leave this file unmodified and to include
+        it at the top of the master 'rvpf-config.xml' file, after the
+        include of the 'rvpf-config-shared.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+    </notes>
+
+    <?include href='resource:rvpf-pap-config-shared.xml'
+            unless='config.pap'?>
+
+    <!-- Propert(y/ies) definitions. -->
+
+    <PropertiesDef name='modbus.listener' multiple='yes'>
+        <PropertyDef name='origin'/>
+        <PropertyDef name='serial.control' type='Boolean'>
+            <description>
+                Enables/disables flow control (RTS/CTS).
+
+                Defaults to false (disabled).
+            </description>
+        </PropertyDef>
+        <PropertyDef name='serial.mode'>
+            <description>
+                Specifies the transport mode.
+
+                Must be 'RTU' or 'ASCII'.
+
+                Defaults to 'RTU'.
+            </description>
+        </PropertyDef>
+        <PropertyDef name='serial.modem' type='Boolean'>
+            <description>
+                Enables/disables modem control (DTR/DSR).
+
+                Defaults to false (disabled).
+            </description>
+        </PropertyDef>
+        <PropertyDef name='serial.parity'>
+            <description>
+                Specifies the serial port parity for an origin.
+
+                Must be 'EVEN', 'ODD', 'MARK', 'SPACE' or 'NONE'.
+
+                Defaults to 'EVEN' (See Modbus over serial line).
+            </description>
+            <notes>
+                Parity 'NONE' requires an extra stop bit.
+            </notes>
+        </PropertyDef>
+        <PropertyDef name='serial.port'>
+            <description>
+                Specifies the serial port for an origin.
+
+                Defaults to none.
+            </description>
+        </PropertyDef>
+        <PropertyDef name='serial.speed' type='Integer'>
+            <description>
+                Specifies the serial port speed in bits per second.
+
+                Defaults to 9600.
+            </description>
+        </PropertyDef>
+        <PropertyDef name='socket.address'>
+            <description>
+                Specifies the socket address of an origin.
+
+                The address may be supplied as a name or in numeric
+                form. It may be followed by a ':' and a port number.
+
+                Defaults to none.
+            </description>
+            <notes>
+                In some contexts, a value of '*' is allowed to indicate
+                that the origin may have any address.
+            </notes>
+        </PropertyDef>
+        <PropertyDef name='socket.port' type='Integer'>
+            <description>
+                Specifies the socket port on which an origin is
+                listening.
+
+                Defaults to 502.
+            </description>
+            <notes>
+                This attribute will be ignored if the port has been
+                specified in the 'socket.address' property.
+            </notes>
+        </PropertyDef>
+        <PropertyDef name='unit.identifier' type='Integer'>
+            <description>
+                Specifies the unit identifier (1-247).
+
+                Defaults to 1.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='forwarder.module' if='config.forwarder'>
+        <PropertiesDef name='modbus'>
+            <description>
+                Acts as a Modbus server.
+            </description>
+            <PropertiesDef name='listener' extends='modbus.listener'/>
+            <PropertyDef name='origin' multiple='yes'/>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='store.server' if='config.store'>
+        <PropertyDef name='traces'>
+            <description>
+                Supplies the name of the subdirectory under which the
+                traces files will be created.
+
+                Defaults to no traces.
+            </description>
+        </PropertyDef>
+
+        <PropertiesDef name='updates.listener'>
+            <PropertiesDef name='modbus'>
+                <description>
+                    Acts as a Modbus server.
+                </description>
+                <PropertiesDef name='listener'
+                        extends='modbus.listener'/>
+                <PropertyDef name='origin' multiple='yes'/>
+            </PropertiesDef>
+            <PropertyDef name='traces'>
+                <description>
+                    Supplies the name of the subdirectory under which
+                    the traces files will be created.
+
+                    Defaults to no traces.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <property name='substitution.enabled'/>
+
+    <!-- Class definitions. -->
+
+    <ClassDef name='ModbusInputModule' if='config.forwarder'
+            package='org.rvpf.forwarder.input.pap.modbus'
+            member='ModbusModule'>
+        <description>
+            Forwarder module acting as a Modbus server.
+        </description>
+        <implements classDef='ForwarderInput'/>
+    </ClassDef>
+
+    <ClassDef name='ModbusUpdatesListener' if='config.store'
+            package='org.rvpf.store.server.pap.modbus'>
+        <description>
+            Store updates listener acting as a Modbus server.
+        </description>
+        <implements classDef='StoreUpdatesListener'/>
+    </ClassDef>
+
+    <ClassDef name='ModbusSupport' package='org.rvpf.pap.modbus'>
+        <implements classDef='PAPSupport'/>
+    </ClassDef>
+
+    <property name='pap.support.class' classDef='ModbusSupport'/>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

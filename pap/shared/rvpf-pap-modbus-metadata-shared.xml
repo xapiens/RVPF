@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-pap-modbus-metadata-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<metadata title="Shared PAP-Modbus metadata">
+
+    <description>
+        This file holds the basic metadata which is needed for
+        proper RVPF-PAP operations.
+    </description>
+
+    <notes>
+        It is recommended to leave this file unmodified and to include
+        it at the top of the master 'rvpf-metadata.xml' file, after the
+        include of the 'rvpf-metadata-shared.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+    </notes>
+
+    <?include href='resource:rvpf-pap-metadata-shared.xml'
+            unless='metadata.pap'?>
+
+    <!-- Definition of Modbus attributes. -->
+
+    <AttributesDef usage='MODBUS' extends='PAP'>
+        <AttributeDef name='ARRAY_SIZE' title="Array Size"
+                type='Integer' notes="Used by points">
+            <description>
+                Specifies the size of the array for a point of type
+                'ARRAY'.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='BATCH_SIZE' title="Batch Size"
+                type='Integer' notes="Used by origins">
+            <description>
+                Allows batching of requests; a zero or negative value
+                means no limit.
+
+                Defaults to 1 (no batching).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='BIT' title="Bit"
+                type='Integer' notes="Used by points">
+            <description>
+                Specifies a bit in an analog register.
+
+                The allows a Modbus server to use a single bit as a
+                boolean value.
+
+                Defaults to none.
+            </description>
+            <notes>
+                One of 'INPUT_ADDRESS' or 'REGISTER_ADDRESS' must be
+                supplied.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='COIL_ADDRESS' title="Coil Register Address"
+                type='Integer' notes="Used by points">
+            <description>
+                Specifies a coil address representing a writeable
+                logical value for a point.
+
+                Defaults to none.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='CONNECT_TIMEOUT' title="Connect Timeout"
+                type='Elapsed' notes="Used by origins">
+            <description>
+                The maximum elapsed time for a connection to the server.
+
+                Defaults to 1.0 (seconds).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='DISCRETE_ADDRESS'
+                title="Discrete Register Address"
+                type='Integer' notes="Used by points">
+            <description>
+                Specifies a discrete address representing a read-only
+                logical value for a point.
+
+                Defaults to none.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='IGNORED' title="Ignored"
+                type='Boolean' notes="Used by points">
+            <description>
+                Indicates that values for that point are ignored.
+
+                Defaults to false.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='INPUT_ADDRESS'
+                title="Input Register Address"
+                type='Integer' notes="Used by points">
+            <description>
+                Specifies an input address representing a read-only
+                word value for a point.
+
+                Defaults to none.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='LITTLE_ENDIAN' title="Little Endian"
+                type='Boolean' notes="Used by origins">
+            <description>
+                Indicates that for that origin, the bytes order in a
+                word is little-endian.
+
+                Defaults to false.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='MASK' title="Mask"
+                type='Integer' notes="Used by points">
+            <description>
+                Specifies the mask of the write request for a point of
+                type 'MASK'.
+
+                Defaults to none.
+            </description>
+            <notes>
+                A REGISTER_ADDRESS must be supplied.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='MIDDLE_ENDIAN' title="Middle Endian"
+                type='Boolean' notes="Used by origins">
+            <description>
+                Indicates that for that origin, the bytes order in a
+                word and the words order in a value are opposite.
+
+                Defaults to false.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='REGISTER_ADDRESS'
+                title="Holding Register Address"
+                type='Integer' notes="Used by points">
+            <description>
+                Specifies an input address representing a writeable word
+                value for a point.
+
+                Defaults to none.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='REQUEST_RETRIES' title="Request Retries"
+                type='Integer' notes="Used by origins">
+            <description>
+                Specifies the number of retries for failed requests.
+
+                Defaults to 0 (no retries).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='REQUEST_RETRY_INTERVAL'
+                title="Request Retry Interval"
+                type='Elapsed' notes="Used by origins">
+            <description>
+                The elapsed time between request retries.
+
+                Defaults to 3.0 (seconds).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='REQUEST_TIMEOUT' title="Request Timeout"
+                type='Elapsed' notes="Used by origins">
+            <description>
+                The maximum elapsed time for a response to a request.
+
+                Defaults to 60.0 (seconds).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SEQUENCE_ADDRESS' title="Sequence Address"
+                type='Integer' notes="Used by origins">
+            <description>
+                Specifies a sequence register for a Modbus server.
+
+                Defaults to none.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SERIAL_CONTROL' title="Serial Control"
+                type='Boolean' notes="Used by origins">
+            <description>
+                Enables/disables flow control (RTS/CTS).
+
+                Defaults to enabled.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SERIAL_MODE' title="Serial Mode"
+                notes="Used by origins">
+            <description>
+                Specifies the transport mode.
+
+                Must be 'RTU' or 'ASCII'.
+
+                Defaults to 'RTU'.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SERIAL_MODEM' title="Serial Modem"
+                type='Boolean' notes="Used by origins">
+            <description>
+                Enables/disables modem control (DTR/DSR).
+
+                Defaults to enabled.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SERIAL_PARITY' title="Serial Parity"
+                notes="Used by origins">
+            <description>
+                Specifies the serial port parity for an origin.
+
+                Must be 'EVEN', 'ODD', 'MARK', 'SPACE' or 'NONE'.
+
+                Defaults to 'EVEN' (See Modbus over serial line).
+            </description>
+            <notes>
+                Parity 'NONE' requires an extra stop bit.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='SERIAL_PORT' title="Serial Port"
+                notes="Used by origins">
+            <description>
+                Specifies the serial port for an origin.
+
+                Defaults to none.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SERIAL_SPEED' title="Serial Speed"
+                type='Integer' notes="Used by origins">
+            <description>
+                Specifies the serial port speed in bits per second.
+
+                Defaults to 9600.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SIGNED' title="Signed Value"
+                type='Boolean' notes="Used by points">
+            <description>
+                This attribute, recognized only for 'SHORT' and
+                'INTEGER' types, indicates that the value is signed
+                (two's complement).
+
+                Defaults to false (unsigned).
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SOCKET_ADDRESS' title="Socket Address"
+                multiple='yes' notes="Used by origins">
+            <description>
+                Specifies the socket address of an origin.
+
+                The address may be supplied as a name or in numeric
+                form. It may be followed by a ':' and a port number.
+
+                Defaults to none.
+            </description>
+            <notes>
+                In some contexts, a value of '*' is allowed to indicate
+                that the origin may have any address.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='SOCKET_PORT' title="Socket Port"
+                type='Integer' notes="Used by origins">
+            <description>
+                Specifies the socket port on which an origin is
+                listening.
+
+                Defaults to 502.
+            </description>
+            <notes>
+                This attribute will be ignored if the port has been
+                specified in the 'SOCKET_ADDRESS' attribute.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='STAMP_ADDRESS' title="Time Stamp Address"
+                type='Integer' notes="Used by origins">
+            <description>
+                Specifies the address of two words.
+
+                The first word contains the seconds in the current hour.
+
+                The second word contains the milliseconds in the current
+                second.
+
+                Defaults to none.
+            </description>
+            <notes>
+                When present, a STAMP_TICK must be supplied.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='STAMP_TICK' title="Time Stamp Tick"
+                type='Elapsed' notes="Used by origins">
+            <description>
+                Specifies the time limit between updates of the stamp
+                register.
+
+                Defaults to none.
+            </description>
+            <notes>
+                A value must be supplied to activate the action of the
+                stamp register.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='TIME_ADDRESS' title="Time Address"
+                type='Integer' notes="Used by origins">
+            <description>
+                Specifies the address of four words.
+
+                The first word contains the current year modulo 100 in
+                the high byte and the current month (1-12) in the low byte.
+
+                The second word contains the day of the month (1-31) in
+                the high byte and the hour in the day (0-23) in the low
+                byte.
+
+                The last two words have the same content (second and
+                millisecond) as the stamp register.
+
+                Defaults to none.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='TYPE' title="Value Type">
+            <description>
+                Specifies the type of value held by a register for a
+                point.
+
+                The recognized types are: ARRAY, BIT, SHORT, INTEGER,
+                FLOAT, LONG, DOUBLE, MASK, STAMP, TIME and SEQUENCE.
+
+                Defaults to a value based on the other attributes.
+            </description>
+            <notes>
+                When more than one register is specified for a point, a
+                client will only use the first one for its requests.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='UNIT_IDENTIFIER' title="Unit Identifier"
+                type='Integer' notes="Used by origins">
+            <description>
+                Specifies the unit identifier (1-247).
+
+                Defaults to 1.
+            </description>
+        </AttributeDef>
+    </AttributesDef>
+
+    <ParamDef name='Float' type='Boolean' holder='input'>
+        <description>
+            Specifies to the Modbus splitter transform that the value is
+            floating-point.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+    <ParamDef name='Offset' type='Integer' holder='input'>
+        <description>
+            Specifies to the Modbus splitter transform the offset in the
+            input tuple.
+
+            Required by the Modbus splitter.
+        </description>
+        <notes>
+            Is synonym of 'Index'.
+        </notes>
+    </ParamDef>
+    <ParamDef name='Signed' type='Boolean' holder='input'>
+        <description>
+            Specifies to the Modbus splitter transform that value
+            widening should keep the sign.
+
+            Defaults to false.
+        </description>
+    </ParamDef>
+    <ParamDef name='Size' type='Integer' holder='input'>
+        <description>
+            Specifies to the Modbus splitter transform the size at the
+            input offset.
+
+            Defaults to 1 (2 for Float).
+        </description>
+    </ParamDef>
+
+    <ClassDef name='ModbusSplitterEngine'
+            package='org.rvpf.processor.engine.pap.modbus'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <Content name='ModbusBits' classDef='TupleContent'>
+        <description>
+            Content used to represent the coils or discrete inputs
+            expected as input by the Modbus splitter transform.
+        </description>
+        <param name='Content' classDef='BooleanContent'/>
+    </Content>
+
+    <Content name='ModbusRegisters' classDef='TupleContent'>
+        <description>
+            Content used to represent the registers expected as input by
+            the Modbus splitter transform.
+        </description>
+        <param name='Content' classDef='ShortContent'/>
+    </Content>
+
+    <Engine name='ModbusSplitter' classDef='ModbusSplitterEngine'/>
+
+    <Transform name='ModbusSplitter' engine='ModbusSplitter'>
+        <description>
+            For each result, extract values from Modbus registers
+            represented by a point value containing a tuple.
+        </description>
+        <arg/>
+    </Transform>
+
+</metadata>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

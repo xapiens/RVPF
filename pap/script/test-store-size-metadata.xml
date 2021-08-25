@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<metadata title="Test Store size metadata" lang='en'>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+
+    <Store name='Store'
+            uuid='0201c251-c762-419c-b0ed-7b3a583ba6e0'/>
+
+    <Point name='POINT-1' uuid='25cbfa38-9975-4479-a1d4-d7c8d810d4d6' store='Store' content='Count'/>
+    <Point name='POINT-2' uuid='b849bce9-e32c-4f10-99fc-b544ac22abb1' store='Store' content='Count'/>
+    <Point name='POINT-3' uuid='9c5444fe-9ed7-4812-8033-2bf7db08d82d' store='Store' content='Count'/>
+    <Point name='POINT-4' uuid='e5330c63-90ac-4213-9bd6-339c15f442d0' store='Store' content='Count'/>
+    <Point name='POINT-5' uuid='33a78850-d7f0-42bf-a56f-9d222a61783a' store='Store' content='Count'/>
+    <Point name='POINT-6' uuid='44c75ade-e68e-4d65-9616-19c51e1153f6' store='Store' content='Count'/>
+    <Point name='POINT-7' uuid='8f22b442-b202-42a4-872a-27de160008c2' store='Store' content='Count'/>
+    <Point name='POINT-8' uuid='b4407bd2-d6cd-40a7-94bb-692dada0c19d' store='Store' content='Count'/>
+    <Point name='POINT-9' uuid='142692c3-2157-4b3b-8d63-6d49215389ac' store='Store' content='Count'/>
+    <Point name='POINT-10' uuid='29612d7d-b04b-4a7d-b6cb-f3cd718e2bc5' store='Store' content='Count'/>
+    <Point name='POINT-11' uuid='32418118-0ef6-4a27-90ae-81d1ff30ebfa' store='Store' content='Count'/>
+    <Point name='POINT-12' uuid='35f573fd-502b-4130-b946-c7b3bc29dc93' store='Store' content='Count'/>
+    <Point name='POINT-13' uuid='13d111f4-e2d1-4da5-b4b7-a1ff4efb858f' store='Store' content='Count'/>
+    <Point name='POINT-14' uuid='33f1a458-8776-4f92-80a1-b1aceb991d6b' store='Store' content='Count'/>
+    <Point name='POINT-15' uuid='e364801f-ec32-4d38-bcac-a163119edc1f' store='Store' content='Count'/>
+    <Point name='POINT-16' uuid='3c87530f-8534-43ee-8623-c3cd696d3d01' store='Store' content='Count'/>
+    <Point name='POINT-17' uuid='f06e9087-b119-4516-b53a-91a2fbd2bee7' store='Store' content='Count'/>
+    <Point name='POINT-18' uuid='c63d133f-d79c-47c2-a738-19448861cb65' store='Store' content='Count'/>
+    <Point name='POINT-19' uuid='ff2857c6-faed-42f1-9672-078179683574' store='Store' content='Count'/>
+    <Point name='POINT-20' uuid='4d035c9d-6427-4d00-897e-6dd6f213edc9' store='Store' content='Count'/>
+    <Point name='POINT-21' uuid='14491dcb-3f49-4b77-9048-353ac5d2584e' store='Store' content='Count'/>
+    <Point name='POINT-22' uuid='a86ca2d0-675d-434b-9278-217ab365a6db' store='Store' content='Count'/>
+    <Point name='POINT-23' uuid='afd476bb-216e-40d9-9309-7732a3715d90' store='Store' content='Count'/>
+    <Point name='POINT-24' uuid='eff20cd6-a749-48f2-8ac7-fdd4e7a0eee8' store='Store' content='Count'/>
+    <Point name='POINT-25' uuid='73c86ce4-c5f3-49e8-b654-cb8b43331096' store='Store' content='Count'/>
+    <Point name='POINT-26' uuid='d0647ae6-1aa0-4064-b15c-f94567fd207c' store='Store' content='Count'/>
+    <Point name='POINT-27' uuid='0d122497-4e65-47e4-a02b-db81de5bc578' store='Store' content='Count'/>
+    <Point name='POINT-28' uuid='54fcc868-8e9d-419c-9bb6-01ebda194232' store='Store' content='Count'/>
+    <Point name='POINT-29' uuid='b3d7f761-629b-4b00-baa5-b78138bbd58f' store='Store' content='Count'/>
+    <Point name='POINT-30' uuid='7255e44a-eb96-4203-aacc-8b12d923f2b7' store='Store' content='Count'/>
+    <Point name='POINT-31' uuid='9454c755-a3de-485d-a1d0-2dccd5a415dd' store='Store' content='Count'/>
+    <Point name='POINT-32' uuid='92991712-1743-40fa-a9cb-a568f1d29db2' store='Store' content='Count'/>
+    <Point name='POINT-33' uuid='86c032da-0861-4b34-baee-e9f9458e1050' store='Store' content='Count'/>
+    <Point name='POINT-34' uuid='80b8773e-116d-4665-a8d3-155a45d6f5d0' store='Store' content='Count'/>
+    <Point name='POINT-35' uuid='88f637ec-dabd-4aa7-b921-1324e5f0debf' store='Store' content='Count'/>
+    <Point name='POINT-36' uuid='63f51439-77a5-412f-8a9c-0fa9f3098d67' store='Store' content='Count'/>
+    <Point name='POINT-37' uuid='5994af53-e438-4f80-ab4f-a348a79d46e7' store='Store' content='Count'/>
+    <Point name='POINT-38' uuid='b65075ff-1a1e-4f6b-b5c0-87d21bae9ad5' store='Store' content='Count'/>
+    <Point name='POINT-39' uuid='df3c1124-c023-4a8c-a29a-75dc164daf52' store='Store' content='Count'/>
+    <Point name='POINT-40' uuid='b787ce9e-af98-4514-850b-b3c07ee85031' store='Store' content='Count'/>
+
+</metadata>
+
+<!-- End. -->

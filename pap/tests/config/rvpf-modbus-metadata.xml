@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-modbus-metadata.xml 3385 2017-03-13 17:29:06Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-modbus-metadata-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Store name='TestsSnapshot'
+            uuid='cfd9f2f9-6e13-4ef3-a230-55e7f154ab12'>
+        <param name='Name' value='TestsStoreServer'/>
+        <param name='User' value='${tests.user}'/>
+        <param name='Password' value='${tests.password}'/>
+    </Store>
+
+    <Store name='TestsStore'
+            uuid='195914a1-e903-455b-b150-05dbcd7d75ef'>
+        <param name='Name' value='TestsStoreServer'/>
+        <param name='User' value='${tests.user}'/>
+        <param name='Password' value='${tests.password}'/>
+    </Store>
+
+    <Store name='TestsReplicate' classDef='NullStore'
+            uuid='943ac397-d925-436c-89c5-efdda388c1bf'>
+        <description>Used for replicate tests.</description>
+    </Store>
+
+    <Origin name='TestsModbusWild'
+            uuid='1810c80c-b0ff-452c-90cb-1b95bc060438'>
+        <attributes usage='Modbus'
+                if='tests.modbus.listen.port'>
+            <attribute name='SOCKET_ADDRESS' value='*'/>
+        </attributes>
+    </Origin>
+
+    <Processor name='TestsProcessor'
+            uuid='c1e71433-0855-4d93-a214-89a41bb08c95'/>
+
+    <Sync name='TestsSync' classDef='CrontabSync' anchored='yes'>
+        <param name='Crontab' value='0 0 * * *'/>
+    </Sync>
+
+    <Point name='TESTS-MODBUS.COIL.0' origin='TestsModbus'
+            uuid='98311617-f135-417d-b706-1b4d49a8826d'
+            store='TestsStore' content='Logical'>
+        <attributes usage='Modbus'>
+            <attribute name='COIL_ADDRESS' value='1'/>
+            <attribute name='REGISTER_ADDRESS' value='4'/>
+            <attribute name='BIT' value='0' validated='no'/>
+            <attribute name='IGNORED'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.COIL.1' origin='TestsModbus'
+            uuid='dda82eaf-da18-4e90-ba83-e1ff782b4b9a'
+            store='TestsStore' content='Logical'>
+        <attributes usage='Modbus'>
+            <attribute name='COIL_ADDRESS' value='2'/>
+            <attribute name='DISCRETE_ADDRESS' value='1'/>
+            <attribute name='REGISTER_ADDRESS' value='4'/>
+            <attribute name='BIT' value='1' validated='no'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.COIL.2' origin='TestsModbus'
+            uuid='a3cf34e4-4c4d-44ea-84c1-9716ce25ac39'
+            store='TestsStore' content='Logical'>
+        <attributes usage='Modbus'>
+            <attribute name='COIL_ADDRESS' value='3'/>
+            <attribute name='REGISTER_ADDRESS' value='4'/>
+            <attribute name='BIT' value='2' validated='no'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.COIL.3' origin='TestsModbus'
+            uuid='35619281-824d-4984-88d9-1b1be92a5f28'
+            store='TestsStore' content='Logical'>
+        <attributes usage='Modbus'>
+            <attribute name='COIL_ADDRESS' value='4'/>
+            <attribute name='DISCRETE_ADDRESS' value='2'/>
+            <attribute name='REGISTER_ADDRESS' value='4'/>
+            <attribute name='BIT' value='3' validated='no'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.COIL-ARRAY.1' origin='TestsModbus'
+            uuid='b76b68e5-572c-4c4a-89d9-c53f7be6735c'
+            store='TestsStore' content='LogicalTuple'>
+        <attributes usage='Modbus'>
+            <attribute name='COIL_ADDRESS' value='5'/>
+            <attribute name='ARRAY_SIZE' value='3'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.DISCRETE.1' origin='TestsModbus'
+            uuid='6d7638f1-949b-4d5a-bbfa-8be4125794ad'
+            store='TestsStore' content='Logical'>
+        <attributes usage='Modbus'>
+            <attribute name='DISCRETE_ADDRESS' value='3'/>
+            <attribute name='INPUT_ADDRESS' value='1'/>
+            <attribute name='BIT' value='2' validated='no'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.DISCRETE.2' origin='TestsModbus'
+            uuid='c223f287-1b58-4996-ac1c-8f684efee5e6'
+            store='TestsStore' content='Logical'>
+        <attributes usage='Modbus'>
+            <attribute name='DISCRETE_ADDRESS' value='4'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.DISCRETE.3' origin='TestsModbus'
+            uuid='c7b9ad81-5f8a-48ae-8c87-f7d2b483d629'
+            store='TestsStore' content='Logical'>
+        <attributes usage='Modbus'>
+            <attribute name='DISCRETE_ADDRESS' value='5'/>
+            <attribute name='IGNORED'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.INPUT.1' origin='TestsModbus'
+            uuid='72f51bef-303c-47ea-8fa6-392d28ce98e9'
+            store='TestsStore' content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='INPUT_ADDRESS' value='2'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.INPUT.2' origin='TestsModbus'
+            uuid='bffcdda1-fc14-4cfe-b668-6d3355e9f948'
+            store='TestsStore' content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='INPUT_ADDRESS' value='3'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.INPUT.3' origin='TestsModbus'
+            uuid='87c138fc-9649-4fb1-9335-df44c277a8be'
+            store='TestsStore' content='Unspecified'>
+        <attributes usage='Modbus'>
+            <attribute name='INPUT_ADDRESS' value='4'/>
+            <attribute name='TYPE' value='TIME'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.MASKED-REGISTER.1' origin='TestsModbus'
+            uuid='404bba26-e93d-4b1c-8ade-5b1e45488bb7'
+            store='TestsStore' content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='6'/>
+            <attribute name='MASK' value='0x0FF0'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.REGISTER.0' origin='TestsModbus'
+            uuid='a4b6990a-dfae-4452-ac1a-7d93b8cb41d7'
+            store='TestsStore' content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='5'/>
+            <attribute name='IGNORED'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.REGISTER.1' origin='TestsModbus'
+            uuid='10242f58-d92c-4e3e-897c-03c8847a5d78'
+            store='TestsStore' content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='6'/>
+        </attributes>
+        <replicate point='TESTS.REPLICATE.01'/>
+    </Point>
+
+    <Point name='TESTS-MODBUS.REGISTER.2' origin='TestsModbus'
+            uuid='572c3f03-463a-4352-af1c-732ad97c9e8c'
+            store='TestsStore' content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='7'/>
+            <attribute name='TYPE' value='INTEGER'/>
+            <attribute name='SIGNED'/>
+        </attributes>
+        <param name='Replicated'/>
+    </Point>
+
+    <Point name='TESTS-MODBUS.REGISTER.3' origin='TestsModbus'
+            uuid='ad2c854b-b820-4560-862c-eb8c86bd772d'
+            store='TestsStore' content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='9'/>
+            <attribute name='SIGNED'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.REGISTER.4' origin='TestsModbus'
+            uuid='d653055e-7d6c-4cf8-93e2-99326bcd6863'
+            store='TestsStore' content='Numeric'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='10'/>
+            <attribute name='TYPE' value='FLOAT'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.REGISTER-ARRAY.1' origin='TestsModbus'
+            uuid='e602abd2-065b-44fb-ab55-a70a12d418da'
+            store='TestsStore' content='ModbusRegisters'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='12'/>
+            <attribute name='TYPE' value='ARRAY'/>
+            <attribute name='ARRAY_SIZE' value='3'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS.REPLICATE.01'
+            uuid='c49f328d-1c61-4703-87e5-af842e1e6544'
+            store='TestsReplicate' content='Numeric'/>
+
+    <Point name='TESTS-MODBUS.SPLITTED.1' origin='TestsModbus'
+            uuid='a6791bd3-3a45-428b-aeba-6dfd8ae38a87'
+            store='TestsSnapshot' content='ModbusRegisters'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='15'/>
+            <attribute name='TYPE' value='ARRAY'/>
+            <attribute name='ARRAY_SIZE' value='6'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.1' processor='TestsProcessor'
+            uuid='81fa4bd3-df91-43dd-acb5-7731df2712a9'
+            store='TestsSnapshot' content='Count'
+            transform='ModbusSplitter'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='0'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.2' processor='TestsProcessor'
+            uuid='2ed67f4c-1474-4a5e-8aad-3bb860648e69'
+            store='TestsSnapshot' content='Count'
+            transform='ModbusSplitter'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='1'/>
+            <param name='Size' value='2'/>
+            <param name='Signed'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.3' processor='TestsProcessor'
+            uuid='e92ecdf8-1b00-4b83-a79e-17546e93bbdf'
+            store='TestsSnapshot' content='Logical'
+            transform='ModbusSplitter'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='3'/>
+            <param name='Bit' value='0'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.4' processor='TestsProcessor'
+            uuid='d7cbc492-9dbb-4c1d-8dcf-ebf96d358ef8'
+            store='TestsSnapshot' content='Logical'
+            transform='ModbusSplitter'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='3'/>
+            <param name='Bit' value='1'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.5' processor='TestsProcessor'
+            uuid='187ced32-c4d9-496c-80ee-b389b83e720f'
+            store='TestsSnapshot' content='Numeric'
+            transform='ModbusSplitter'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='4'/>
+            <param name='Size' value='2'/>
+            <param name='Float'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS.MODBUS.WILD.01' processor='TestsModbusWild'
+            uuid='675f0cf5-c46d-4e43-8f70-8f4940aee6aa'
+            store='NullStore' content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='1'/>
+        </attributes>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

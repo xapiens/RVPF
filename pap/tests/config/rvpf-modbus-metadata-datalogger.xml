@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-modbus-metadata-datalogger.xml 4089 2019-06-20 15:10:04Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-modbus-metadata-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Store name='TestsSink' classDef='SOMSinkStore'
+            uuid='a95dc043-6a8d-44d8-8c87-d98d4f8b85d8'/>
+
+    <Origin name='TestsScanner'
+            uuid='57dc00be-4afa-43c1-aaf8-37040509a5c0'/>
+
+    <Sync name='TestsSync' classDef='CrontabSync' anchored='yes'>
+        <param name='Crontab' value='0 0 * * *'/>
+    </Sync>
+
+    <Point name='TESTS-MODBUS.REGISTER.1' origin='TestsModbus'
+            uuid='10242f58-d92c-4e3e-897c-03c8847a5d78'
+            content='Count'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='6'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SCANNED.1' origin='TestsScanner'
+            uuid='31ec6997-a22f-4172-a706-4b7600b8c629'
+            store='TestsSink' content='Count'>
+        <input point='TESTS-MODBUS.REGISTER.1'/>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLITTED.1' origin='TestsModbus'
+            uuid='a6791bd3-3a45-428b-aeba-6dfd8ae38a87'
+            content='ModbusRegisters'
+            unless='tests.modbus.datalogger.connect'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='15'/>
+            <attribute name='TYPE' value='ARRAY'/>
+            <attribute name='ARRAY_SIZE' value='6'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.1.1' origin='TestsScanner'
+            uuid='81fa4bd3-df91-43dd-acb5-7731df2712a9'
+            store='TestsSink' content='Count'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='0'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.1.2' origin='TestsScanner'
+            uuid='2ed67f4c-1474-4a5e-8aad-3bb860648e69'
+            store='TestsSink' content='Count'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='1'/>
+            <param name='Size' value='2'/>
+            <param name='Signed'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.1.3' origin='TestsScanner'
+            uuid='e92ecdf8-1b00-4b83-a79e-17546e93bbdf'
+            store='TestsSink' content='Logical'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='3'/>
+            <param name='Bit' value='0'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.1.4' origin='TestsScanner'
+            uuid='d7cbc492-9dbb-4c1d-8dcf-ebf96d358ef8'
+            store='TestsSink' content='Logical'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='2'/>
+            <param name='Bit' value='17'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.1.5' origin='TestsScanner'
+            uuid='187ced32-c4d9-496c-80ee-b389b83e720f'
+            store='TestsSink' content='Numeric'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.1'>
+            <param name='Offset' value='4'/>
+            <param name='Size' value='2'/>
+            <param name='Float'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLITTED.2' origin='TestsModbus'
+            uuid='452af31e-f3b7-4019-8ba6-9b8114a91fa6'
+            content='Short'
+            unless='tests.modbus.datalogger.connect'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='21'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.2.1' origin='TestsScanner'
+            uuid='b0849c9f-9e82-4f9e-bad1-89012f52fae7'
+            store='TestsSink' content='Count'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.2'/>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.2.2' origin='TestsScanner'
+            uuid='795e33fd-ddf4-4fc5-a6f1-a1b090412bf6'
+            store='TestsSink' content='Numeric'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.2'/>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLITTED.3' origin='TestsModbus'
+            uuid='e13f9b37-b9e3-4cf0-b377-ff2e5e260e67'
+            content='Short'>
+        <attributes usage='Modbus'>
+            <attribute name='REGISTER_ADDRESS' value='22'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.3.1' origin='TestsScanner'
+            uuid='e56c6d76-1708-4298-9808-eb1de704f16b'
+            store='TestsSink' content='Count'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.3'/>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLITTED.4' origin='TestsModbus'
+            uuid='54bd1c6e-6468-45bf-8396-d557734ed42b'
+            content='ModbusBits'
+            unless='tests.modbus.datalogger.connect'>
+        <attributes usage='Modbus'>
+            <attribute name='COIL_ADDRESS' value='15'/>
+            <attribute name='TYPE' value='ARRAY'/>
+            <attribute name='ARRAY_SIZE' value='6'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.4.1' origin='TestsScanner'
+            uuid='da50ff45-12db-4fdf-a495-85da03392395'
+            store='TestsSink' content='Boolean'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.4'>
+            <param name='Offset' value='0'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.SPLIT.4.2' origin='TestsScanner'
+            uuid='de93b242-b666-4fcd-bbaf-65560da1a9e1'
+            store='TestsSink' content='Boolean'
+            unless='tests.modbus.datalogger.connect'>
+        <input point='TESTS-MODBUS.SPLITTED.4'>
+            <param name='Offset' value='3'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-MODBUS.CONNECTION.1' origin='TestsModbus'
+            uuid='04638659-e377-4037-bf8a-ad483f07ab3d'>
+        <attributes usage='Modbus'>
+            <attribute name='CONNECTION_STATE'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-MODBUS.STATE.1' origin='TestsScanner'
+            uuid='992550ae-7d34-4aa3-a9c5-8b8e00766609'
+            store='TestsSink' content='Boolean'>
+        <input point='TESTS-MODBUS.CONNECTION.1'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

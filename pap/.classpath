@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/main/classes" path="src/main/java"/>
+	<classpathentry kind="src" output="build/etherip/classes" path="src/etherip/java"/>
+	<classpathentry kind="src" output="build/test/classes" path="src/test/java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RVPF-Core"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jssc.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-pap-dnp3-config-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<config title="Shared PAP-DNP3 configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper RVPF-PAP-DNP3 operations.
+    </description>
+
+    <notes>
+        It is recommended to leave this file unmodified and to include
+        it at the top of the master 'rvpf-config.xml' file, after the
+        include of the 'rvpf-config-shared.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+    </notes>
+
+    <?include href='resource:rvpf-pap-config-shared.xml'
+            unless='config.pap'?>
+
+    <!-- Propert(y/ies) definitions. -->
+
+    <PropertiesDef name='dnp3.listener'>
+        <PropertyDef name='logical.device' multiple='yes'>
+            <description>
+                Specifies the logical device (0x0000-0xFFFF).
+
+                Defaults to 2.
+            </description>
+        </PropertyDef>
+        <PropertyDef name='tcp.listen.address'>
+            <description>
+                Specifies the TCP socket address of an origin.
+
+                The address may be supplied as a name or in numeric
+                form. It may be followed by a ':' and a port number.
+
+                Defaults to none.
+            </description>
+            <notes>
+                In some contexts, a value of '*' is allowed to indicate
+                that the origin may have any address.
+            </notes>
+        </PropertyDef>
+        <PropertyDef name='tcp.listen.port' type='Integer'>
+            <description>
+                Specifies the TCP socket port on which an origin is
+                listening.
+
+                Defaults to 20000.
+            </description>
+            <notes>
+                This attribute will be ignored if the port has been
+                specified in the 'tcp.listen.address' property.
+            </notes>
+        </PropertyDef>
+        <PropertyDef name='udp.listen.address'>
+            <description>
+                Specifies the UDP socket address of an origin.
+
+                The address may be supplied as a name or in numeric
+                form. It may be followed by a ':' and a port number.
+
+                Defaults to none.
+            </description>
+            <notes>
+                In some contexts, a value of '*' is allowed to indicate
+                that the origin may have any address.
+            </notes>
+        </PropertyDef>
+        <PropertyDef name='udp.listen.port' type='Integer'>
+            <description>
+                Specifies the UDP socket port on which an origin is
+                listening.
+
+                Defaults to 20000.
+            </description>
+            <notes>
+                This attribute will be ignored if the port has been
+                specified in the 'udp.listen.address' property.
+            </notes>
+        </PropertyDef>
+        <PropertyDef name='serial.port' type='Integer'>
+            <description>
+                Specifies the serial port for an origin.
+
+                Defaults to none.
+            </description>
+        </PropertyDef>
+        <PropertyDef name='serial.speed' type='Integer'>
+            <description>
+                Specifies the serial port speed in bits per second.
+
+                Defaults to 9600.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='forwarder.module' if='config.forwarder'>
+        <PropertiesDef name='dnp3'>
+            <description>
+                Acts as a DNP3 outstation.
+            </description>
+            <PropertiesDef name='listener' extends='dnp3.listener'/>
+            <PropertyDef name='origin' multiple='yes'/>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <PropertiesDef name='store.server' if='config.store'>
+        <PropertiesDef name='updates.listener'>
+            <PropertiesDef name='dnp3'>
+                <description>
+                    Acts as a DNP3 outstation.
+                </description>
+                <PropertiesDef name='listener' extends='dnp3.listener'/>
+                <PropertyDef name='origin' multiple='yes'/>
+            </PropertiesDef>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <property name='substitution.enabled'/>
+
+    <!-- Class definitions. -->
+
+    <ClassDef name='DNP3InputModule' if='config.forwarder'
+            package='org.rvpf.forwarder.input.pap.dnp3'
+            member='DNP3Module'>
+        <description>
+            Forwarder module acting as a DNP3 outstation.
+        </description>
+        <implements classDef='ForwarderInput'/>
+    </ClassDef>
+
+    <ClassDef name='DNP3UpdatesListener' if='config.store'
+            package='org.rvpf.store.server.pap.dnp3'>
+        <description>
+            Store updates listener acting as a DNP3 outstation.
+        </description>
+        <implements classDef='StoreUpdatesListener'/>
+    </ClassDef>
+
+    <ClassDef name='DNP3Support' package='org.rvpf.pap.dnp3'>
+        <implements classDef='PAPSupport'/>
+    </ClassDef>
+
+    <property name='pap.support.class' classDef='DNP3Support'/>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

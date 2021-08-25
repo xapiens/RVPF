@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-dnp3-config.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-dnp3-config-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <service name='org.rvpf:type=ForwarderService,name=DNP3'>
+        <alias name='forwarder'/>
+        <property name='service.log.id' value='FORW'/>
+        <properties name='forwarder.module'>
+            <property name='module.class' classDef='DNP3InputModule'/>
+            <properties name='dnp3'>
+                    <properties name='listener'
+                            extends='dnp3.listener.socket'/>
+                <property name='origin' value='TestsDNP3'/>
+            </properties>
+            <property name='batch.timeout'/>
+            <property name='traces' value='protocol'/>
+        </properties>
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue' extends='tests.forwarder.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='traces' value='forwarded'/>
+        </properties>
+        <property name='service.uuid'
+                value='aad05835-f67e-4c32-96ac-ebe7c30301a7'/>
+        <properties name='traces'>
+            <property name='dir' value='forwarder'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <alias name='snapshot'/>
+        <property name='service.log.id' value='TSSN'/>
+        <property name='store.name' value='TestsSnapshot'/>
+        <properties name='store.server.the'>
+            <property name='snapshot'/>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'/>
+                <property name='url' property='store.the.sql.url'/>
+            </properties>
+            <property name='sql.table.archive' value='TestsSnapshot'/>
+            <property name='sql.create'/>
+            <property name='notifier.class' classDef='NullNotifier'/>
+            <property name='notices.filtered'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='the-snapshot'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=TheStoreService,name=DNP3'>
+        <alias name='store'/>
+        <property name='service.log.id' value='TSSN'/>
+        <property name='store.name' value='TestsStore'/>
+        <properties name='store.server.the'>
+            <properties name='notifier.som.queue'
+                    extends='tests.store.notifier.queue'>
+                <property name='server'/>
+            </properties>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'/>
+                <property name='url' property='store.the.sql.url'/>
+            </properties>
+            <property name='sql.table.archive' value='TestsSnapshot'/>
+            <property name='sql.create'/>
+            <properties name='updates.listener'>
+                <property name='listener.class'
+                        classDef='DNP3UpdatesListener'/>
+                <properties name='dnp3'>
+                    <properties name='listener'
+                            extends='dnp3.listener.socket'/>
+                    <property name='origin' value='TestsDNP3'/>
+                </properties>
+                <property name='traces' value='protocol'/>
+            </properties>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='the-snapshot'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=PAPStoreService,name=DNP3'>
+        <alias name='store'/>
+        <property name='service.log.id' value='DNST'/>
+        <property name='store.name' value='TestsStore'/>
+        <properties name='store.server.pap'>
+            <properties name='notifier.som.queue'
+                    extends='tests.store.notifier.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='protocol' value='DNP3'/>
+            <properties name='replicator'>
+                <properties name='partner'>
+                    <properties name='queue'
+                            extends='tests.store.replicated.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <properties name='partner'>
+                    <property name='store.name' value='TestsReplicate'/>
+                    <properties name='queue'
+                            extends='tests.store.replicate.queue'>
+                        <property name='server'/>
+                    </properties>
+                </properties>
+                <property name='replicate.converts'/>
+            </properties>
+            <property name='traces' value='protocol'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='dnp3-store'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService'>
+        <property name='service.log.id' value='PROC'/>
+        <properties name='processor'>
+            <property name='name' value='TestsProcessor'/>
+            <property name='cache.updates.filtered'/>
+            <property name='receptionist.class'
+                    classDef='StoreListenerReceptionist'/>
+            <property name='receptionist.wait' value='15000'/>
+        </properties>
+        <property name='service.uuid'
+                value='664ee3e1-5696-4803-aa6d-7b778e7351a2'/>
+        <properties name='traces'>
+            <property name='dir' value='processor'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->

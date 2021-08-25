@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-modbus-metadata-common.xml 3313 2017-01-04 14:23:30Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-pap-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Origin name='TestsModbus'
+            uuid='1fd17fe0-8a76-444d-a475-f3ef4f6e53a4'>
+        <attributes usage='Modbus'>
+            <attribute name='CONNECT_TIMEOUT'
+                    property='tests.connect.timeout'/>
+            <attribute name='REQUEST_TIMEOUT'
+                    property='tests.request.timeout'/>
+            <attribute name='SOCKET_ADDRESS'
+                    unless='tests.master.serial.port'
+                    property='tests.lan.listen.address'
+                    value='127.0.0.1'/>
+            <attribute name='SOCKET_PORT'
+                    unless='tests.master.serial.port'
+                    property='tests.modbus.listen.port'/>
+            <attribute name='SERIAL_PORT'
+                    property='tests.master.serial.port'/>
+            <attribute name='SERIAL_SPEED'
+                    property='tests.serial.port.speed'/>
+            <attribute name='SERIAL_MODE'
+                    property='tests.serial.port.mode'/>
+            <attribute name='SERIAL_PARITY'
+                    property='tests.serial.port.parity'/>
+            <attribute name='SERIAL_MODEM'
+                    property='tests.serial.port.modem'/>
+            <attribute name='SERIAL_CONTROL'
+                    property='tests.serial.port.control'/>
+            <attribute name='STAMP_ADDRESS' value='1'/>
+            <attribute name='STAMP_TICK' value='60.0'/>
+            <attribute name='SEQUENCE_ADDRESS' value='3'/>
+            <attribute name='TIME_ADDRESS' value='9991'/>
+            <attribute name='MIDDLE_ENDIAN'/>
+            <attribute name='UNIT_IDENTIFIER'
+                    if='tests.master.serial.port'
+                    property='tests.unit.identifier'/>
+        </attributes>
+    </Origin>
+
+</metadata>
+
+<!-- End. -->

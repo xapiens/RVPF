@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-cip-metadata.xml 3373 2017-02-27 20:03:58Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-cip-metadata-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Store name='TestsStore'
+            uuid='195914a1-e903-455b-b150-05dbcd7d75ef'>
+        <param name='Name' value='TestsStoreServer'/>
+        <param name='User' value='${tests.user}'/>
+        <param name='Password' value='${tests.password}'/>
+    </Store>
+
+    <Store name='TestsReplicate' classDef='NullStore'
+            uuid='943ac397-d925-436c-89c5-efdda388c1bf'
+            if='tests.replicated'>
+        <description>Used for replicate tests.</description>
+    </Store>
+
+    <Processor name='TestsProcessor'
+            uuid='e0e3cb99-d6fd-4cb1-aa4c-e1e356203117'/>
+
+    <Point name='TESTS-CIP.BOOL.1' origin='TestsCIP' store='TestsStore'
+            uuid='696a28bb-c53f-4a2b-a38c-f165e319cb10'>
+        <param name='Tag' value='TESTS_BOOL_1'/>
+        <param name='Replicated' if='tests.replicated'/>
+    </Point>
+
+    <Point name='TESTS-CIP.SINT.1' origin='TestsCIP' store='TestsStore'
+            uuid='c88d4cd1-d548-4abb-b339-070f184f327c'>
+        <param name='Tag' value='TESTS_SINT_1'/>
+    </Point>
+
+    <Point name='TESTS-CIP.INT.1' origin='TestsCIP' store='TestsStore'
+            uuid='8c07d90d-b25f-4a3d-9faf-ddaf0ec75137'>
+        <param name='Tag' value='TESTS_INT_1'/>
+    </Point>
+
+    <Point name='TESTS-CIP.DINT.1' origin='TestsCIP' store='TestsStore'
+            uuid='3c1bc7cb-8873-4e9e-92c6-49b4d9783678'>
+        <param name='Tag' value='TESTS_DINT_1'/>
+        <replicate point='TESTS.REPLICATE.01' if='tests.replicated'/>
+    </Point>
+
+    <Point name='TESTS-CIP.REAL.1' origin='TestsCIP' store='TestsStore'
+            uuid='97749019-61d2-4271-9b1d-bd39c1a1cc20'>
+        <param name='Tag' value='TESTS_REAL_1'/>
+    </Point>
+
+    <Point name='TESTS-CIP.BOOL.ARRAY.1' origin='TestsCIP'
+            store='TestsStore'
+            uuid='fb189c99-69ff-44cb-93d8-d9548278d29e'>
+        <attributes usage='CIP'>
+            <attribute name='TAG' value='TESTS_BOOL_ARRAY_1'/>
+            <attribute name='ELEMENTS' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-CIP.DINT.ARRAY.1' origin='TestsCIP'
+            store='TestsStore'
+            uuid='e93737cc-d814-4033-a938-23b15184564f'>
+        <attributes usage='CIP'>
+            <attribute name='TAG' value='TESTS_DINT_ARRAY_1'/>
+            <attribute name='ELEMENTS' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-CIP.REAL.ARRAY.1' origin='TestsCIP'
+            store='TestsStore'
+            uuid='31af7615-4c91-4c2d-9648-0f99edd8963d'>
+        <attributes usage='CIP'>
+            <attribute name='TAG' value='TESTS_REAL_ARRAY_1'/>
+            <attribute name='ELEMENTS' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS.REPLICATE.01' if='tests.replicated'
+            uuid='c49f328d-1c61-4703-87e5-af842e1e6544'
+            store='TestsReplicate' content='Numeric'/>
+
+    <Point name='TESTS-CIP.SPLITTED.1' origin='TestsCIP'
+            uuid='a6791bd3-3a45-428b-aeba-6dfd8ae38a87'
+            store='TestsStore' content='CIPArray'>
+        <attributes usage='CIP'>
+            <attribute name='TAG' value='TESTS_DINT_ARRAY_1'/>
+            <attribute name='ELEMENTS' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.3' processor='TestsProcessor'
+            uuid='deb29a26-194b-4e89-bf34-410ef27e1e8d'
+            store='TestsStore' content='Count' transform='CIPSplitter'>
+        <input point='TESTS-CIP.SPLITTED.1'>
+            <param name='Index' value='3'/>
+        </input>
+    </Point>
+
+    <Point name='TESTS-CIP.SPLIT.4' processor='TestsProcessor'
+            uuid='7c82907b-36f0-41ea-8fb9-355c06b97c0c'
+            store='TestsStore' content='Count' transform='CIPSplitter'>
+        <input point='TESTS-CIP.SPLITTED.1'>
+            <param name='Index' value='4'/>
+        </input>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

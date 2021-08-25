@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-pap-metadata-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<metadata title="Shared PAP metadata">
+
+    <description>
+        This file holds the basic metadata which is needed for
+        proper RVPF-PAP operations.
+    </description>
+
+    <notes>
+        It is recommended to leave this file unmodified and to include
+        it at the top of the master 'rvpf-metadata.xml' file, after the
+        include of the 'rvpf-metadata-shared.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+    </notes>
+
+    <!-- Definition of PAP attributes. -->
+
+    <AttributesDef usage='PAP'>
+        <AttributeDef name='CONNECTION_STATE' title="Connection State"
+                type='Boolean' notes="Used by points">
+            <description>
+                Specifies the point as virtual and representing the
+                state of the connection to the origin.
+
+                Defaults to false.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='INACTIVE' title="Inactive"
+                type='Boolean'>
+            <description>
+                For a point: indicates that the point should not be
+                scanned.
+
+                For an origin: indicates that none of its points should
+                be scanned.
+
+                Defaults to false.
+            </description>
+        </AttributeDef>
+    </AttributesDef>
+
+    <!-- Definition of Behavior classes. -->
+
+    <ClassDef name='CapturedBehavior'
+            package='org.rvpf.processor.engine.pap.captor'>
+        <description>
+            An Input with this Behavior will only trigger the
+            computation of the Result when it has already been
+            summarized.
+        </description>
+        <notes>
+            The Captor Transform will always assign this behavior to the
+            last input.
+        </notes>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <ClassDef name='CapturesBehavior'
+            package='org.rvpf.processor.engine.pap.captor'>
+        <description>
+            An Input with this Behavior will only trigger the
+            computation of the Result if this is not its first value.
+            This avoids the problem of having no beginning for the first
+            interval.
+        </description>
+        <notes>
+            The Captor Transform will always assign this behavior to the
+            first input.
+        </notes>
+        <implements classDef='Behavior'/>
+    </ClassDef>
+
+    <!-- Definition of Engine classes. -->
+
+    <ClassDef name='CaptorEngine'
+            package='org.rvpf.processor.engine.pap.captor'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <!-- Engine definitions. -->
+
+    <Engine name='Captor' clone='RPN' classDef='CaptorEngine'/>
+
+    <!-- Definition of arg parameters. -->
+
+    <ParamDef name='ExcludeNulls' type='Boolean' holder='arg'>
+        <description>
+            Used by the Captured Behavior as an indicator that null
+            values should be excluded.
+
+            The default is to include them.
+        </description>
+    </ParamDef>
+
+    <!-- Definition of input parameters. -->
+
+    <ParamDef name='Bit' type='Integer' holder='input'>
+        <description>
+            Specifies to the splitter transform the bit at the input
+            offset.
+
+            Defaults to none.
+        </description>
+    </ParamDef>
+
+    <ParamDef name='ExcludeNulls' type='Boolean' holder='input'>
+        <description>
+            Used by the Captured Behavior as an indicator that null
+            values should be included.
+
+            The default is false.
+        </description>
+    </ParamDef>
+
+    <!-- Optional protocol configuration files. -->
+
+    <property name='metadata.pap' validated='no'/>
+
+    <?include href='resource:rvpf-pap-cip-metadata-shared.xml'
+            optional='yes'?>
+    <?include href='resource:rvpf-pap-dnp3-metadata-shared.xml'
+            optional='yes'?>
+    <?include href='resource:rvpf-pap-modbus-metadata-shared.xml'
+            optional='yes'?>
+
+</metadata>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

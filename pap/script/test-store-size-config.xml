@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<config title="Test Store size configuration" lang='en'>
+
+    <properties from='test-store-size.properties'/>
+
+    <?include href='resource:rvpf-config-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <properties name='rmi.registry'>
+        <property name='port' property='rmi.registry.port'/>
+    </properties>
+
+    <properties name='metadata'>
+        <property name='path' value='test-store-size-metadata.xml'/>
+    </properties>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <alias name='the-store'/>
+        <property name='service.log.id' value='THST'/>
+
+        <properties name='store.server.the'>
+            <property name='backend.class' ifTrue='store.backend.bdb'
+                    classDef='TheStoreBDBBackEnd'/>
+            <property name='sql.create'/>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'/>
+            </properties>
+
+            <property name='notifier.class' classDef='NullNotifier'/>
+            <property name='notices.filtered'/>
+        </properties>
+
+        <properties name='service.alerter'>
+            <property name='embedded'/>
+        </properties>
+
+        <property name='service.uuid'
+                value='4bf47177-729a-4edf-a2a0-a5705b709dc3'/>
+        <properties name='traces'>
+            <property name='disabled'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->

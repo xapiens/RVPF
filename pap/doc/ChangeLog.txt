@@ -1,0 +1,11 @@
+
+0.8.2
+
+- Added a 'datalogger' service.
+- Updated the Java requirement to Java 8.
+- Added CIP (Ethernet/IP) support (client only).
+- Added partial DNP3 support (client/server).
+- Added Modbus support (client/server).
+- First public distribution as a subproject (2012-02-21).
+
+---

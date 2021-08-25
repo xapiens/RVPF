@@ -1,0 +1,26 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: slf4j-api.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='slf4j-api'
+            revision='${slf4j.revision}'
+            organisation='org.slf4j'
+            status='release'>
+        <license name='MIT'
+                url='http://www.slf4j.org/license.html'/>
+        <description homepage='http://www.slf4j.org/'/>
+    </info>
+
+    <dependencies>
+        <dependency name='log4j-slf4j-impl' rev='${log4j.revision}'
+                org='org.apache.logging.log4j'/>
+    </dependencies>
+
+</ivy-module>
+
+<!-- End. -->

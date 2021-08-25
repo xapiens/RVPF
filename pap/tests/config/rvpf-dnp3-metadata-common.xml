@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-dnp3-metadata-common.xml 3538 2017-08-21 17:26:24Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+    <?include href='resource:rvpf-pap-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Origin name='TestsDNP3'
+            uuid='fb087f14-011c-456c-b8bc-71a245681a9c'>
+        <attributes usage='DNP3'>
+            <attribute name='TCP_ADDRESS' if='tests.dnp3.listen.tcp'
+                    property='tests.lan.listen.address'
+                    value='127.0.0.1'/>
+            <attribute name='TCP_PORT' if='tests.dnp3.listen.tcp'
+                    property='tests.dnp3.outstation.tcp.port'/>
+
+            <attribute name='UDP_ADDRESS' if='tests.dnp3.listen.udp'
+                    property='tests.lan.listen.address'
+                    value='127.0.0.1'/>
+            <attribute name='UDP_PORT' if='tests.dnp3.listen.udp'
+                    property='tests.dnp3.outstation.udp.port'/>
+
+            <attribute name='LOGICAL_DEVICE' value='Test:4'/>
+        </attributes>
+    </Origin>
+
+</metadata>
+
+<!-- End. -->

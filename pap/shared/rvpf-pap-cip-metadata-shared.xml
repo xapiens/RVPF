@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-pap-cip-metadata-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<metadata title="Shared PAP-CIP metadata">
+
+    <description>
+        This file holds the basic metadata which is needed for
+        proper RVPF-PAP-CIP operations.
+    </description>
+
+    <notes>
+        It is recommended to leave this file unmodified and to include
+        it at the top of the master 'rvpf-metadata.xml' file, after the
+        include of the 'rvpf-metadata-shared.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+    </notes>
+
+    <?include href='resource:rvpf-pap-metadata-shared.xml'
+            unless='metadata.pap'?>
+
+    <!-- Definition of CIP attributes. -->
+
+    <AttributesDef usage='CIP' extends='PAP'>
+        <AttributeDef name='ELEMENTS' title="Elements"
+                notes="Used by points">
+            <description>
+                Specifies the number of elements.
+
+                Defaults to 1.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='SLOT' title="Slot" type='Integer'
+                notes="Used by origins">
+            <description>
+                Specifies the slot.
+
+                Defaults to 0.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='TAG' title="Tag" notes="Used by points">
+            <description>
+                Specifies the tag corresponding to the point.
+
+                Defaults to the 'Tag' point param if specified, or to
+                the name of the point.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='TCP_ADDRESS' title="TCP Address"
+                notes="Used by origins">
+            <description>
+                Specifies the TCP address of an origin.
+
+                The address may be supplied as a name or in numeric
+                form. It may be followed by a ':' and a port number.
+
+                Required.
+            </description>
+        </AttributeDef>
+        <AttributeDef name='TCP_PORT' title="TCP Port" type='Integer'
+                notes="Used by origins">
+            <description>
+                Specifies the TCP port on which an origin is listening.
+
+                Defaults to 44818.
+            </description>
+            <notes>
+                This attribute will be ignored if the port has been
+                specified in the 'TCP_ADDRESS' attribute.
+            </notes>
+        </AttributeDef>
+        <AttributeDef name='TIMEOUT' title="Timeout"
+                type='Elapsed' notes="Used by origins">
+            <description>
+                Specifies the maximum time to wait.
+
+                Defaults to 2.0 (seconds).
+            </description>
+        </AttributeDef>
+    </AttributesDef>
+
+    <ParamDef name='Index' type='Integer' holder='input'>
+        <description>
+            Specifies to the CIP splitter transform the element index in
+            the input array.
+
+            Is required by the CIP splitter.
+        </description>
+        <notes>
+            Is synonym of 'Offset'.
+        </notes>
+    </ParamDef>
+
+    <ClassDef name='CIPSplitterEngine'
+            package='org.rvpf.processor.engine.pap.cip'>
+        <implements classDef='Engine'/>
+    </ClassDef>
+
+    <Content name='CIPArray' classDef='TupleContent'>
+        <description>
+            Content used to represent the array expected as input by the
+            CIP splitter transform.
+        </description>
+    </Content>
+
+    <Engine name='CIPSplitter' classDef='CIPSplitterEngine'/>
+
+    <Transform name='CIPSplitter' engine='CIPSplitter'>
+        <description>
+            For each result, extract values from a CIP array represented
+            by a point value containing a tuple.
+        </description>
+        <arg/>
+    </Transform>
+
+</metadata>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

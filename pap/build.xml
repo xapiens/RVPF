@@ -1,0 +1,263 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE project>
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: build.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<project name='RVPF-PAP' default='build'
+        xmlns:ivy='antlib:org.apache.ivy.ant'>
+
+    <import file='../core/config/build/build-common.xml'/>
+
+    <property name='name' value='PAP'/>
+    <property name='name.unix' value='pap'/>
+    <property name='project.name' value='${rvpf.name}-${name}'/>
+    <property name='project.name.unix' value='${rvpf.name.unix}-${name.unix}'/>
+    <property name='target' value='${rvpf.name.unix}-${name.unix}'/>
+    <property name='target.base' value='${target}-base'/>
+    <property name='target.cip' value='${target}-cip'/>
+    <property name='target.dnp3' value='${target}-dnp3'/>
+    <property name='target.modbus' value='${target}-modbus'/>
+    <property name='target.tests' value='${project.name.unix}-tests'/>
+
+    <property name='pap.config.shared.xml' value='rvpf-pap-config-shared.xml'/>
+    <property name='pap.metadata.shared.xml' value='rvpf-pap-metadata-shared.xml'/>
+    <property name='pap.cip.config.shared.xml' value='rvpf-pap-cip-config-shared.xml'/>
+    <property name='pap.cip.metadata.shared.xml' value='rvpf-pap-cip-metadata-shared.xml'/>
+    <property name='pap.dnp3.config.shared.xml' value='rvpf-pap-dnp3-config-shared.xml'/>
+    <property name='pap.dnp3.metadata.shared.xml' value='rvpf-pap-dnp3-metadata-shared.xml'/>
+    <property name='pap.modbus.config.shared.xml' value='rvpf-pap-modbus-config-shared.xml'/>
+    <property name='pap.modbus.metadata.shared.xml' value='rvpf-pap-modbus-metadata-shared.xml'/>
+
+    <property name='etherip.jar' value='etherip.jar'/>
+    <property name='jssc.jar' value='jssc.jar'/>
+    <property name='slf4j-api.jar' value='slf4j-api.jar'/>
+    <property name='log4j-slf4j-impl.jar' value='log4j-slf4j-impl.jar'/>
+    <property name='log.jars' value='${slf4j-api.jar} ${log4j-slf4j-impl.jar}'/>
+
+    <path id='project.class.path'>
+        <pathelement location='${rvpf.core}/lib/${rvpf.store.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.forwarder.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.processor.jar}'/>
+        <pathelement location='lib/${etherip.jar}'/>
+        <pathelement location='lib/${jssc.jar}'/>
+        <pathelement location='lib/${slf4j-api.jar}'/>
+        <pathelement location='lib/${log4j-slf4j-impl.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${jsr305.jar}'/>
+    </path>
+
+    <path id='validate.class.path'>
+        <pathelement location='config/script'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.tools.jar}'/>
+        <pathelement location='build/main/classes'/>
+        <pathelement location='build/test/classes'/>
+    </path>
+
+    <path id='project.tests.class.path'>
+        <pathelement location='${rvpf.core}/lib/${rvpf.core.tests.jar}'/>
+    </path>
+
+    <path id='tests.class.path'>
+        <pathelement location='lib/${target.tests}.jar'/>
+        <pathelement location='lib/${target.base}.jar'/>
+        <pathelement location='lib/${target.cip}.jar'/>
+        <pathelement location='lib/${target.dnp3}.jar'/>
+        <pathelement location='lib/${target.modbus}.jar'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.core.tests.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.store.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.forwarder.jar}'/>
+        <pathelement location='${rvpf.core}/lib/${rvpf.processor.jar}'/>
+    </path>
+
+    <target name='help'
+            description="Provides some help on usage.">
+        <echo>Please specify a target:
+
+    build -- Builds the jar files (default). (*)
+    clean -- Removes generated files.
+    compile -- Compiles the Java files. (*)
+    help -- Displays this.
+    jar -- Creates the jar files. (*)
+    rebuild -- Rebuilds the subproject. (*)
+    recompile -- Recompiles the subproject. (*)
+    refresh -- Refreshes the subproject. (*)
+    setup -- Sets up the default environment.
+    sync -- Synchronizes duplicated files.
+    test -- Runs tests.
+    validate -- Validates some files.
+
+(*) These targets need the source files.</echo>
+    </target>
+
+    <target name='clean' depends='RVPF-common.clean'
+            description="Removes generated files.">
+        <delete dir='web/ivy'/>
+        <delete>
+            <fileset dir='web'>
+                <include name='ChangeLog.txt'/>
+                <include name='${license}'/>
+                <include name='style.css'/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name='compile'
+            description="Compiles the Java files.">
+        <mkdir dir='build/etherip/classes'/>
+        <rvpf.javac srcdir='src/etherip/java'
+                destdir='build/etherip/classes'
+                classpathref='project.class.path'/>
+        <jar jarfile='lib/etherip.jar' duplicate='fail'>
+            <fileset dir='build/etherip/classes'/>
+        </jar>
+        <antcall target='RVPF-common.compile'/>
+    </target>
+
+    <target name='validate'
+            description="Validates some files.">
+        <antcall target='validate-xml'/>
+        <antcall target='validate-messages'/>
+    </target>
+
+    <target name='sync'
+            description="Synchronizes duplicated files.">
+        <copy todir='bin/setup'>
+            <fileset dir='${rvpf.core}/bin/setup'>
+                <include name='rvpf.*'/>
+                <include name='rvpf-env.*'/>
+                <include name='rvpf-tests-env.*'/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name='jar' depends='compile'
+            description="Creates the jar files.">
+        <svnversion/>
+        <jar jarfile='lib/${target.base}.jar' duplicate='fail'>
+            <fileset dir='shared'>
+                <include name='${pap.config.shared.xml}'/>
+                <include name='${pap.metadata.shared.xml}'/>
+            </fileset>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/**/pap/*.class'/>
+                <include name='${package.dir}/**/pap/captor/**/*.class'/>
+                <include name='${package.dir}/**/pap/datalogger/**/*.class'/>
+                <include name='${package.dir}/messages/pap*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.cip}.jar' duplicate='fail'>
+            <fileset dir='shared'>
+                <include name='${pap.cip.config.shared.xml}'/>
+                <include name='${pap.cip.metadata.shared.xml}'/>
+            </fileset>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/**/cip/**/*.class'/>
+                <include name='${package.dir}/messages/cip*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.base}.jar ${etherip.jar}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.dnp3}.jar' duplicate='fail'>
+            <fileset dir='shared'>
+                <include name='${pap.dnp3.config.shared.xml}'/>
+                <include name='${pap.dnp3.metadata.shared.xml}'/>
+            </fileset>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/**/dnp3/**/*.class'/>
+                <include name='${package.dir}/messages/dnp3*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.base}.jar ${jssc.jar}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.modbus}.jar' duplicate='fail'>
+            <fileset dir='shared'>
+                <include name='${pap.modbus.config.shared.xml}'/>
+                <include name='${pap.modbus.metadata.shared.xml}'/>
+            </fileset>
+            <fileset dir='build/main/classes'>
+                <include name='${package.dir}/**/modbus/**/*.class'/>
+                <include name='${package.dir}/messages/modbus*.properties'/>
+            </fileset>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+                <attribute name='Class-Path'
+                        value="${target.base}.jar ${jssc.jar}"/>
+            </manifest>
+        </jar>
+        <jar jarfile='lib/${target.tests}.jar' duplicate='fail'>
+            <fileset dir='build/test/classes'/>
+            <manifest>
+                <attribute name='Implementation-Title' value='${project.name}'/>
+                <attribute name='Implementation-Vendor' value='Serge Brisson'/>
+                <attribute name='Implementation-Version'
+                        value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
+                <attribute name='Implementation-Revision'
+                        value='${svnversion.output}'/>
+            </manifest>
+        </jar>
+        <copy file='${rvpf.core}/lib/${rvpf.tools.jar}'
+                todir='lib'/>
+    </target>
+
+    <target name='setup' depends='setup-default'
+            description="Default setup."/>
+
+    <target name='setup-report' depends='setup'>
+        <mkdir dir='web/ivy'/>
+        <ivy:report todir='web/ivy' graph='false'/>
+    </target>
+
+</project>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

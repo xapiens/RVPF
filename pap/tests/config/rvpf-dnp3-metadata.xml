@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ $Id: rvpf-dnp3-metadata.xml 3362 2017-02-01 20:21:25Z SFB $
+ -->
+
+<metadata title="Tests metadata" domain='tests'>
+
+    <?include href='resource:rvpf-dnp3-metadata-common.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <Store name='TestsSnapshot'
+            uuid='cfd9f2f9-6e13-4ef3-a230-55e7f154ab12'>
+        <param name='Name' value='TestsStoreServer'/>
+        <param name='User' value='${tests.user}'/>
+        <param name='Password' value='${tests.password}'/>
+    </Store>
+
+    <Store name='TestsStore'
+            uuid='195914a1-e903-455b-b150-05dbcd7d75ef'>
+        <param name='Name' value='TestsStoreServer'/>
+        <param name='User' value='${tests.user}'/>
+        <param name='Password' value='${tests.password}'/>
+    </Store>
+
+    <Store name='TestsReplicate' classDef='NullStore'
+            uuid='943ac397-d925-436c-89c5-efdda388c1bf'>
+        <description>Used for replicate tests.</description>
+    </Store>
+
+    <Processor name='TestsProcessor'
+            uuid='c1e71433-0855-4d93-a214-89a41bb08c95'/>
+
+    <Sync name='TestsSync' classDef='CrontabSync' anchored='yes'>
+        <param name='Crontab' value='0 0 * * *'/>
+    </Sync>
+
+    <Point name='TESTS-DNP3.AO-SHORT.1' origin='TestsDNP3'
+            uuid='084a1b2d-a143-41eb-8ecb-f108dbdf0a0c'
+            store='TestsStore' content='Short'>
+        <attributes usage='DNP3'>
+            <attribute name='POINT_TYPE' value='ANALOG_OUTPUT'/>
+            <attribute name='INDEX' value='1'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.BO-FLAGS.1' origin='TestsDNP3'
+            uuid='90d9baad-b849-440f-bef6-832d72cd0105'
+            store='TestsStore' content='Boolean'>
+        <attributes usage='DNP3'>
+            <attribute name='LOGICAL_DEVICE' value='Test'/>
+            <attribute name='POINT_TYPE' value='BINARY_OUTPUT'/>
+            <attribute name='INDEX' value='3'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.AI-SHORT-FLAGS.1' origin='TestsDNP3'
+            uuid='65f31f42-63c1-4ed4-a01a-353b883114b1'
+            store='TestsStore' content='Short'>
+        <attributes usage='DNP3'>
+            <attribute name='INDEX' value='5'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.BI-FLAGS.1' origin='TestsDNP3'
+            uuid='728eaaab-d24a-404e-b24f-298fc3941862'
+            store='TestsStore' content='Boolean'>
+        <attributes usage='DNP3'>
+            <attribute name='INDEX' value='7'/>
+        </attributes>
+    </Point>
+
+    <Point name='TESTS-DNP3.COUNTER-FLAGS.1' origin='TestsDNP3'
+            uuid='a37a0d95-a16f-47b3-9c94-abdc3336b350'
+            store='TestsStore' content='Count'>
+        <attributes usage='DNP3'>
+            <attribute name='LOGICAL_DEVICE' value='Test'/>
+            <attribute name='POINT_TYPE' value='COUNTER'/>
+            <attribute name='DATA_TYPE' value='UINT16'/>
+            <attribute name='INDEX' value='9'/>
+        </attributes>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

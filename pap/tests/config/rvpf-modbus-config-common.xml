@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-modbus-config-common.xml 3313 2017-01-04 14:23:30Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <?include href='resource:rvpf-common-config.xml'?>
+    <?include href="resource:rvpf-pap-config-shared.xml"?>
+
+    <properties name='modbus.listener.socket' def='modbus.listener'
+            if='tests.modbus.listen.port'>
+        <property name='socket.address'
+                property='tests.lan.listen.address'/>
+        <property name='socket.port'
+                property='tests.modbus.listen.port'/>
+    </properties>
+
+    <properties name='modbus.listener.serial' def='modbus.listener'
+            if='tests.outstation.serial.port'>
+        <property name='origin' value='TestsModbus'/>
+        <property name='serial.port'
+                property='tests.outstation.serial.port'/>
+        <property name='serial.speed'
+                property='tests.serial.port.speed'/>
+        <property name='serial.mode'
+                property='tests.serial.port.mode'/>
+        <property name='serial.parity'
+                property='tests.serial.port.parity'/>
+        <property name='serial.modem'
+                property='tests.serial.port.modem'/>
+        <property name='serial.control'
+                property='tests.serial.port.control'/>
+        <property name='unit.identifier'
+                property='tests.unit.identifier'/>
+    </properties>
+
+    <properties name='tests.forwarder.queue' def='som.queue'>
+        <property name='name' value='TestsForwarder'/>
+    </properties>
+
+</config>
+
+<!-- End. -->

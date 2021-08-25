@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework (Process Automation Protocols).
+
+ Copyright (C) 2003-2019 Serge Brisson.
+
+ This software is distributable under the LGPL license.
+ See details at the bottom of this file.
+
+ $Id: rvpf-pap-config-shared.xml 3961 2019-05-06 20:14:59Z SFB $
+ -->
+
+<config title="Shared PAP configuration definitions">
+
+    <description>
+        This file holds basic configuration definitions which are needed
+        for proper RVPF-PAP operations.
+    </description>
+
+    <notes>
+        It is recommended to leave this file unmodified and to include
+        it at the top of the master 'rvpf-config.xml' file, after the
+        include of the 'rvpf-config-shared.xml' file.
+
+        It is then possible to override some included definitions: a
+        later definition will override an earlier one (except for
+        elements containing a 'lang' attribute).
+    </notes>
+
+    <!-- Propert(y/ies) definitions. -->
+
+    <PropertiesDef name='datalogger'>
+            <description>
+                The datalogger configuration properties.
+            </description>
+        <PropertiesDef name='scanner' multiple='yes'>
+            <description>
+                The datalogger scanner configuration properties.
+            </description>
+
+            <PropertiesDef name='controls'>
+                <description>
+                    Allows a point to control the scans.
+                </description>
+                <PropertyDef name='barrier'>
+                    <description>
+                        A 'barrier' point allows scans only while the
+                        latest value evaluates to 'true'.
+                    </description>
+                </PropertyDef>
+                <PropertyDef name='crontab'>
+                    <description>
+                        The latest value of a 'crontab' point supplies
+                        the schedule for the scans.
+                    </description>
+                    <notes>
+                        The point must specify a StringContent.
+                    </notes>
+                </PropertyDef>
+                <PropertyDef name='each'>
+                    <description>
+                        Each new value of an 'each' point causes a scan.
+                    </description>
+                </PropertyDef>
+                <PropertyDef name='elapsed'>
+                    <description>
+                        The latest value of an 'elapsed' point supplies
+                        the elapsed time between scans.
+
+                        A floating-point content will be interpreted as
+                        seconds, other numbers will be interpreted as
+                        milliseconds.
+                    </description>
+                    <notes>
+                        The point must specify a NumberContent.
+                    </notes>
+                </PropertyDef>
+            </PropertiesDef>
+
+            <PropertyDef name='name'>
+                <description>
+                    The name of the scanner.
+                </description>
+                <notes>
+                    This name must correspond to an 'Origin' or
+                    'Processor'.
+                </notes>
+            </PropertyDef>
+
+            <PropertyDef name='sync'>
+                <description>
+                    The sync object describing the scan schedule.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='traces'>
+                <description>
+                    Supplies the name of the subdirectory under which
+                    the traces subdirectory with the value of 'name'
+                    will be created.
+
+                    Defaults to no traces.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+
+        <PropertiesDef name='output'>
+            <description>
+                The datalogger output configuration properties.
+            </description>
+
+            <PropertiesDef name='queue' extends='som.queue'>
+                <description>
+                    The specification of the scanner destination queue.
+                </description>
+                <notes>
+                    When this group is absent, the scanner will update
+                    the stores.
+                </notes>
+            </PropertiesDef>
+
+            <PropertiesDef name='storage' extends='storage'>
+                <description>
+                    The storage monitor configuration for scanner.
+                </description>
+                <notes>
+                    The default value for the 'root.dir' property is the
+                    value of the 'service.data.dir'.
+                </notes>
+            </PropertiesDef>
+
+            <PropertiesDef name='store'>
+                <description>
+                    Specifies a store to act as proxy for all store
+                    updates.
+                </description>
+
+                <PropertyDef name='binding'>
+                    <description>
+                        The RMI URI for the server binding.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='name'>
+                    <description>
+                        The name of the store.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='password' hidden='yes'>
+                    <description>
+                        The user password for store connections.
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='retry.interval' type='Elapsed'>
+                    <description>
+                        The time interval to wait before retrying after
+                        an input failure.
+
+                        Defaults to 60.0 (1 minute).
+                    </description>
+                </PropertyDef>
+
+                <PropertyDef name='retry.limit' type='Integer'>
+                    <description>
+                        The number of times to retry after an input
+                        failure. When set to 0, no retries will be done.
+
+                        Defaults to -1 (no limit).
+                    </description>
+                </PropertyDef>
+
+                <PropertiesDef name='security' extends='security'>
+                    <description>
+                        The security configuration for store
+                        connections.
+                    </description>
+                </PropertiesDef>
+
+                <PropertyDef name='user' hidden='yes'>
+                    <description>
+                        The user identification for store connections.
+                    </description>
+                </PropertyDef>
+            </PropertiesDef>
+
+            <PropertyDef name='traces'>
+                <description>
+                    Supplies the name of the subdirectory under which
+                    the traces subdirectory ('updates') will be created.
+
+                    Defaults to no traces.
+                </description>
+            </PropertyDef>
+
+            <PropertyDef name='limit' type='Integer'>
+                <description>
+                    Specifies a limit for the number of pending updates.
+
+                    When this limit is exceeded, the scans are suspended
+                    until all updates are commited.
+                </description>
+            </PropertyDef>
+        </PropertiesDef>
+    </PropertiesDef>
+
+    <PropertyDef name='pap.support.class' type='ClassDef'
+            multiple='yes'>
+        <description>
+            Protocol support class.
+        </description>
+    </PropertyDef>
+
+    <PropertiesDef name='store.server.pap' if='config.store'
+            extends='store.server'>
+        <PropertyDef name='protocol'>
+            <description>
+                This property must be used to specify the protocol
+                support.
+            </description>
+        </PropertyDef>
+        <PropertyDef name='traces'>
+            <description>
+                Supplies the name of the subdirectory under which the
+                traces files will be created.
+
+                Defaults to no traces.
+            </description>
+        </PropertyDef>
+    </PropertiesDef>
+
+    <property name='substitution.enabled'/>
+
+    <!-- RVPF-PAP directory properties. -->
+
+    <property name='rvpf.pap' validated='no'
+            value='${rvpf.home}/pap'>
+        <description>
+            PAP subproject directory.
+        </description>
+    </property>
+    <property name='rvpf.pap.url' validated='no'
+            value='file:///${rvpf.pap}'>
+        <description>
+            URL of the PAP subproject directory.
+        </description>
+    </property>
+    <property name='rvpf.pap.lib.url' validated='no'
+            value='${rvpf.pap.url}/lib'>
+        <description>
+            URL of the PAP subproject library directory.
+        </description>
+    </property>
+
+    <!-- Class definitions. -->
+
+    <ClassDef name='DataloggerService'
+            package='org.rvpf.service.pap.datalogger'
+            member='DataloggerServiceActivator'>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <ClassDef name='PAPStoreService'
+            package='org.rvpf.store.server.pap'
+            member='PAPStoreServiceActivator'>
+        <description>
+            Implements a PAP store.
+        </description>
+        <implements classDef='Service'/>
+    </ClassDef>
+
+    <ClassDef name='PAPSupport'
+            package='org.rvpf.pap'>
+        <description>
+            Protocol support interface.
+        </description>
+    </ClassDef>
+
+    <!-- Optional protocol configuration files. -->
+
+    <property name='config.pap' validated='no'/>
+
+    <?include href='resource:rvpf-pap-cip-config-shared.xml'
+            optional='yes'?>
+    <?include href='resource:rvpf-pap-dnp3-config-shared.xml'
+            optional='yes'?>
+    <?include href='resource:rvpf-pap-modbus-config-shared.xml'
+            optional='yes'?>
+
+</config>
+
+<!--
+ This is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License
+ version 2.1 as published by the Free Software Foundation.
+
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->

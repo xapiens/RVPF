@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata-scenario-1.xml 3028 2016-03-16 18:45:25Z SFB $
+ -->
+
+<metadata lang='en' title="Scenario 1 metadata">
+
+    <?log message="Scenario 1"?>
+
+    <Transform name='Capture' engine='Captor'>
+        <arg ident='Trigger'>
+            <param name='CaptureLimit' value='3'/>
+            <param name='CaptureTime' value='00:04'/>
+        </arg>
+        <arg ident='Stream'>
+            <param name='CaptureTime' value='00:03'/>
+        </arg>
+    </Transform>
+
+    <Point name='TRIGGER'
+            uuid='6709f614-f919-4f91-9fbb-cfdb6fd34e68'
+            store='TestsStore' content='StartStop'/>
+
+    <Point name='STREAM'
+            uuid='cc99b2d1-27b9-4687-9eed-2d8c589a84fd'
+            store='TestsStore' content='Short'/>
+
+    <Point name='REFERENCE'
+            uuid='6d0eef4b-65ed-49c8-bd68-93046cf3d1d7'
+            store='TestsStore' content='Short'/>
+
+    <Point name='CAPTURED-STREAM'
+            uuid='d618e8b4-c1d0-4bfa-be6a-3d1f304ea72a'
+            store='TestsStore' content='Count'
+            processor='TestsProcessor' transform='Capture'>
+        <input point='TRIGGER'/>
+        <input point='STREAM'/>
+    </Point>
+
+    <Point name='CAPTURED-REFERENCE'
+            uuid='44169c69-0902-447e-825e-c565f67b51d6'
+            store='TestsStore' content='Count'
+            processor='TestsProcessor' transform='Capture'>
+        <input point='TRIGGER'/>
+        <input point='REFERENCE'/>
+    </Point>
+
+    <Point name='BEGIN' uuid='355261b8-ac75-42aa-a6c1-a3a05bc3a77a'
+            store='TestsStore' content='Text'/>
+    <Point name='END' uuid='e5a2d285-b4cf-4a4c-b4f4-71e037e6f24b'
+            store='TestsStore' content='Text'
+            processor='TestsProcessor' transform='Clone'>
+        <input point='BEGIN'/>
+    </Point>
+
+</metadata>
+
+<!-- End. -->

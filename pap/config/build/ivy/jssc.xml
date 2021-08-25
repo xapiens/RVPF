@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE ivy-module>
+
+<!-- $Id: jssc.xml 3444 2017-05-24 11:28:50Z SFB $ -->
+
+<ivy-module version='1.0'>
+
+    <info
+            module='jssc'
+            revision='${jssc.revision}'
+            organisation='jssc'
+            status='release'>
+        <license name='LGPL'
+                url='http://www.gnu.org/licenses/lgpl.html'/>
+        <description homepage='http://code.google.com/p/java-simple-serial-connector/'/>
+    </info>
+
+</ivy-module>
+
+<!-- End. -->
