@@ -1,0 +1,827 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config.xml 4115 2019-08-04 14:17:56Z SFB $
+
+ This configuration file is used for stand alone operation.
+ -->
+
+<?xml-stylesheet type='text/xsl' href='rvpf.xsl'?>
+
+<config lang='en' title="Configuration example">
+
+    <properties from='resource:local.properties'/>
+
+    <?include href='resource:rvpf-config-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <properties name='rmi.registry'>
+        <property name='address' property='rmi.registry.address'/>
+        <property name='port' property='rmi.registry.port'/>
+        <property name='shared'/>
+    </properties>
+
+    <property name='java.rmi.server.hostname' system='yes'
+        property='rmi.server.hostname'/>
+
+    <properties name='client.security' def='security'>
+        <properties name='truststore'>
+            <property name='path' property='client.truststore'/>
+        </properties>
+    </properties>
+
+    <properties name='server.security' def='security'>
+        <properties name='keystore'>
+            <property name='path' property='server.keystore'/>
+            <property name='password'
+                    property='server.keystore.password'/>
+        </properties>
+    </properties>
+
+    <properties name='jmx'>
+        <property name='registration.enabled'
+                property='jmx.registration.enabled'/>
+        <property name='platform' property='jmx.platform'/>
+    </properties>
+
+    <property name='metadata' if='document.workspace'
+            value='${document.workspace}/rvpf-metadata.xml'/>
+
+    <properties name='metadata'>
+        <property name='path' property='metadata'/>
+        <property name='domain' property='metadata.domain'/>
+        <property name='server' property='metadata.server'/>
+    </properties>
+
+    <properties name='notifier.som.queue' def='som.queue'>
+        <property name='binding' property='store.notifier.queue'
+                value='queue/Notifier'/>
+    </properties>
+
+    <property name='store.the.sql.dialect' unless='store.the.sql.dialect'
+            validated='no' value='H2'/>
+    <property name='store.the.sql.dialect.derby' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='Derby'/>
+    <property name='store.the.sql.dialect.h2' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='H2'/>
+    <property name='store.the.sql.dialect.hsql' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='HSQLDB'/>
+    <property name='store.the.sql.dialect.mariadb' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='MariaDB'/>
+    <property name='store.the.sql.dialect.pgsql' validated='no'
+            property='store.the.sql.dialect' eq='yes'
+            value='PostgreSQL'/>
+
+    <properties name='queue.processor' def='som.queue'>
+        <property name='binding'
+                property='processor.receptionist.queue'
+                value='queue/Processor'/>
+    </properties>
+    <properties name='queue.resynchronizer' def='som.queue'>
+        <property name='binding'
+                property='resynchronizer.receptionist.queue'
+                value='queue/Resynchronizer'/>
+    </properties>
+    <properties name='queue.collector' def='som.queue'>
+        <property name='binding'
+                property='collector.queue'
+                value='queue/Collector'/>
+    </properties>
+
+    <properties name='service.alerter'>
+        <property name='embedded'/>
+        <property name='shared' property='service.alerter.shared'/>
+        <properties name='som.topic'>
+            <property name='keep.alive'
+                    property='service.alerter.keep.alive'/>
+        </properties>
+    </properties>
+
+    <properties name='processor' if='config.processor'>
+        <property name='cache.disabled'
+                property='processor.cache.disabled'/>
+        <property name='cache.updates.filtered'
+                property='processor.cache.updates.filtered'/>
+        <property name='summarizer.interval.reverse'
+                value='no'/>
+    </properties>
+
+    <properties name='valve' if='valve.control.address'>
+        <property name='control.address'
+                property='valve.control.address'/>
+        <property name='required'
+                property='valve.required'/>
+        <property name='retry'
+                property='valve.retry'/>
+        <property name='retry.delay'
+                property='valve.retry.delay'/>
+        <properties name='security'
+                if='valve.keystore'>
+            <property name='certified'
+                    property='valve.certified'/>
+            <properties name='keystore'>
+                <property name='path' property='valve.keystore'/>
+                <property name='password'
+                        property='valve.keystore.password'/>
+                <properties name='key'>
+                    <property name='password'
+                            property='valve.key.password'/>
+                </properties>
+            </properties>
+            <properties name='truststore'>
+                <property name='path' property='valve.truststore'/>
+            </properties>
+        </properties>
+    </properties>
+
+    <property name='service.restart.allowed'/>
+
+    <service name='org.rvpf:type=ClockService'>
+        <alias name='clock'/>
+        <property name='service.log.id' value='CLOC'/>
+
+        <property name='service.zombie.enabled'/>
+        <property name='service.uuid'
+                value='329477fa-f39e-406c-9168-d178421c7636'/>
+
+        <properties name='traces'>
+            <property name='dir' value='clock'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ContainerService'>
+        <alias name='container'/>
+        <property name='service.log.id' value='CONT'/>
+
+        <properties name='service'>
+            <property name='name' value='Alerter'/>
+            <property name='service.class' classDef='HTTPServer'/>
+            <property name='wait'/>
+        </properties>
+
+        <properties name='service'>
+            <property name='service.class' classDef='TheStoreService'/>
+            <property name='wait'/>
+        </properties>
+
+        <properties name='service'>
+            <property name='service.class' classDef='ForwarderService'/>
+            <property name='wait'/>
+        </properties>
+
+        <properties name='service'>
+            <property name='service.class' classDef='ProcessorService'/>
+        </properties>
+
+        <properties name='service'>
+            <property name='name' value='Resynchronizer'/>
+            <property name='service.class' classDef='ProcessorService'/>
+        </properties>
+
+        <properties name='service'>
+            <property name='service.class' classDef='ClockService'/>
+        </properties>
+
+        <properties name='service'>
+            <property name='service.class' classDef='ProxyStoreService'/>
+            <property name='optional'/>
+        </properties>
+
+        <properties name='service'
+                if='document.workspace'
+                notes="See service 'org.rvpf:type=DocumentVersionControl'.">
+            <property name='service.class'
+                    classDef='DocumentVersionControl'/>
+            <property name='optional'/>
+        </properties>
+
+        <properties name='service'>
+            <property name='service.class' classDef='HTTPServer'/>
+            <property name='optional'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ContainerService,name=AlertForwarder'>
+        <alias name='alert-forwarder'/>
+        <property name='service.log.id' value='ALFW'/>
+
+        <properties name='service'>
+            <property name='name' value='ToRemoteAlerter'/>
+            <property name='service.class' classDef='ForwarderService'/>
+        </properties>
+        <properties name='service'>
+            <property name='name' value='FromRemoteAlerter'/>
+            <property name='service.class' classDef='ForwarderService'/>
+        </properties>
+
+        <property name='service.uuid'
+                value='4e48007d-81de-490b-b8ac-b5b13c25d12a'/>
+    </service>
+
+    <service name='org.rvpf:type=DocumentVersionControl'
+            if='document.workspace'>
+        <notes>
+            When defined, 'document.workspace' must contain the
+            path to a directory managed with Subversion.
+        </notes>
+        <alias name='version'/>
+        <property name='service.log.id' value='VERS'/>
+
+        <properties name='document.version'>
+            <property name='workspace' property='document.workspace'/>
+        </properties>
+
+        <classLib classLib='SVN'/>
+        <property name='service.uuid'
+                value='6ffe2d08-fba2-4fcd-8aa1-ef4e17ab721c'/>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService'>
+        <alias name='forwarder'/>
+        <property name='service.log.id' value='FORW'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMReceiver'/>
+            <properties name='queue' extends='notifier.som.queue'/>
+            <property name='traces' value='received'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <property name='module.uuid'
+                    value='f357e987-2630-4fe0-88b1-e723cc446e84'/>
+            <properties name='queue' extends='queue.processor'>
+                <property name='server'/>
+            </properties>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderProcessorFilter'/>
+                <property name='processor' value='Processor'/>
+            </properties>
+                <property name='traces' value='to-processor'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <property name='module.uuid'
+                    value='93e8afd8-0e8f-41db-aed9-396c705d288a'/>
+            <properties name='queue' extends='queue.resynchronizer'>
+                <property name='server'/>
+            </properties>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderProcessorFilter'/>
+                <property name='processor' value='Resynchronizer'/>
+                <property name='resynchronizes'/>
+            </properties>
+            <property name='traces' value='to-resynchroniser'/>
+        </properties>
+
+        <properties name='forwarder.module'
+                if='forwarder.publisher.topic'>
+            <property name='module.class'
+                    classDef='ForwarderSOMPublisher'/>
+            <properties name='topic'>
+                <property name='server'/>
+                <property name='binding'
+                        property='forwarder.publisher.topic'/>
+            </properties>
+        </properties>
+
+        <properties name='traces'>
+            <property name='dir' value='forwarder'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=Collector'>
+        <alias name='collector'/>
+        <property name='service.log.id' value='COLL'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesPortServer'/>
+            <property name='address'
+                    property='forwarder.xml.address'/>
+            <property name='role' value='updater'/>
+            <property name='batch.limit'
+                    property='forwarder.xml.batch'/>
+            <property name='traces' value='from-port'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesPortServer'/>
+            <property name='address'
+                    property='forwarder.xml.address.ssl'/>
+            <property name='role' value='updater'/>
+            <properties name='security' extends='server.security'>
+                <property name='certified'/>
+            </properties>
+            <property name='batch.limit'
+                    property='forwarder.xml.batch'/>
+            <property name='traces' value='from-ssl-port'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesFiles'/>
+            <property name='input.dir'
+                    property='forwarder.xml.input.dir'/>
+            <property name='batch.limit'
+                    property='forwarder.xml.batch'/>
+            <property name='traces' value='from-files'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue' extends='queue.collector'>
+                <property name='server'/>
+            </properties>
+            <property name='traces' value='sent'/>
+        </properties>
+
+        <properties name='service.alerter'>
+            <property name='alerter.class' classDef='NullAlerter'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='collector'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=From080'>
+        <alias name='from-080'/>
+        <property name='service.log.id' value='F080'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesPortServer'/>
+            <property name='address'
+                    property='forwarder.from080.local.address'/>
+            <property name='traces' value='from-080'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue'>
+                <property name='name' value='From080'/>
+                <property name='private'/>
+            </properties>
+        </properties>
+
+        <properties name='traces'>
+            <property name='dir' value='forwarder'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=From082'>
+        <alias name='from-082'/>
+        <property name='service.log.id' value='F082'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesPortServer'/>
+            <property name='address'
+                    property='forwarder.from082.local.address'/>
+            <property name='traces' value='from-082'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSender'/>
+            <properties name='queue'>
+                <property name='name' value='From082'/>
+                <property name='private'/>
+            </properties>
+        </properties>
+
+        <properties name='traces'>
+            <property name='dir' value='forwarder'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=FromRemoteAlerter'>
+        <alias name='from-remote-alerter'/>
+        <property name='service.log.id' value='FRAL'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMSubscriber'/>
+            <properties name='topic'>
+                <properties name='security'
+                        extends='client.security'/>
+                <property name='binding'
+                        value='rmi://remote/topic/Alerts'/>
+            </properties>
+            <property name='reliable' value='no'/>
+            <property name='traces' value='local'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderToAlerter'/>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderAlertFilter'/>
+            </properties>
+        </properties>
+
+        <properties name='traces'>
+            <property name='dir' value='alerts'/>
+        </properties>
+
+        <property name='service.uuid'
+                value='ea57416a-739d-4a6c-91ec-efb6f5e78d37'/>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=To080'>
+        <alias name='to-080'/>
+        <property name='service.log.id' value='T080'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesFiles'/>
+            <property name='input.dir'
+                    property='forwarder.to080.input.dir'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderToRVPF080'/>
+            <property name='address' property='forwarder.to080.remote.address'/>
+            <property name='client.name' value='RVPF-082'/>
+            <property name='traces' value='to-080'/>
+        </properties>
+
+        <properties name='traces'>
+            <property name='dir' value='forwarder'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=To082'>
+        <alias name='to-082'/>
+        <property name='service.log.id' value='T082'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesFiles'/>
+            <property name='input.dir'
+                    property='forwarder.to082.input.dir'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderMessagesPortClient'/>
+            <property name='address' property='forwarder.to082.remote.address'/>
+            <property name='client.name' value='RVPF-082'/>
+            <property name='traces' value='to-082'/>
+        </properties>
+
+        <properties name='traces'>
+            <property name='dir' value='forwarder'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ForwarderService,name=ToRemoteAlerter'>
+        <alias name='to-remote-alerter'/>
+        <property name='service.log.id' value='TRAL'/>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderSOMPublisher'/>
+            <properties name='topic'>
+                <properties name='security' extends='client.security'/>
+                <property name='binding'
+                        value='rmi://remote/topic/Alerts'/>
+            </properties>
+            <property name='reliable' value='no'/>
+            <property name='traces' value='remote'/>
+        </properties>
+
+        <properties name='forwarder.module'>
+            <property name='module.class'
+                    classDef='ForwarderFromAlerter'/>
+            <properties name='filter'>
+                <property name='filter.class'
+                        classDef='ForwarderAlertFilter'/>
+            </properties>
+        </properties>
+
+        <properties name='traces'>
+            <property name='dir' value='alerts'/>
+        </properties>
+
+        <property name='service.uuid'
+                value='23ada34d-bd83-440c-b161-83cc0bf877df'/>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer'>
+        <alias name='http-server'/>
+        <property name='service.log.id' value='HTTP'/>
+
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='address' property='http.server.address'/>
+                <property name='port' property='http.server.port'/>
+                <property name='confidential'
+                        property='http.server.port.ssl'/>
+            </properties>
+
+            <properties name='listener'>
+                <property name='address' property='http.server.address'/>
+                <property name='port' property='http.server.port.ssl'/>
+            </properties>
+
+            <properties name='realm'>
+                <property name='name' value='RVPF'/>
+                <property name='path'
+                        property='http.realm.path'/>
+            </properties>
+
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPAlertModule'/>
+                <property name='role' value='alerter'/>
+                <properties name='alert'>
+                    <property name='restraint' value='1.0'/>
+                </properties>
+            </properties>
+
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPNoticeModule'/>
+                <property name='module.uuid'
+                        value='57b43ded-7489-415c-9f1d-37a48453c569'/>
+                <property name='role' value='updater'/>
+                <properties name='som.queue'
+                        extends='notifier.som.queue'/>
+            </properties>
+
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPQueryModule'/>
+                <property name='module.uuid'
+                        value='64539d7f-07d8-400f-804f-dd6e0c89a8db'/>
+            </properties>
+
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPRPNModule'/>
+                <property name='module.uuid'
+                        value='93c4164d-26d5-4846-a11d-29575bd4ae04'/>
+            </properties>
+
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPUpdateModule'/>
+                <property name='module.uuid'
+                        value='5a1e9e66-f538-4e73-81ff-c7bdb453dc26'/>
+                <property name='role' value='updater'/>
+            </properties>
+        </properties>
+
+        <property name='service.dependency'
+                value='org.rvpf:type=ProxyStoreService'/>
+        <property name='service.uuid'
+                value='3a133e1d-86df-40fd-b6ae-a3f651ee64e0'/>
+        <property name='service.zombie.enabled'/>
+    </service>
+
+    <service name='org.rvpf:type=HTTPServer,name=Alerter'>
+        <alias name='alerter'/>
+        <property name='service.log.id' value='ALER'/>
+
+        <properties name='http.server'>
+            <properties name='listener'>
+                <property name='address' property='http.alerter.address'/>
+                <property name='port' property='http.alerter.port'/>
+                <property name='confidential'
+                        property='http.alerter.port.ssl'/>
+            </properties>
+
+            <properties name='listener'>
+                <property name='address' property='http.alerter.address'/>
+                <property name='port' property='http.alerter.port.ssl'/>
+                <properties name='security' extends='server.security'/>
+            </properties>
+
+            <properties name='realm'>
+                <property name='name' value='RVPF'/>
+                <property name='path'
+                        property='http.realm.path'/>
+            </properties>
+
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPAlertModule'/>
+                <property name='module.uuid'
+                        value='e351c10c-0157-4467-aa29-a71d8f4bef50'/>
+                <property name='role' value='alerter'/>
+                <property name='authenticator' value='Basic'/>
+                <properties name='alert'>
+                    <property name='restraint'
+                            property='http.alerter.restraint'/>
+                </properties>
+            </properties>
+
+            <properties name='context'>
+                <property name='module.class'
+                        classDef='HTTPMetadataServerModule'/>
+                <property name='trigger.refresh'/>
+            </properties>
+        </properties>
+
+        <property name='service.uuid'
+                value='342503c4-f5cc-4889-8858-17881f8c4f29'/>
+    </service>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <description>
+            A TheStore service backed by a local database server;
+            the store is part of a simple replicator pair.
+        </description>
+        <alias name='the-store'/>
+        <property name='service.log.id' value='THST'/>
+
+        <properties name='store.server.states'>
+            <property name='state' value='Set'/>
+            <property name='state' value='Resynced'/>
+            <property name='state' value='Done'/>
+        </properties>
+
+        <properties name= 'store.server.states.on'
+                def='store.server.states'>
+            <property name='name' value='On'/>
+            <property name='state' value='Off'/>
+            <property name='state' value='On'/>
+        </properties>
+
+        <properties name= 'store.server.states.traffic'
+                def='store.server.states'>
+            <property name='name' value='Traffic'/>
+            <property name='state' value='Green'/>
+            <property name='state' value='Yellow'/>
+            <property name='state' value='Red'/>
+        </properties>
+
+        <properties name='store.server.the'>
+            <properties name='notifier.som.queue'
+                    extends='notifier.som.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='backend.class' if='store.the.backend'
+                classDef='${store.the.backend}'/>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreDerbyDialect'
+                        if='store.the.sql.dialect.derby'/>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'
+                        if='store.the.sql.dialect.h2'/>
+                <property name='dialect.class'
+                        classDef='TheStoreHSQLDialect'
+                        if='store.the.sql.dialect.hsql'/>
+                <property name='dialect.class'
+                        classDef='TheStoreTheSQLDialect'
+                        if='store.the.sql.dialect.mariadb'/>
+                <property name='dialect.class'
+                        classDef='TheStorePostgreSQLDialect'
+                        if='store.the.sql.dialect.postgresql'/>
+                <property name='driver.class'
+                        property='store.the.sql.driver'/>
+                <property name='user'
+                        property='store.the.sql.user'/>
+                <property name='password'
+                        property='store.the.sql.password'/>
+            </properties>
+            <property name='sql.create'/>
+
+            <property name='states'>
+                <value value='store.server.states.on'/>
+                <value value='store.server.states.traffic'/>
+            </property>
+
+            <properties name='replicator'>
+                <properties name='partner'>
+                    <properties name='queue'>
+                        <property name='name' value='Replicated'/>
+                        <property name='server'/>
+                        <property name='autocommit'/>
+                        <property name='merge.limit' value='10'/>
+                    </properties>
+                </properties>
+                <property name='replicated.defaults'/>
+            </properties>
+        </properties>
+
+        <property name='service.zombie.enabled'/>
+        <property name='service.uuid'
+                value='d3e760de-6c75-4373-875e-630682cabb33'/>
+        <properties name='traces'>
+            <property name='dir' value='the-store'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService'>
+        <alias name='processor'/>
+        <property name='service.log.id' value='PROC'/>
+
+        <properties name='processor' extends='processor'>
+            <properties name='receptionist.som.queue'
+                    extends='queue.processor'/>
+        </properties>
+
+        <property name='service.zombie.enabled'/>
+        <property name='service.uuid'
+                value='11048a02-d77f-4baf-9af4-8bea5dfba30f'/>
+
+        <properties name='traces'>
+            <property name='dir' value='processor'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService,name=Replicator'>
+        <alias name='replicator'/>
+        <property name='service.log.id' value='REPL'/>
+
+        <properties name='processor' extends='processor'>
+            <property name='name' property='local.replicator'>
+                <notes>
+                    Having the processor name configured by
+                    'local.properties' permits the sharing of this
+                    configuration file by the systems involved in the
+                    replication.
+                </notes>
+            </property>
+        </properties>
+
+        <property name='service.zombie.enabled'/>
+        <property name='service.uuid'
+                value='be3460ae-aded-44a4-b43e-a9268a99bfc2'/>
+        <properties name='traces'>
+            <property name='dir' value='replicator'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProcessorService,name=Resynchronizer'>
+        <alias name='resynchronizer'/>
+        <property name='service.log.id' value='RESY'/>
+
+        <properties name='processor' extends='processor'>
+            <property name='name' value='Resynchronizer'/>
+            <properties name='receptionist.som.queue'
+                    extends='queue.resynchronizer'/>
+        </properties>
+
+        <property name='service.zombie.enabled'/>
+        <property name='service.uuid'
+                value='ff27b366-b356-454a-bcb9-61609db3c0b2'/>
+
+        <properties name='traces'>
+            <property name='dir' value='resynchronizer'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProxyStoreService'>
+        <alias name='proxy-store'/>
+        <property name='service.log.id' value='PROX'/>
+
+        <property name='service.uuid'
+                value='fe6201f7-c313-4b24-8842-13ee936b0589'/>
+        <property name='service.zombie.enabled'/>
+    </service>
+
+    <service name='org.rvpf:type=RLPService'>
+        <alias name='rlp-server'/>
+        <property name='service.log.id' value='RLPS'/>
+        <properties name='rlp.server'>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=SOMContainerService'>
+        <description>
+            Supplies the Alerts topic.
+        </description>
+        <alias name='soms'/>
+        <property name='service.log.id' value='SOMS'/>
+    </service>
+
+    <PropertyDef name='monitor.net.interface'/>
+    <PropertyDef name='monitor.net.queue.store.updates'/>
+    <PropertyDef name='monitor.net.point.bytes'/>
+    <PropertyDef name='monitor.net.sleep'/>
+
+</config>
+
+<!-- End. -->

@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE catalog
+  PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN"
+         "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: catalog.xml 3615 2018-03-15 14:45:47Z SFB $
+ -->
+
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+
+    <public publicId="-//Serge Brisson//DTD RVPF//EN"
+            uri='../../dtd/rvpf.dtd'/>
+    <system systemId="http://rvpf.org/dtd/rvpf.dtd"
+            uri='../../dtd/rvpf.dtd'/>
+
+</catalog>
+
+<!-- End. -->
