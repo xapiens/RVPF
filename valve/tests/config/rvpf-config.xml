@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config.xml 2732 2015-08-22 20:05:08Z SFB $
+ -->
+
+<config title="Tests configuration">
+
+    <?include href='resource:rvpf-config-shared.xml'?>
+
+    <properties name='security'>
+        <properties name='keystore'>
+            <property name='path' value='resource:client.keystore'/>
+            <property name='password' value='rvpf-tests'/>
+        </properties>
+        <properties name='truststore'>
+            <property name='path' value='resource:client.truststore'/>
+        </properties>
+    </properties>
+
+    <properties name='tests.valve' def='valve'>
+        <property name='required'/>
+        <properties name='security' extends='security'>
+            <property name='certified'/>
+        </properties>
+        <property name='control.address'
+                required='tests.valve.control.port'/>
+    </properties>
+
+</config>
+
+<!-- End. -->

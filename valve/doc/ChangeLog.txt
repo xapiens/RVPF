@@ -1,0 +1,54 @@
+
+0.8.2
+
+- Added SSL support for direct and controlled connections.
+- Dropped dependency on Pool.
+- Added connection filter support.
+- Updated TestNG to 5.14.
+
+0.8.1
+
+- Modified distribution files name to include Subversion revision.
+- Set SO_REUSEADDR on direct and controlled ports.
+- Updated TestNG to 5.11.
+
+0.8.0
+
+- Updated TestNG to 5.1.
+- Dropped the use of XDoclet.
+- Removed dependency on commons-logging.
+- Fixed intermediate stats.
+- Fixed some configuration failure NPE.
+- Fixed some start up failures deadlock conditions.
+- Changed domain from 'rvpf.sf.net' to 'rvpf.org'.
+
+0.7.4
+
+- Added statistics.
+- Fixed the socket close propagation.
+- Allowed valve control to be inverted.
+- Allowed redirect only.
+- Required that scripts execution be done from RVPF root.
+
+0.7.3
+
+- Improved security configuration problems handling.
+- Factored out Thread inheritance.
+- Updated TestNG to 2.5.
+- Reorganized the project directory hierarchy.
+
+0.7.2
+
+- Replaced JUnit with TestNG.
+- Updated the source language level to Java 5.
+
+0.7.1
+
+- Added signature files in the new '-asc.tgz' bundle.
+- Replaced the '-lib.tgz' bundle by the 'Ivy' mechanism.
+
+0.7.0
+
+- First public distribution as a subproject (2005-04-22).
+
+---

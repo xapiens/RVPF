@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd">
+
+<!--
+ Related Values Processing Framework (Rules support).
+
+ $Id: testng.xml 1231 2010-02-06 15:20:15Z sfb $
+ -->
+
+<suite name="RVPF-Valve">
+
+    <test name="Valve">
+        <classes>
+            <class name='org.rvpf.tests.valve.ValveTests'/>
+        </classes>
+    </test>
+
+</suite>
+
+<!-- End. -->
