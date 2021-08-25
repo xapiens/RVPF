@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!-- $Id: tests-service.jnlp 3097 2016-07-13 20:12:59Z SFB $ -->
+
+<jnlp codebase="http://localhost:${server.port}/">
+
+    <resources>
+        <jar href="lib/rvpf-jnlp-tests-starter.jar"/>
+        <jar href="lib/rvpf-forwarder.jar"/>
+        <jar href="lib/rvpf-service.jar"/>
+        <jar href="lib/rvpf-base.jar"/>
+        <jar href="lib/log4j-api.jar"/>
+        <jar href="lib/log4j-core.jar"/>
+        <jar href="lib/log4j-jul.jar"/>
+        <jar href="lib/xstream.jar"/>
+    </resources>
+
+</jnlp>
+
+<!-- End. -->
