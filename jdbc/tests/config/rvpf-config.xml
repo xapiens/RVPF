@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE config PUBLIC
+        '-//Serge Brisson//DTD RVPF//EN'
+        'http://rvpf.org/dtd/rvpf.dtd'>
+
+<!--
+ Related Values Processing Framework (JDBC).
+
+ $Id: rvpf-config.xml 4115 2019-08-04 14:17:56Z SFB $
+ -->
+
+<config lang='en' title="Tests configuration">
+
+    <properties from='resource:local.properties' optional='yes'/>
+
+    <?include href='resource:rvpf-config-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <PropertyDef name='tests.password'/>
+    <PropertyDef name='tests.queue'/>
+    <PropertyDef name='tests.role'/>
+    <PropertyDef name='tests.service.property'/>
+    <PropertyDef name='tests.store.classdef' type='ClassDef'/>
+    <PropertyDef name='tests.store.notices.filtered'/>
+    <PropertyDef name='tests.store.service' type='ClassDef'/>
+    <PropertyDef name='tests.topic'/>
+    <PropertyDef name='tests.user'/>
+
+    <properties name='rmi.registry'>
+        <property name='address'
+            property='tests.rmi.registry.address' value='127.0.0.1'/>
+        <property name='port' property='rmi.registry.port'/>
+        <property name='protected'/>
+        <property name='private' property='tests.rmi.registry.private'/>
+    </properties>
+
+    <properties>
+        <notes>
+            Used by the tests classes.
+        </notes>
+        <properties name='tests.dispatcher.queue' def='som.queue'>
+            <property name='name' value='TestsDispatcher'/>
+        </properties>
+        <property name='tests.user' value='tests-user'/>
+        <property name='tests.password' value='tests-password'/>
+    </properties>
+
+    <properties name='service.alerter'>
+        <properties name='som.topic'>
+            <property name='name' value='TestsAlerts'/>
+        </properties>
+    </properties>
+
+    <properties name='security'>
+        <properties name='keystore'>
+            <property name='path' value='resource:server.keystore'/>
+            <property name='password' value='rvpf-tests'/>
+        </properties>
+        <properties name='truststore'>
+            <property name='path' value='resource:server.truststore'/>
+        </properties>
+        <properties name='realm'>
+            <property name='path'
+                    value='resource:rvpf-realm.properties'/>
+        </properties>
+    </properties>
+
+    <property name='service.monitor.disabled'/>
+
+    <property name='service.data.dir' unless='service.data.dir'
+            value='tests/data'/>
+
+    <property name='store.the.sql.dialect' unless='store.the.sql.dialect'
+            validated='no' value='H2'/>
+    <property name='store.the.sql.dialect.derby' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='Derby'/>
+    <property name='store.the.sql.dialect.h2' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='H2'/>
+    <property name='store.the.sql.dialect.hsql' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='HSQL'/>
+    <property name='store.the.sql.dialect.mariadb' validated='no'
+            property='store.the.sql.dialect' eq='yes' value='MariaDB'/>
+    <property name='store.the.sql.dialect.pgsql' validated='no'
+            property='store.the.sql.dialect' eq='yes'
+            value='PostgreSQL'/>
+
+    <property name='tests.store.replicator.disabled' validated='no'/>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <property name='service.log.id' value='STOR'/>
+        <property name='store.name' value='TestsStore'/>
+        <properties name='store.server.the'>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'/>
+                <property name='driver.class'
+                        property='store.server.the.sql.driver'/>
+                <property name='url' property='store.the.sql.url'/>
+                <property name='user' property='store.the.sql.user'/>
+                <property name='password'
+                        property='store.the.sql.password'/>
+                <property name='shared'/>
+                <properties name='properties'
+                        if='store.the.sql.dialect.mariadb'>
+                    <property name='logger' value='Log4JLogger'/>
+                </properties>
+            </properties>
+            <property name='sql.table.archive' value='TestsArchive'/>
+            <property name='sql.create'/>
+            <properties name='notifier.som.queue'
+                    extends='tests.dispatcher.queue'>
+                <property name='server'/>
+            </properties>
+            <property name='notices.filtered'
+                    property='tests.store.notices.filtered'/>
+            <property name='role.update' property='tests.role'/>
+        </properties>
+        <properties name='traces'>
+            <property name='dir' value='the-store'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=SOMContainerService'>
+        <property name='service.log.id' value='SOMS'/>
+        <properties name='service.alerter' extends='service.alerter'>
+            <property name='embedded'/>
+            <property name='stealth'/>
+        </properties>
+    </service>
+
+</config>
+
+<!-- End. -->

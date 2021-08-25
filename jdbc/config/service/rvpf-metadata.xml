@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-metadata.xml 2664 2015-06-15 14:02:25Z SFB $
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<metadata domain='examples' lang='en'>
+
+    <!-- Common definitions. -->
+
+    <?include href='resource:rvpf-metadata-shared.xml'?>
+
+    <property name='substitution.enabled'/>
+
+    <!-- Contents. -->
+
+    <?include href='resource:rvpf-contents.xml'?>
+
+    <!-- Components. -->
+
+    <?include href='resource:rvpf-components.xml'?>
+
+    <!-- Syncs. -->
+
+    <?include href='resource:rvpf-syncs.xml'?>
+
+    <!-- Transforms. -->
+
+    <?include href='resource:rvpf-transforms.xml'?>
+
+    <!-- Points. -->
+
+    <?include href='resource:rvpf-points.xml'?>
+
+    <?include href='resource:rvpf-tests-points.xml'?>
+
+</metadata>
+
+<!-- End. -->

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE metadata PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-components.xml 2533 2015-02-09 00:06:45Z SFB $
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<metadata lang='en' title="Component definitions">
+
+    <!-- Origins. -->
+
+    <Origin name='Clock' uuid='4cd381811e5aa34b9a709224b7ca3ae7'/>
+
+    <!-- Processors. -->
+
+    <Processor name='Processor' uuid='5954ff5dcfd83a4dbc5ceb0ee8dd3deb'>
+        <description>
+            This is the normal Processor.
+        </description>
+    </Processor>
+
+    <Processor name='FirstReplicator' title="First Replicator"
+            uuid='9bad8fcbc5291a4eb6823af06b147986'>
+        <description>
+            This Replicator should run on the first machine.
+        </description>
+    </Processor>
+
+    <Processor name='SecondReplicator' title="Second Replicator"
+            uuid='670e7399ca8a194b9e353afc77a9d69b'>
+        <description>
+            This Replicator should run on the second machine.
+        </description>
+    </Processor>
+
+    <Processor name='Resynchronizer'
+            uuid='f1c1eef0912f1a449f73ee68404e9ecf'>
+        <description>
+            This is the resynchronizer Processor.
+        </description>
+    </Processor>
+
+    <!-- Stores. -->
+
+    <Store name='Store' uuid='e0dd531446755d49875bff08b234ba31'>
+        <notes>This Store is replicated.</notes>
+    </Store>
+
+</metadata>
+
+<!-- End. -->

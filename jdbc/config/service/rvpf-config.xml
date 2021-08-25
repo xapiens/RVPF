@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE config PUBLIC
+        "-//Serge Brisson//DTD RVPF//EN"
+        "http://rvpf.org/dtd/rvpf.dtd">
+
+<!--
+ Related Values Processing Framework.
+
+ $Id: rvpf-config.xml 4115 2019-08-04 14:17:56Z SFB $
+
+ This configuration file is used for stand alone operation.
+ -->
+
+<?xml-stylesheet type="text/xsl" href="rvpf.xsl"?>
+
+<config lang='en' title="Configuration example">
+
+    <properties from='resource:local.properties'/>
+
+    <?include href="resource:rvpf-config-shared.xml"?>
+
+    <property name='substitution.enabled'/>
+
+    <properties name='rmi.registry'>
+        <property name='port' property='rmi.registry.port'/>
+    </properties>
+
+    <properties name='security'>
+        <properties name='keystore'>
+            <property name='path' property='server.keystore'/>
+            <property name='password'
+                    property='server.keystore.password'/>
+        </properties>
+        <properties name='truststore'>
+            <property name='path' property='server.truststore'/>
+        </properties>
+    </properties>
+
+    <properties name='jmx'>
+        <property name='registration.enabled'
+                property='jmx.registration.enabled'/>
+    </properties>
+
+    <property name='store.proxy.uuid' def='service.uuid'
+            value='fe6201f7-c313-4b24-8842-13ee936b0589'/>
+
+    <service name='org.rvpf:type=TheStoreService'>
+        <description>
+            A TheStore service backed by a local database server;
+            the store is part of a simple replicator pair.
+        </description>
+        <alias name='the-store'/>
+        <property name='service.log.id' value='THST'/>
+
+        <properties name='store.server.states'>
+            <property name='state' value='Set'/>
+            <property name='state' value='Resynced'/>
+            <property name='state' value='Done'/>
+        </properties>
+
+        <properties name= 'store.server.states.on'
+                def='store.server.states'>
+            <property name='name' value='On'/>
+            <property name='state' value='Off'/>
+            <property name='state' value='On'/>
+        </properties>
+
+        <properties name= 'store.server.states.traffic'
+                def='store.server.states'>
+            <property name='name' value='Traffic'/>
+            <property name='state' value='Green'/>
+            <property name='state' value='Yellow'/>
+            <property name='state' value='Red'/>
+        </properties>
+
+        <properties name='store.server.the'>
+            <properties name='sql.connection'>
+                <property name='dialect.class'
+                        classDef='TheStoreDerbyDialect'
+                        if='store.the.sql.dialect.derby'/>
+                <property name='dialect.class'
+                        classDef='TheStoreH2Dialect'
+                        if='store.the.sql.dialect.h2'/>
+                <property name='dialect.class'
+                        classDef='TheStoreHSQLDialect'
+                        if='store.the.sql.dialect.hsql'/>
+                <property name='dialect.class'
+                        classDef='TheStoreMariaDBDialect'
+                        if='store.the.sql.dialect.mariadb'/>
+                <property name='dialect.class'
+                        classDef='TheStorePostgreSQLDialect'
+                        if='store.the.sql.dialect.postgresql'/>
+                <property name='driver.class'
+                        property='store.the.sql.driver'/>
+                <property name='url'
+                        property='store.the.sql.url'/>
+                <property name='user'
+                        property='store.the.sql.user'/>
+                <property name='password'
+                        property='store.the.sql.password'/>
+            </properties>
+            <property name='sql.create'/>
+
+            <property name='notifier.class' classDef='NullNotifier'/>
+
+            <property name='states'>
+                <value value='store.server.states.on'/>
+                <value value='store.server.states.traffic'/>
+            </property>
+        </properties>
+
+        <properties name='service.alerter'>
+            <property name='embedded'/>
+        </properties>
+        <property name='service.zombie.enabled'/>
+        <property name='service.uuid'
+                value='d3e760de-6c75-4373-875e-630682cabb33'/>
+        <properties name='traces'>
+            <property name='dir' value='the-store'/>
+        </properties>
+    </service>
+
+    <service name='org.rvpf:type=ProxyStoreService'>
+        <alias name='proxy-store'/>
+        <property name='service.log.id' value='PROX'/>
+
+        <property name='store.name' value='ProxyStore'/>
+        <property name='service.uuid' property='store.proxy.uuid'/>
+        <property name='service.zombie.enabled'/>
+    </service>
+
+</config>
+
+<!-- End. -->

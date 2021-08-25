@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd">
+
+<!--
+ Related Values Processing Framework (JDBC).
+
+ $Id: testng.xml 2607 2015-05-18 15:11:05Z SFB $
+ -->
+
+<suite name="RVPF-JDBC">
+
+    <test name="Connection">
+        <classes>
+            <class name='org.rvpf.tests.jdbc.ConnectionTests'/>
+        </classes>
+    </test>
+
+    <test name="Basic-query">
+        <classes>
+            <class name='org.rvpf.tests.jdbc.BasicQueryTests'/>
+        </classes>
+    </test>
+
+    <test name="Basic-update">
+        <classes>
+            <class name='org.rvpf.tests.jdbc.BasicUpdateTests'/>
+        </classes>
+    </test>
+
+    <test name="Query">
+        <classes>
+            <class name='org.rvpf.tests.jdbc.QueryTests'/>
+        </classes>
+    </test>
+
+    <test name="Update">
+        <classes>
+            <class name='org.rvpf.tests.jdbc.UpdateTests'/>
+        </classes>
+    </test>
+
+    <test name="Prepared-statement">
+        <classes>
+            <class name='org.rvpf.tests.jdbc.PreparedStatementTests'/>
+        </classes>
+    </test>
+
+</suite>
+
+<!-- End. -->
