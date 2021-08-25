@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='yes'?>
+
+<!--
+ Related Values Processing Framework (Valve).
+
+ $Id: izpack-install.xml 2529 2015-02-07 15:45:48Z SFB $
+ -->
+
+<installation version='1.0'>
+
+    <info>
+        <appname>@NAME@</appname>
+        <appversion>@VERSION@</appversion>
+        <authors>
+            <author name="Serge Brisson" email="serge.brisson@rvpf.org"/>
+        </authors>
+        <url>http://rvpf.org/</url>
+        <javaversion>1.7</javaversion>
+        <uninstaller write='no'/>
+        <writeinstallationinformation>no</writeinstallationinformation>
+    </info>
+
+    <variables>
+        <variable name='home_node_path' value='/org/rvpf'/>
+        <variable name='root_name' value='@ROOT@'/>
+        <variable name='project_subdir' value='@SUBDIR@'/>
+    </variables>
+
+    <conditions>
+        <condition type='variable' id='corepresent'>
+            <name>core_present</name>
+            <value>true</value>
+        </condition>
+        <condition type='variable' id='standalone'>
+            <name>core_present</name>
+            <value>false</value>
+        </condition>
+    </conditions>
+
+    <guiprefs width='800' height='600' resizable='yes'/>
+
+    <locale>
+        <langpack iso3='eng'/>
+        <langpack iso3='fra'/>
+    </locale>
+
+    <resources>
+        <res id='InfoPanel.info' src='README.txt'/>
+        <res id='InfoPanel.info_fra' src='README_fr.txt'/>
+        <res id='LicencePanel.licence' src='LICENSE.txt'/>
+        <res id='LicencePanel.licence_fra' src='LICENSE_fr.txt'/>
+        <res id='packsLang.xml_fra' src='packsLang_fr.xml'/>
+    </resources>
+
+    <panels>
+        <panel classname='HelloPanel'/>
+        <panel classname='InfoPanel'/>
+        <panel classname='LicencePanel'/>
+        <panel classname='AnchoredTargetPanel'/>
+        <panel classname='PacksPanel'/>
+        <panel classname='SummaryPanel'/>
+        <panel classname='InstallPanel'/>
+        <panel classname='SimpleFinishPanel'/>
+    </panels>
+
+    <packs>
+        <pack name="Distribution files"
+                required='yes' id='pack.distribution'>
+            <description>
+                This pack will copy the distribution files to the
+                selected target directory.
+            </description>
+            <fileset dir='.' targetdir='$INSTALL_PATH'
+                    condition='corepresent'>
+                <exclude name='izpack-*'/>
+                <exclude name='packsLang_*.xml'/>
+            </fileset>
+            <fileset dir='.' targetdir='$INSTALL_PATH'
+                    condition='standalone'>
+                <exclude name='izpack-*'/>
+                <exclude name='packsLang_*.xml'/>
+                <exclude name='tests/**'/>
+            </fileset>
+            <executable stage='postinstall' failure='abort'
+                    targetfile='$INSTALL_PATH/setup-exec.sh'
+                    condition='izpack.linuxinstall|izpack.macinstall'/>
+            <executable stage='postinstall'
+                    targetfile='$INSTALL_PATH/setup-root.sh'
+                    condition='izpack.linuxinstall|izpack.macinstall'/>
+            <executable stage='postinstall'
+                    targetfile='$INSTALL_PATH/setup-root.cmd'
+                    condition='izpack.windowsinstall'/>
+        </pack>
+
+        <pack name="Framework tests"
+                required='no' preselected='yes' id='pack.tests'
+                condition='corepresent'>
+            <description>
+                This pack will run the framework tests.
+            </description>
+            <executable os='unix' targetfile='$INSTALL_PATH/run'
+                    stage='postinstall' keep='true' failure='warn'>
+                <args>
+                    <arg value='tests'/>
+                    <arg value='-gui'/>
+                </args>
+            </executable>
+            <executable os='windows' targetfile='$INSTALL_PATH/run.cmd'
+                    stage='postinstall' keep='true' failure='warn'>
+                <args>
+                    <arg value='tests'/>
+                    <arg value='-gui'/>
+                </args>
+            </executable>
+        </pack>
+    </packs>
+
+</installation>
+
+<!-- End. -->

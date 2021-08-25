@@ -1,0 +1,13 @@
+REM $Id: common.cmd 3191 2016-09-27 14:42:51Z SFB $
+
+SET CLASS_PATH=%RVPF_CONFIG%/service/local;%RVPF_CONFIG%/service
+SET CLASS_PATH=%CLASS_PATH%;%RVPF_SHARE_JAVA%/rvpf-valve.jar
+
+SET LIBRARY_PATH=%RVPF_LIB%/lib
+
+SET INITIAL_MEMORY=4
+SET MAXIMUM_MEMORY=64
+
+SET MAIN_CLASS=org.rvpf.valve.ValveServiceActivator
+
+REM End.
