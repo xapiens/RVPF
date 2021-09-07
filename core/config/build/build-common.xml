@@ -240,7 +240,18 @@
             </exec>
         </sequential>
     </macrodef>
-
+    <macrodef name='gitversion'>
+	    <sequential>
+		<exec taskname='git' dir='.' executable='git'
+		  failonerror='yes' logerror='yes'
+		  outputproperty='git.revision'>
+		  <arg value="describe"/>
+		  <arg value="--tags"/>
+		  <arg value="--always"/>
+		  <arg value="HEAD"/>
+		</exec>
+	</sequential>
+    </macrodef>
     <macrodef name='svnversion'>
         <sequential>
             <exec taskname='svnversion' dir='.' executable='svnversion'

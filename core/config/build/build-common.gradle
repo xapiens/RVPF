@@ -30,7 +30,7 @@ ext {
     versionMicro = ant.properties['version.micro'] ?: 'x'
     versionRevision = null 
     versionString = null 
-    revision = 98 
+    revision = null 
     revisionString = null 
     debPackage = null
     debVersion = null
@@ -40,6 +40,17 @@ ext {
 }
 
 def getRevision() {
+    if (!ext.revision) {
+	if (ant.properties['vcs.git']) {
+	   ant.gitversion()
+           ext.revision = 
+	      ant.properties['git.revision']
+	}
+    }
+    ext.revision
+}
+
+def getsvnRevision() {
     if (!ext.revision) {
         if (ant.properties['vcs.svn']) {
             ant.svnversion()
