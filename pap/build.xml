@@ -141,7 +141,7 @@
 
     <target name='jar' depends='compile'
             description="Creates the jar files.">
-        <svnversion/>
+        <gitversion/>
         <jar jarfile='lib/${target.base}.jar' duplicate='fail'>
             <fileset dir='shared'>
                 <include name='${pap.config.shared.xml}'/>
@@ -159,7 +159,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
             </manifest>
         </jar>
         <jar jarfile='lib/${target.cip}.jar' duplicate='fail'>
@@ -177,7 +177,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.base}.jar ${etherip.jar}"/>
             </manifest>
@@ -197,7 +197,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.base}.jar ${jssc.jar}"/>
             </manifest>
@@ -217,7 +217,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.base}.jar ${jssc.jar}"/>
             </manifest>
@@ -230,7 +230,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
             </manifest>
         </jar>
         <copy file='${rvpf.core}/lib/${rvpf.tools.jar}'
