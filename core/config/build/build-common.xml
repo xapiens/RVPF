@@ -219,11 +219,11 @@
         <attribute name='target' default=''/>
         <element name='args' implicit='yes' optional='yes'/>
         <sequential>
-            <svnversion/>
+            <gitversion/>
             <exec taskname='make' dir='.' executable='make' failonerror='yes'>
                 <arg line="@{target}"/>
                 <args/>
-                <env key='RVPF_REVISION' value="${svnversion.output}"/>
+                <env key='RVPF_REVISION' value="${git.revision}"/>
             </exec>
         </sequential>
     </macrodef>
