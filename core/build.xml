@@ -229,7 +229,7 @@
 
     <target name='jar' depends='compile'
             description="Creates the jar files.">
-        <svnversion/>
+        <gitversion/>
         <jar jarfile='lib/${target.base}.jar' duplicate='fail'>
             <fileset dir='build/main/classes'>
                 <include name='${package.dir}/base/**/*.class'/>
@@ -244,7 +244,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${log4j.api.jar} ${log4j.core.jar} ${log4j.jul.jar} ${xstream.jar} ${javax.mail.jar}"/>
             </manifest>
@@ -257,7 +257,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.base}.jar"/>
             </manifest>
@@ -286,7 +286,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.base}.jar ${resolver.jar}"/>
             </manifest>
@@ -303,7 +303,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.service}.jar"/>
             </manifest>
@@ -321,7 +321,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.service}.jar ${servlet.jar} ${json.jars}"/>
             </manifest>
@@ -338,7 +338,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.service}.jar"/>
             </manifest>
@@ -356,7 +356,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.service}.jar ${log4j.jcl.jar} ${commons-logging.jar}"/>
             </manifest>
@@ -375,7 +375,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.service}.jar ${testng.jars} ${javax.mail.jar}"/>
             </manifest>
@@ -394,7 +394,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Class-Path'
                         value="${target.tests}.jar"/>
             </manifest>
@@ -410,7 +410,7 @@
                 <attribute name='Implementation-Version'
                         value='${rvpf.version.major}.${rvpf.version.minor}.${rvpf.version.micro}'/>
                 <attribute name='Implementation-Revision'
-                        value='${svnversion.output}'/>
+                        value='${git.revision}'/>
                 <attribute name='Main-Class' value='${package}.tool.Home'/>
                 <attribute name='Class-Path'
                         value="${target.base}.jar"/>
