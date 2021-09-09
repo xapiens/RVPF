@@ -23,7 +23,7 @@
 
             <chain name='ibiblio-rvpf' returnFirst='true'>
                 <ibiblio name='ibiblio-maven2' m2compatible='true'
-                        root='http://repo1.maven.org/maven2/'
+                        root='https://repo1.maven.org/maven2/'
                         pattern='[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'/>
 
                 <url name='rvpf-lib'>
@@ -36,7 +36,7 @@
             <resolver ref='ivys'/>
 
             <ibiblio name='oracle-maven' m2compatible='true'
-                    root='http://download.oracle.com/maven/'
+                    root='https://download.oracle.com/maven/'
                     pattern='[organisation]/[artifact]/[revision]/[artifact]-[revision].[ext]'/>
         </dual>
 
