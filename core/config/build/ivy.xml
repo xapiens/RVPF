@@ -100,7 +100,7 @@
         <dependency name='mariadb-java-client' rev='${mariadb.revision}'
                 org='org.mariadb.jdbc' conf='optional'/>
         <dependency name='postgresql' rev='${postgresql.revision}'
-                org='org.postgresql' conf='optional'/>
+                org='org.postgresql' conf='core'/>
     </dependencies>
 
 </ivy-module>
